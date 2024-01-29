@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/', 'welcome');
+Route::view('/tem', 'temdashboard');
+
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
