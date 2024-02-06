@@ -9,12 +9,6 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h1 class="text-4xl">Hi There</h1>
-                </div>
-            </div>
-        </div>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam amet tempore nobis culpa magni, nisi molestiae. Fugiat deleniti fuga eveniet corrupti debitis, quae labore inventore, itaque omnis excepturi, provident odio.
     </div>
 </x-app-layout>
