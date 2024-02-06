@@ -1,8 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Dashboard') }}
-        </h2>
+        <div class="flex justify-between">
+            <h2 class="text-3xl font-semibold leading-tight text-gray-800">
+                {{ __('Dashboard') }}
+            </h2>
+            {{-- <button class="w-10 h-10 bg-green-400">wdw</button> --}}
+        </div>
     </x-slot>
 
     <div class="py-12">
