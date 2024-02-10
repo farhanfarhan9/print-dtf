@@ -1,5 +1,8 @@
 <?php
 
+use App\Livewire\Customer\AllCustomer;
+use App\Livewire\Customer\CreateCustomer;
+use App\Livewire\Customer\EditCustomer;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,12 +20,20 @@ Route::view('/', 'welcome');
 Route::view('/tem', 'temdashboard');
 
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::middleware(['auth'])->group(function () {
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+    Route::view('dashboard', 'dashboard')
+        ->middleware('verified')
+        ->name('dashboard');
 
-require __DIR__.'/auth.php';
+    Route::view('profile', 'profile')
+        ->name('profile');
+
+    Route::prefix('customers')->group(function(){
+        Route::get('/', AllCustomer::class)->name('customer.index');
+        Route::get('/create', CreateCustomer::class)->name('customer.create');
+        Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit');
+    });
+});
+
+require __DIR__ . '/auth.php';

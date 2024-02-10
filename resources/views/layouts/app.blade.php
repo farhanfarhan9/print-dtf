@@ -19,28 +19,27 @@
     {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
 </head>
 
-<body class="font-sans antialiased">
+<body class=" bg-[#F6F6F6] font-sans antialiased" x-data="{ sidebarOpen: true }">
+    <x-sidebar></x-sidebar>
+    <div class="p-4 transition-all sm:ml-64" :class="{ 'sm:!ml-28': !sidebarOpen }">
+        <livewire:layout.navigation />
+        <div class="p-4">
+            <!-- Page Heading -->
+            @if (isset($header))
+                <header class="">
+                    <div class="w-full">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endif
 
-    <body class="antialiased" x-data="{ sidebarOpen: true }">
-        <x-sidebar></x-sidebar>
-        <div class="p-4 transition-all sm:ml-64" :class="{ 'sm:!ml-28': !sidebarOpen }">
-            <livewire:layout.navigation />
-            <div class="p-4">
-                <!-- Page Heading -->
-                @if (isset($header))
-                    <header class="">
-                        <div class="w-full">
-                            {{ $header }}
-                        </div>
-                    </header>
-                @endif
-
-                <!-- Page Content -->
-                <main>
-                    {{ $slot }}
-                </main>
-            </div>
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
         </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
-    </body>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+</body>
+
 </html>
