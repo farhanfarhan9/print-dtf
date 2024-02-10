@@ -12,10 +12,10 @@
                 {{ session('success') }}
             </div>
         @endif
-        <div class="flex justify-between">
-            <x-input wire:model.live.debounce.300ms="search" icon="search" class="!w-1/4" shadowless="true"
+        <div class="flex flex-col sm:justify-between">
+            <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Customer" />
-            <x-button label="Tambah Customer" href="{{ route('customer.create') }}" wire:navigate class="w-1/6" green
+            <x-button label="Tambah Customer" href="{{ route('customer.create') }}" wire:navigate class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green
                 icon="plus" />
         </div>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
