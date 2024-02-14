@@ -12,7 +12,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        <div class="flex flex-col sm:justify-between">
+        <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Customer" />
             <x-button label="Tambah Customer" href="{{ route('customer.create') }}" wire:navigate class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green
@@ -76,7 +76,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-5">
-                                    <x-button href="{{ route('customer.edit', $customer->id) }}" label="Edit"
+                                    <x-button wire:navigate href="{{ route('customer.edit', $customer->id) }}" label="Edit"
                                         primary />
                                     <x-button wire:click="delete({{ $customer->id }})"
                                         wire:confirm="Apakah Anda yakin menghapus data ini? ?" label="Hapus" red />

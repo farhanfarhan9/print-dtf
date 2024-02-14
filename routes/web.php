@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Bank\AllBank;
+use App\Livewire\Bank\CreateBankInformations;
 use App\Livewire\Customer\AllCustomer;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Customer\EditCustomer;
@@ -33,6 +35,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', AllCustomer::class)->name('customer.index');
         Route::get('/create', CreateCustomer::class)->name('customer.create');
         Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit');
+    });
+
+    Route::prefix('bank-informations')->group(function(){
+        Route::get('/', AllBank::class)->name('bank.index');
+        Route::get('/create', CreateBankInformations::class)->name('bank.create');
+        // Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit');
     });
 });
 
