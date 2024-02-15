@@ -1,4 +1,7 @@
 <div>
+    {{-- @if (session('addressCreated') || session('addressEdited') || session('addressDeleted'))
+        <x-notifications />
+    @endif --}}
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
@@ -35,9 +38,16 @@
                         <p class="text-lg font-bold">Nomor Hp</p>
                         <p>{{ $address->phone }}</p>
                     </div>
-                    <div>
-                        <p class="text-lg font-bold">Alamat</p>
-                        <p>{{ $address->address }}</p>
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-lg font-bold">Alamat</p>
+                            <p>{{ $address->address }}</p>
+                        </div>
+                        <div>
+                            <x-button wire:navigate href="{{ route('address.edit', $address->id) }}" label="Edit"
+                                primary />
+                            <x-button wire:click="deleteDialog({{ $address->id }})" label="Hapus" red />
+                        </div>
                     </div>
                 </x-card>
             @empty
@@ -46,7 +56,39 @@
         </div>
 
     </div>
-    <x-action-message class="me-3" on="profile-updated">
-        {{ __('Saved.') }}
-    </x-action-message>
+    {{-- @dd(session('addressCreated')) --}}
+    {{-- @if (session('addressCreated'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: 'Sukses',
+                    description: 'Berhasil menambahkan data',
+                    icon: 'success',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('addressEdited'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: 'Sukses',
+                    description: 'Berhasil mengedit data',
+                    icon: 'success',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('addressDeleted'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: 'Sukses',
+                    description: 'Berhasil menghapus data',
+                    icon: 'success',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @endif --}}
 </div>

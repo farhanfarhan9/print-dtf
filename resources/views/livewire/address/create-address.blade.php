@@ -17,7 +17,7 @@
                 <x-input type="number" label="No. Telp" wire:model='phone' placeholder="No. Telp" />
                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
                 <x-button type="submit" spinner label="Simpan" green />
-                <x-button href="{{ route('customer.index') }}" wire:navigate label="Batal" red />
+                <x-button href="{{ route('address.index') }}" wire:navigate label="Batal" red />
             </form>
         </x-card>
     </div>

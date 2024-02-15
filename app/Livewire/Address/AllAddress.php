@@ -6,9 +6,13 @@ use App\Models\User;
 use App\Models\Address;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
+use WireUi\Traits\Actions;
 
 class AllAddress extends Component
 {
+    use Actions;
+
     public $user;
 
     public function update($id)
@@ -21,8 +25,27 @@ class AllAddress extends Component
             $this->user->address_id = $id;
             $this->user->save(); // Save the changes to the database
         }
+    }
 
-        $this->dispatch('profile-updated', name: $this->user->name);
+    public function deleteDialog(Address $address)
+    {
+        $this->dialog()->confirm([
+            'title'       => 'Menghapus Data',
+            'description' => 'Yaking Ingin Menghapus Data?',
+            'acceptLabel' => 'Ya',
+            'method'      => 'delete',
+            'params'      => $address
+        ]);
+    }
+
+    public function delete(Address $address)
+    {
+        // if (Auth::user()->address_id != $address->id) {
+            $address->delete();
+            // session()->flash('addressDeleted');
+        // } else {
+        //     session()->flash('addressDeletedFailed');
+        // }
     }
 
     public function render()

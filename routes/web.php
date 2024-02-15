@@ -5,6 +5,7 @@ use App\Livewire\Address\AllAddress;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Customer\AllCustomer;
 use App\Livewire\Address\CreateAddress;
+use App\Livewire\Address\EditAddress;
 use App\Livewire\Customer\EditCustomer;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Bank\CreateBankInformations;
@@ -37,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/address', AllAddress::class)->name('address.index');
         Route::get('/address/create', CreateAddress::class)->name('address.create');
+        Route::get('/address/{address_data}/edit', EditAddress::class)->name('address.edit');
     });
 
     Route::prefix('customers')->group(function () {

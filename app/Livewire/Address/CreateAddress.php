@@ -4,9 +4,12 @@ namespace App\Livewire\Address;
 
 use App\Models\Address;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateAddress extends Component
 {
+    use Actions;
+
     public $city;
     public $postal;
     public $phone;
@@ -24,16 +27,15 @@ class CreateAddress extends Component
     public function store()
     {
         $this->validate();
-
+        
         Address::create([
             'city' => $this->city,
             'postal' => $this->postal,
             'phone' => $this->phone,
             'address' => $this->address,
         ]);
-
-        $this->redirect(route('address.index'), navigate: true);
-
+        // session()->flash('addressCreated');
+        $this->redirect(route('address.index'));
     }
 
     public function render()

@@ -16,11 +16,14 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @wireUiScripts
     {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
 </head>
 
 <body class=" bg-[#F6F6F6] font-sans antialiased" x-data="{ sidebarOpen: true }">
     <x-sidebar></x-sidebar>
+    <x-dialog />
+    {{-- <x-notifications /> --}}
     <div class="p-4 transition-all sm:ml-64" :class="{ 'sm:!ml-28': !sidebarOpen }">
         <livewire:layout.navigation />
         <div class="p-4">
