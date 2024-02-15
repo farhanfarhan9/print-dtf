@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Livewire\Address;
+
+use App\Models\Address;
+use Livewire\Component;
+
+class CreateAddress extends Component
+{
+    public $city;
+    public $postal;
+    public $phone;
+    public $address;
+
+    public function rules()
+    {
+        return [
+            'city' => 'required',
+            'postal' => 'required|min:3|numeric',
+            'phone' => 'required',
+            'address' => 'required',
+        ];
+    }
+    public function store()
+    {
+        $this->validate();
+
+        Address::create([
+            'city' => $this->city,
+            'postal' => $this->postal,
+            'phone' => $this->phone,
+            'address' => $this->address,
+        ]);
+
+        $this->redirect(route('address.index'), navigate: true);
+
+    }
+
+    public function render()
+    {
+        return view('livewire.address.create-address');
+    }
+}
