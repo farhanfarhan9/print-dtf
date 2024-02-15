@@ -21,11 +21,31 @@
 
             <div class="p-4 bg-white shadow sm:p-8 sm:rounded-lg">
                 <header class="flex justify-between">
-                    <h2 class="text-lg font-medium text-gray-900">
+                    <h2 class="text-lg font-medium text-gray-900 item-center">
                         Alamat
                     </h2>
-                    <x-button wire:navigate href="{{route('address.index')}}" green label="Atur Alamat" />
+                    <x-button class="item-center" wire:navigate href="{{route('address.index')}}" green label="Atur Alamat" />
                 </header>
+                <div class="px-5 py-2 mt-2 border rounded-lg space-y-7">
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-lg font-bold">Kota/Kecamatan</p>
+                            <p>{{ Auth::user()->address->city }}</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-bold">Kode Pos</p>
+                            <p>{{ Auth::user()->address->postal }}</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-bold">Nomor Hp</p>
+                            <p>{{ Auth::user()->address->phone }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-lg font-bold">Alamat</p>
+                        <p>{{ Auth::user()->address->address }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
