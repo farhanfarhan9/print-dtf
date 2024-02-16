@@ -24,28 +24,34 @@
                     <h2 class="text-lg font-medium text-gray-900 item-center">
                         Alamat
                     </h2>
-                    <x-button class="item-center" wire:navigate href="{{route('address.index')}}" green label="Atur Alamat" />
+                    <x-button class="item-center" wire:navigate href="{{ route('address.index') }}" green
+                        label="Atur Alamat" />
                 </header>
-                <div class="px-5 py-2 mt-2 border rounded-lg space-y-7">
-                    <div class="flex justify-between">
-                        <div>
-                            <p class="text-lg font-bold">Kota/Kecamatan</p>
-                            <p>{{ Auth::user()->address->city }}</p>
+                @php
+                    $active_address = \App\Models\Address::where('active', 1)->first();
+                @endphp
+                @if ($active_address)
+                    <div class="px-5 py-2 mt-2 border rounded-lg space-y-7">
+                        <div class="flex justify-between">
+                            <div>
+                                <p class="text-lg font-bold">Kota/Kecamatan</p>
+                                <p>{{ $active_address->city }}</p>
+                            </div>
+                            <div>
+                                <p class="text-lg font-bold">Kode Pos</p>
+                                <p>{{ $active_address->postal }}</p>
+                            </div>
+                            <div>
+                                <p class="text-lg font-bold">Nomor Hp</p>
+                                <p>{{ $active_address->phone }}</p>
+                            </div>
                         </div>
                         <div>
-                            <p class="text-lg font-bold">Kode Pos</p>
-                            <p>{{ Auth::user()->address->postal }}</p>
-                        </div>
-                        <div>
-                            <p class="text-lg font-bold">Nomor Hp</p>
-                            <p>{{ Auth::user()->address->phone }}</p>
+                            <p class="text-lg font-bold">Alamat</p>
+                            <p>{{ $active_address->address }}</p>
                         </div>
                     </div>
-                    <div>
-                        <p class="text-lg font-bold">Alamat</p>
-                        <p>{{ Auth::user()->address->address }}</p>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>

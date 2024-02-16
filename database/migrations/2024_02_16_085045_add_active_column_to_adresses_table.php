@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('address_id')->after('email')->nullable();
+        Schema::table('addresses', function (Blueprint $table) {
+            $table->boolean('active')->default(0)->after('address');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->drop('address_id');
+        Schema::table('addresses', function (Blueprint $table) {
+            $table->drop('active');
         });
     }
 };

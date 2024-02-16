@@ -15,16 +15,16 @@ class AllAddress extends Component
 
     public $user;
 
-    public function update($id)
-    {
-        $this->user = Auth::user(); // Retrieve the authenticated user and assign it to $this->user
+    public $address;
 
-        // Check if the user exists
-        if ($this->user) {
-            // Update the user's address_id
-            $this->user->address_id = $id;
-            $this->user->save(); // Save the changes to the database
-        }
+    public function update(Address $address)
+    {
+        // Deactivate all other addresses
+        Address::where('id', '!=', $address->id)->update(['active' => 0]);
+
+        // Update the specified address as active
+        $address->update(['active' => 1]);
+
         $this->notification([
             'title'       => 'Suses',
             'description' => 'Berhasil memperbarui alamat utama',

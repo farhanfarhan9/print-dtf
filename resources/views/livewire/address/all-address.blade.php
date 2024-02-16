@@ -40,7 +40,7 @@
         <div class="flex flex-col space-y-7">
             @forelse ($addresses as $address)
                 <x-card shadow='false' class="!px-24 space-y-5" wire:key='{{ $address->id }}'>
-                    @if (Auth::user()->address_id == $address->id)
+                    @if ($address->active == 1)
                         <button type="button"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Alamat
                             Utama</button>
