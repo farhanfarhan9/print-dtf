@@ -25,6 +25,12 @@ class AllAddress extends Component
             $this->user->address_id = $id;
             $this->user->save(); // Save the changes to the database
         }
+        $this->notification([
+            'title'       => 'Suses',
+            'description' => 'Berhasil memperbarui alamat utama',
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
     }
 
     public function deleteDialog(Address $address)
@@ -34,18 +40,29 @@ class AllAddress extends Component
             'description' => 'Yaking Ingin Menghapus Data?',
             'acceptLabel' => 'Ya',
             'method'      => 'delete',
-            'params'      => $address
+            'params'      => $address,
+            'timeout'     => 3000
         ]);
     }
 
     public function delete(Address $address)
     {
-        // if (Auth::user()->address_id != $address->id) {
+        if (Auth::user()->address_id != $address->id) {
             $address->delete();
-            // session()->flash('addressDeleted');
-        // } else {
-        //     session()->flash('addressDeletedFailed');
-        // }
+            $this->notification([
+                'title'       => 'Profile saved!',
+                'description' => 'Your xxx',
+                'icon'        => 'success',
+                'timeout'     => 3000
+            ]);
+        } else {
+            $this->notification([
+                'title'       => 'Gagal',
+                'description' => 'Tidak dapat menghapus alamat utama',
+                'icon'        => 'error',
+                'timeout'     => 3000
+            ]);
+        }
     }
 
     public function render()

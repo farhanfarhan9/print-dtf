@@ -42,8 +42,8 @@ class EditAddress extends Component
             'address' => $this->address,
         ]);
 
-        // session()->flash('addressEdited');
-        $this->redirect(route('address.index'));
+        session()->flash('addressEdited');
+        return redirect(route('address.index'));
     }
 
     public function render()

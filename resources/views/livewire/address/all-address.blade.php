@@ -1,7 +1,33 @@
 <div>
-    {{-- @if (session('addressCreated') || session('addressEdited') || session('addressDeleted'))
+    @if (session('addressCreated'))
         <x-notifications />
-    @endif --}}
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{session('addressCreated')[0]}}',
+                    description: '{{session('addressCreated')[1]}}',
+                    icon: '{{session('addressCreated')[2]}}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('addressEdited'))
+        <x-notifications />
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: 'Sukses',
+                    description: 'Berhasil mengedit data',
+                    icon: 'success',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @else
+    <x-notifications />
+
+    @endif
+
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
@@ -68,6 +94,8 @@
                 })
             })
         </script>
+    @endif --}}
+    {{--
     @elseif (session('addressEdited'))
         <script>
             Wireui.hook('notifications:load', () => {
