@@ -35,7 +35,7 @@ class CreateCustomer extends Component
             'city' => $this->city,
             'postal' => $this->postal,
             'phone' => $this->phone,
-            'deposit' => $this->deposit,
+            'deposit' => $this->deposit ? $this->deposit : 0,
             'address' => $this->address,
         ]);
 
