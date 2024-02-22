@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,5 +25,10 @@ Route::view('dashboard', 'dashboard')
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
+
+Route::get('/products', \App\Livewire\Product::class)->name('products-view');
+Route::get('/products/add', \App\Livewire\ProductAdd::class)->middleware(['auth'])->name('product.add');
+Route::get('/product/edit/{product}', \App\Livewire\ProductEdit::class)->name('product-edit');
+
 
 require __DIR__.'/auth.php';
