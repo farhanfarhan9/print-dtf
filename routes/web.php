@@ -27,8 +27,12 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 Route::get('/products', \App\Livewire\Product::class)->name('products-view');
-Route::get('/products/add', \App\Livewire\ProductAdd::class)->middleware(['auth'])->name('product.add');
+Route::get('/products/add', \App\Livewire\ProductAdd::class)->name('product.add');
 Route::get('/product/edit/{product}', \App\Livewire\ProductEdit::class)->name('product-edit');
+
+Route::get('/ekspedisi', \App\Livewire\Ekspedisi\Ekspedisis::class)->name('ekspedisi-view');
+Route::get('/ekspedisi/add', \App\Livewire\Ekspedisi\EkspedisiAdd::class)->name('ekspedisi.add');
+Route::get('/ekspedisi/edit/{ekspedisi}', \App\Livewire\Ekspedisi\EkspedisiEdit::class)->name('ekspedisi-edit');
 
 
 require __DIR__.'/auth.php';

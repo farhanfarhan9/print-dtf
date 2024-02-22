@@ -14,14 +14,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
     @livewireStyles
     <!-- Scripts -->
-    @wireUiScripts
+    <wireui:scripts />
     <script src="//unpkg.com/alpinejs" defer></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-
-    <body class="antialiased" x-data="{ sidebarOpen: true }">
+<body class="font-sans antialiased x-data="{ sidebarOpen: true }">
+        <x-notifications />
         <x-sidebar></x-sidebar>
         <div class="p-4 transition-all sm:ml-64" :class="{ 'sm:!ml-28': !sidebarOpen }">
             <livewire:layout.navigation />
