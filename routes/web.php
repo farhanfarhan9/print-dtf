@@ -10,6 +10,7 @@ use App\Livewire\Customer\EditCustomer;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Bank\CreateBankInformations;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,8 +31,6 @@ Route::middleware(['auth'])->group(function () {
     Route::view('dashboard', 'dashboard')
         ->middleware('verified')
         ->name('dashboard');
-
-
 
     Route::prefix('profile')->group(function () {
         Route::view('/', 'profile')->name('profile');
@@ -54,4 +53,13 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
+Route::get('/products', \App\Livewire\Product::class)->name('products-view');
+Route::get('/products/add', \App\Livewire\ProductAdd::class)->name('product.add');
+Route::get('/product/edit/{product}', \App\Livewire\ProductEdit::class)->name('product-edit');
+
+Route::get('/ekspedisi', \App\Livewire\Ekspedisi\Ekspedisis::class)->name('ekspedisi-view');
+Route::get('/ekspedisi/add', \App\Livewire\Ekspedisi\EkspedisiAdd::class)->name('ekspedisi.add');
+Route::get('/ekspedisi/edit/{ekspedisi}', \App\Livewire\Ekspedisi\EkspedisiEdit::class)->name('ekspedisi-edit');
+
+
+require __DIR__.'/auth.php';
