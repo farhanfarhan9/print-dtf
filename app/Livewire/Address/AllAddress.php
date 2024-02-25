@@ -47,7 +47,7 @@ class AllAddress extends Component
 
     public function delete(Address $address)
     {
-        if (Auth::user()->address_id != $address->id) {
+        if ($address->active != 1) {
             $address->delete();
             $this->notification([
                 'title'       => 'Profile saved!',
