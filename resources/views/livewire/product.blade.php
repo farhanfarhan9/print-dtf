@@ -52,7 +52,7 @@
                                 <div class="flex items-center space-x-4">
                                     <x-button wire:click="editProduct({{ $product->id }})" label="Edit"
                                         primary />
-                                    <x-button wire:click="confirmDelete({{ $product->id }})" wire:click="deleteProduct"
+                                    <x-button wire:click="delete({{ $product->id }})"
                                         wire:confirm="Apakah Anda yakin menghapus data ini? ?" label="Hapus" red />
                                 </div>
                             </td>

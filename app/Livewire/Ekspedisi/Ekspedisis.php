@@ -26,16 +26,8 @@ class Ekspedisis extends Component
         return redirect()->to('/ekspedisi/edit/' . $ekspedisiId);
     }
 
-    public function confirmDelete($ekspedisiId)
+    public function delete(Ekspedisi $ekspedisi)
     {
-        $this->confirmingEkspedisiDeletion = $ekspedisiId;
-    }
-
-    public function deleteEkspedisi()
-    {
-        Ekspedisi::destroy($this->confirmingEkspedisiDeletion);
-        $this->confirmingEkspedisiDeletion = null;
-        // Refresh the products list
-        $this->ekspedisi = Ekspedisi::all();
+        $ekspedisi->delete();
     }
 }

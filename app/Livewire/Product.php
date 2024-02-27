@@ -26,16 +26,8 @@ class Product extends Component
         return redirect()->to('/product/edit/' . $productId);
     }
 
-    public function confirmDelete($productId)
+    public function delete(Products $products)
     {
-        $this->confirmingProductDeletion = $productId;
-    }
-
-    public function deleteProduct()
-    {
-        Products::destroy($this->confirmingProductDeletion);
-        $this->confirmingProductDeletion = null;
-        // Refresh the products list
-        $this->products = Products::all();
+        $products->delete();
     }
 }
