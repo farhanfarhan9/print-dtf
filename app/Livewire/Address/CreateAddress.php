@@ -34,7 +34,7 @@ class CreateAddress extends Component
             'phone' => $this->phone,
             'address' => $this->address,
         ]);
-        session()->flash('addressCreated',['Sukses', 'Berhasil menawdwdwdwmbahkan data', 'success']);
+        session()->flash('addressCreated',['Sukses', 'Berhasil menambahkan data', 'success']);
         return redirect(route('address.index'));
     }
 

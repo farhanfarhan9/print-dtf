@@ -39,6 +39,7 @@ class CreateCustomer extends Component
             'address' => $this->address,
         ]);
 
+        session()->flash('customerCreated',['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('customer.index'), navigate: true);
     }
 

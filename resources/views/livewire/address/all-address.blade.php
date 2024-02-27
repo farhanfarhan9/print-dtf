@@ -1,6 +1,5 @@
 <div>
     @if (session('addressCreated'))
-        <x-notifications />
         <script>
             Wireui.hook('notifications:load', () => {
                 window.$wireui.notify({
@@ -12,20 +11,16 @@
             })
         </script>
     @elseif (session('addressEdited'))
-        <x-notifications />
         <script>
             Wireui.hook('notifications:load', () => {
                 window.$wireui.notify({
-                    title: 'Sukses',
-                    description: 'Berhasil mengedit data',
-                    icon: 'success',
+                    title: '{{session('addressEdited')[0]}}',
+                    description: '{{session('addressEdited')[1]}}',
+                    icon: '{{session('addressEdited')[2]}}',
                     timeout: 3000
                 })
             })
         </script>
-    @else
-    <x-notifications />
-
     @endif
 
     <x-slot name="header">
