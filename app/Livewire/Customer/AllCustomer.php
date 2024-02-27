@@ -12,9 +12,29 @@ class AllCustomer extends Component
     use Actions;
     use WithPagination;
     public $search;
+    public $depositModal;
+    public $editedUser;
+    public $newDeposit;
 
     public function mount()
     {
+    }
+
+    public function depositDialog(Customer $customer)
+    {
+        $this->editedUser = $customer;
+        $this->depositModal = 1;
+    }
+
+    public function addDeposit()
+    {
+        $existingDeposit = $this->editedUser->deposit;
+        $this->editedUser->update([
+            'deposit' => $existingDeposit + $this->newDeposit,
+        ]);
+        
+        session()->flash('customerCreated',['Sukses', 'Berhasil menambahkan deposit', 'success']);
+        $this->reset('editedUser', 'depositModal', 'newDeposit');
     }
 
     public function deleteDialog(Customer $customer)
@@ -41,7 +61,7 @@ class AllCustomer extends Component
     }
     public function render()
     {
-        return view('livewire.customer.all-customer',[
+        return view('livewire.customer.all-customer', [
             'customers' => Customer::where('name', 'like', "%{$this->search}%")->paginate(15)
         ]);
     }
