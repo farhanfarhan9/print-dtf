@@ -37,6 +37,7 @@ class ProductAdd extends Component
             'detail_harga' => json_encode($this->priceRanges),
         ]);
 
+        session()->flash('productCreated',['Sukses', 'Berhasil menambahkan data', 'success']);
         // Reset the form or give some response
         return redirect('/products');
     }

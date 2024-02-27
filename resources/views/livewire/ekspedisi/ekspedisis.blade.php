@@ -1,4 +1,32 @@
 <div>
+    @if (session('expedisiCreated'))
+        <x-notifications />
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{session('expedisiCreated')[0]}}',
+                    description: '{{session('expedisiCreated')[1]}}',
+                    icon: '{{session('expedisiCreated')[2]}}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('expedisiEdited'))
+        <x-notifications />
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: 'Sukses',
+                    description: 'Berhasil mengedit data',
+                    icon: 'success',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @else
+    <x-notifications />
+
+    @endif
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
@@ -43,8 +71,7 @@
                                     <div class="flex gap-5">
                                         <x-button wire:click="editEkspedisi({{ $ekspedisi->id }})" label="Edit"
                                             primary />
-                                        <x-button wire:click="delete({{ $ekspedisi->id }})"
-                                            wire:confirm="Apakah Anda yakin menghapus data ini? ?" label="Hapus" red />
+                                        <x-button wire:click="deleteDialog({{ $ekspedisi->id }})" label="Hapus" red />
                                     </div>
                                 </div>
                             </td>

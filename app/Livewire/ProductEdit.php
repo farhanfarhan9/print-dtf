@@ -49,7 +49,7 @@ class ProductEdit extends Component
         // Save the product
         $this->product->save();
 
-        session()->flash('message', 'Product updated successfully.');
+        session()->flash('productEdited');
 
         return redirect()->route('products-view');
     }
