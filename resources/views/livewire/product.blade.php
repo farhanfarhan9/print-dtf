@@ -3,10 +3,6 @@
         <x-button label="+ Tambah Data Produk" primary wire:click='addData' />
     </div>
 
-    @if (session()->has('message'))
-        <x-alert title="{{ session('message') }}!" positive />
-    @endif
-
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
@@ -18,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if($ekspedisi->first() == null)
+                @if($products->first() == null)
                 <tr class="bg-white border-b">
                     <td class="py-4 px-6 text-center" colspan="3">Data Kosong</td>
                 </tr>
