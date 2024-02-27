@@ -12,11 +12,12 @@ class Ekspedisis extends Component
 {
     use Actions;
     public $ekspedisi;
+    public $search;
     public $confirmingEkspedisiDeletion = null;
 
     public function render()
     {
-        $this->ekspedisi = Ekspedisi::all();
+        $this->ekspedisi = Ekspedisi::where('nama_ekspedisi', 'like', "%{$this->search}%")->get();
         \Log::debug($this->ekspedisi);
         return view('livewire.ekspedisi.ekspedisis');
     }

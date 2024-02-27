@@ -30,11 +30,6 @@
         </div>
     </x-slot>
     <div class="py-12">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
         <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Customer" />
@@ -99,6 +94,8 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-5">
+                                    <x-button wire:click='depositDialog({{ $customer->id }})' label="Deposit" orange
+                                        icon="plus" />
                                     <x-button href="{{ route('customer.edit', $customer->id) }}" label="Edit"
                                         primary />
                                     <x-button wire:click="deleteDialog({{ $customer->id }})" label="Hapus" red />
@@ -113,6 +110,19 @@
 
                 </tbody>
             </table>
+            <x-modal.card title="{{ isset($editedUser) ? $editedUser->name : '' }}" blur wire:model.defer="depositModal">
+                <x-input type="number" class="!pl-[2.5rem]" label="Jumlah deposit" prefix="Rp."
+                    wire:model="newDeposit" />
+
+                <x-slot name="footer">
+                    <div class="flex justify-end gap-x-4">
+                        <div class="flex">
+                            <x-button flat label="Cancel" x-on:click="close" />
+                            <x-button primary label="Simpan" wire:click="addDeposit" />
+                        </div>
+                    </div>
+                </x-slot>
+            </x-modal.card>
         </div>
         <div class="mt-2">
             {{ $customers->links() }}
