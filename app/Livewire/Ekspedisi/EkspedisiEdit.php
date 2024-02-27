@@ -34,11 +34,7 @@ class EkspedisiEdit extends Component
         // Save the ekspedisi
         $this->ekspedisi->save();
 
-        $this->notification()->success(
-            $title = 'Ekspedisi saved',
-            $description = 'Your Ekspedisi. was successfully updated'
-        );
-
+        session()->flash('expeditionCreated', ['Sukses', 'Berhasil mengedit data', 'success']);
         return redirect()->route('ekspedisi-view');
     }
 

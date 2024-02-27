@@ -1,6 +1,5 @@
 <div>
     @if (session('addressCreated'))
-        <x-notifications />
         <script>
             Wireui.hook('notifications:load', () => {
                 window.$wireui.notify({
@@ -12,7 +11,6 @@
             })
         </script>
     @elseif (session('addressEdited'))
-        <x-notifications />
         <script>
             Wireui.hook('notifications:load', () => {
                 window.$wireui.notify({
@@ -23,9 +21,6 @@
                 })
             })
         </script>
-    @else
-    <x-notifications />
-
     @endif
 
     <x-slot name="header">
@@ -33,7 +28,7 @@
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
                 Alamat
             </h2>
-            <x-button wire:navigate href="{{ route('address.create') }}" green label="Tambah Alamat Baru" />
+            <x-button href="{{ route('address.create') }}" green label="Tambah Alamat Baru" />
         </div>
     </x-slot>
     <div class="max-w-6xl mx-auto">
@@ -70,7 +65,7 @@
                             <p>{{ $address->address }}</p>
                         </div>
                         <div>
-                            <x-button wire:navigate href="{{ route('address.edit', $address->id) }}" label="Edit"
+                            <x-button href="{{ route('address.edit', $address->id) }}" label="Edit"
                                 primary />
                             <x-button wire:click="deleteDialog({{ $address->id }})" label="Hapus" red />
                         </div>

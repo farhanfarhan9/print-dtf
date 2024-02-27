@@ -18,11 +18,23 @@ class Product extends Component
     {
         $this->products = Products::all();
         \Log::debug($this->products); // Temporarily log the products to inspect the structure.
-        return view('livewire.product')->layout('layouts.app');
+        return view('livewire.product');
     }
 
     public function addData(){
         return redirect()->to('/products/add/');
+    }
+
+    public function deleteDialog(Products $product)
+    {
+        $this->dialog()->confirm([
+            'title'       => 'Menghapus Data',
+            'description' => 'Yakin Ingin Menghapus Data?',
+            'acceptLabel' => 'Ya',
+            'method'      => 'delete',
+            'params'      => $product,
+            'timeout'     => 3000
+        ]);
     }
 
     public function editProduct($productId)
@@ -30,26 +42,14 @@ class Product extends Component
         return redirect()->to('/product/edit/' . $productId);
     }
 
-    public function deleteDialog(Products $products)
-    {
-        $this->dialog()->confirm([
-            'title'       => 'Menghapus Data',
-            'description' => 'Yaking Ingin Menghapus Data?',
-            'acceptLabel' => 'Ya',
-            'method'      => 'delete',
-            'params'      => $products,
-            'timeout'     => 5000
-        ]);
-    }
-
     public function delete(Products $products)
     {
-        $products->delete();;
         $this->notification([
-            'title'       => 'Product Berhasil di Hapus!',
-            'description' => 'Product di Hapus',
+            'title'       => 'Sukses',
+            'description' => 'Berhasil menghapus data produk',
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
+        $products->delete();
     }
 }

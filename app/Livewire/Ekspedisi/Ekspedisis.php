@@ -18,7 +18,7 @@ class Ekspedisis extends Component
     {
         $this->ekspedisi = Ekspedisi::all();
         \Log::debug($this->ekspedisi);
-        return view('livewire.ekspedisi.ekspedisis')->layout('layouts.app');
+        return view('livewire.ekspedisi.ekspedisis');
     }
 
     public function addData(){
@@ -34,11 +34,11 @@ class Ekspedisis extends Component
     {
         $this->dialog()->confirm([
             'title'       => 'Menghapus Data',
-            'description' => 'Yaking Ingin Menghapus Data?',
+            'description' => 'Yakin Ingin Menghapus Data?',
             'acceptLabel' => 'Ya',
             'method'      => 'delete',
             'params'      => $ekspedisi,
-            'timeout'     => 5000
+            'timeout'     => 3000
         ]);
     }
 

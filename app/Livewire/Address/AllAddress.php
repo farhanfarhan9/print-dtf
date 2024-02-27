@@ -26,7 +26,7 @@ class AllAddress extends Component
         $address->update(['active' => 1]);
 
         $this->notification([
-            'title'       => 'Suses',
+            'title'       => 'Sukes',
             'description' => 'Berhasil memperbarui alamat utama',
             'icon'        => 'success',
             'timeout'     => 3000
@@ -37,7 +37,7 @@ class AllAddress extends Component
     {
         $this->dialog()->confirm([
             'title'       => 'Menghapus Data',
-            'description' => 'Yaking Ingin Menghapus Data?',
+            'description' => 'Yakin Ingin Menghapus Data?',
             'acceptLabel' => 'Ya',
             'method'      => 'delete',
             'params'      => $address,
@@ -50,8 +50,8 @@ class AllAddress extends Component
         if ($address->active != 1) {
             $address->delete();
             $this->notification([
-                'title'       => 'Profile saved!',
-                'description' => 'Your xxx',
+                'title'       => 'Sukses',
+                'description' => 'Berhasil menghapus alamat',
                 'icon'        => 'success',
                 'timeout'     => 3000
             ]);

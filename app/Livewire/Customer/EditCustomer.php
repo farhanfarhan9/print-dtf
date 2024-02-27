@@ -52,6 +52,7 @@ class EditCustomer extends Component
             'address' => $this->address,
         ]);
 
+        session()->flash('customerEdited',['Sukses', 'Berhasil mengedit data', 'success']);
         $this->redirect(route('customer.index'), navigate: true);
     }
 

@@ -39,11 +39,12 @@ class ProductAdd extends Component
 
         session()->flash('productCreated',['Sukses', 'Berhasil menambahkan data', 'success']);
         // Reset the form or give some response
-        return redirect('/products');
+        session()->flash('productCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
+        $this->redirect('/products', navigate: true);
     }
 
     public function render()
     {
-        return view('livewire.product-add')->layout('layouts.app');
+        return view('livewire.product-add');
     }
 }

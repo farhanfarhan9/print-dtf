@@ -1,4 +1,27 @@
 <div>
+    @if (session('customerCreated'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{ session('customerCreated')[0] }}',
+                    description: '{{ session('customerCreated')[1] }}',
+                    icon: '{{ session('customerCreated')[2] }}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('customerEdited'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{ session('customerEdited')[0] }}',
+                    description: '{{ session('customerEdited')[1] }}',
+                    icon: '{{ session('customerEdited')[2] }}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @endif
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
@@ -15,8 +38,8 @@
         <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Customer" />
-            <x-button label="Tambah Customer" href="{{ route('customer.create') }}" wire:navigate class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green
-                icon="plus" />
+            <x-button label="Tambah Customer" href="{{ route('customer.create') }}" class="w-1/3 mt-2 sm:w-1/6 sm:mt-0"
+                green icon="plus" />
         </div>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
@@ -76,10 +99,9 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-5">
-                                    <x-button wire:navigate href="{{ route('customer.edit', $customer->id) }}" label="Edit"
+                                    <x-button href="{{ route('customer.edit', $customer->id) }}" label="Edit"
                                         primary />
-                                    <x-button wire:click="delete({{ $customer->id }})"
-                                        wire:confirm="Apakah Anda yakin menghapus data ini? ?" label="Hapus" red />
+                                    <x-button wire:click="deleteDialog({{ $customer->id }})" label="Hapus" red />
                                 </div>
                             </td>
                         </tr>

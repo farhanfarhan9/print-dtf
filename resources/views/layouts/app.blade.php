@@ -25,6 +25,7 @@
     {{-- <x-notifications /> --}}
     <div class="p-4 transition-all sm:ml-64" :class="{ 'sm:!ml-28': !sidebarOpen }">
         <livewire:layout.navigation />
+        <x-notifications />
         <div class="p-4">
             <!-- Page Heading -->
             @if (isset($header))
@@ -44,4 +45,5 @@
     @livewireScripts
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 </body>
+
 </html>
