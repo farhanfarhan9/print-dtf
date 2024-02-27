@@ -1,4 +1,27 @@
 <div>
+    @if (session('expeditionCreated'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{ session('expeditionCreated')[0] }}',
+                    description: '{{ session('expeditionCreated')[1] }}',
+                    icon: '{{ session('expeditionCreated')[2] }}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('expeditionEdited'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{ session('expeditionEdited')[0] }}',
+                    description: '{{ session('expeditionEdited')[1] }}',
+                    icon: '{{ session('expeditionEdited')[2] }}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @endif
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
@@ -15,7 +38,7 @@
         <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Ekspedisi" />
-            <x-button label="Tambah Data Ekspedisi" href="{{ route('ekspedisi.add') }}" wire:navigate
+            <x-button label="Tambah Data Ekspedisi" href="{{ route('ekspedisi.add') }}"
                 class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green icon="plus" />
         </div>
 
@@ -32,7 +55,7 @@
                 <tbody>
                     @forelse($ekspedisi as $key => $ekspedisi)
                         <tr class="bg-white border-b">
-                            <td class="px-6 py-4">{{ $key+1 }}</td>
+                            <td class="px-6 py-4">{{ $key + 1 }}</td>
                             <td class="px-6 py-4">{{ $ekspedisi->nama_ekspedisi }}</td>
                             <td class="px-6 py-4">{{ $ekspedisi->ongkir }}</td>
                             <td class="px-6 py-4">
@@ -40,8 +63,7 @@
                                     <div class="flex gap-5">
                                         <x-button wire:click="editEkspedisi({{ $ekspedisi->id }})" label="Edit"
                                             primary />
-                                        <x-button wire:click="delete({{ $ekspedisi->id }})"
-                                            wire:confirm="Apakah Anda yakin menghapus data ini? ?" label="Hapus" red />
+                                        <x-button wire:click="deleteDialog({{ $ekspedisi->id }})" label="Hapus" red />
                                     </div>
                                 </div>
                             </td>

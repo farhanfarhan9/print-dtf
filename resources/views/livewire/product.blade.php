@@ -35,10 +35,8 @@
                 {{ session('success') }}
             </div>
         @endif
-        <div class="flex sm:justify-between">
-            <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
-                placeholder="Cari Produk" />
-            <x-button label="Tambah Data Produk" href="{{ route('product.add') }}" wire:navigate
+        <div class="flex sm:justify-end">
+            <x-button label="Tambah Data Produk" href="{{ route('product.add') }}"
                 class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green icon="plus" />
         </div>
         {{-- <x-button label="+ Tambah Data Produk" primary wire:click='addData' /> --}}

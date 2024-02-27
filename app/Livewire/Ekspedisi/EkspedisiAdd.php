@@ -21,11 +21,7 @@ class EkspedisiAdd extends Component
             'ongkir' => $this->ongkir,
         ]);
 
-        $this->notification()->success(
-            $title = 'Ekspedisi saved',
-            $description = 'Your Ekspedisi. was successfully Added'
-        );
-
+        session()->flash('expeditionCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         // Reset the form or give some response
         return redirect()->route('ekspedisi-view');
     }
