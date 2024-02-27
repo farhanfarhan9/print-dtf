@@ -1,13 +1,19 @@
 <?php
 
+use App\Livewire\Product;
+use App\Livewire\ProductAdd;
+use App\Livewire\ProductEdit;
 use App\Livewire\Bank\AllBank;
 use App\Livewire\Address\AllAddress;
+use App\Livewire\Address\EditAddress;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Customer\AllCustomer;
+use App\Livewire\Ekspedisi\Ekspedisis;
 use App\Livewire\Address\CreateAddress;
-use App\Livewire\Address\EditAddress;
 use App\Livewire\Customer\EditCustomer;
+use App\Livewire\Ekspedisi\EkspedisiAdd;
 use App\Livewire\Customer\CreateCustomer;
+use App\Livewire\Ekspedisi\EkspedisiEdit;
 use App\Livewire\Bank\CreateBankInformations;
 
 
@@ -51,15 +57,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create', CreateBankInformations::class)->name('bank.create');
         // Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit');
     });
+
+    Route::get('/products', Product::class)->name('products-view');
+    Route::get('/products/add', ProductAdd::class)->name('product.add');
+    Route::get('/product/edit/{product}', ProductEdit::class)->name('product-edit');
+
+    Route::get('/ekspedisi', Ekspedisis::class)->name('ekspedisi-view');
+    Route::get('/ekspedisi/add', EkspedisiAdd::class)->name('ekspedisi.add');
+    Route::get('/ekspedisi/edit/{ekspedisi}', EkspedisiEdit::class)->name('ekspedisi-edit');
 });
 
-Route::get('/products', \App\Livewire\Product::class)->name('products-view');
-Route::get('/products/add', \App\Livewire\ProductAdd::class)->name('product.add');
-Route::get('/product/edit/{product}', \App\Livewire\ProductEdit::class)->name('product-edit');
-
-Route::get('/ekspedisi', \App\Livewire\Ekspedisi\Ekspedisis::class)->name('ekspedisi-view');
-Route::get('/ekspedisi/add', \App\Livewire\Ekspedisi\EkspedisiAdd::class)->name('ekspedisi.add');
-Route::get('/ekspedisi/edit/{ekspedisi}', \App\Livewire\Ekspedisi\EkspedisiEdit::class)->name('ekspedisi-edit');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

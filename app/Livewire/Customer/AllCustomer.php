@@ -22,7 +22,7 @@ class AllCustomer extends Component
     public function render()
     {
         return view('livewire.customer.all-customer',[
-            'customers' => Customer::where('name', 'like', "%{$this->search}%")->paginate(15)
+            'customers' => Customer::where('name', 'like', "%jon%")->paginate(15)
         ]);
     }
 }
