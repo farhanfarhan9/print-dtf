@@ -37,7 +37,7 @@ class AllAddress extends Component
     {
         $this->dialog()->confirm([
             'title'       => 'Menghapus Data',
-            'description' => 'Yaking Ingin Menghapus Data?',
+            'description' => 'Yakin Ingin Menghapus Data?',
             'acceptLabel' => 'Ya',
             'method'      => 'delete',
             'params'      => $address,

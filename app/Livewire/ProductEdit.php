@@ -49,13 +49,12 @@ class ProductEdit extends Component
         // Save the product
         $this->product->save();
 
-        session()->flash('message', 'Product updated successfully.');
-
+        session()->flash('productEdited', ['Sukses', 'Berhasil mengedit data', 'success']);
         return redirect()->route('products-view');
     }
 
     public function render()
     {
-        return view('livewire.product-edit')->layout('layouts.app');
+        return view('livewire.product-edit');
     }
 }

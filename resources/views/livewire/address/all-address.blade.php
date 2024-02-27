@@ -14,9 +14,9 @@
         <script>
             Wireui.hook('notifications:load', () => {
                 window.$wireui.notify({
-                    title: '{{session('addressEdited')[0]}}',
-                    description: '{{session('addressEdited')[1]}}',
-                    icon: '{{session('addressEdited')[2]}}',
+                    title: 'Sukses',
+                    description: 'Berhasil mengedit data',
+                    icon: 'success',
                     timeout: 3000
                 })
             })
