@@ -12,11 +12,13 @@ class Product extends Component
 {
     use Actions;
     public $products;
+    public $search;
     public $confirmingProductDeletion = null;
 
     public function render()
     {
-        $this->products = Products::all();
+        // $this->products = Products::all();
+        $this->products = Products::where('nama_produk', 'like', "%{$this->search}%")->get();
         \Log::debug($this->products); // Temporarily log the products to inspect the structure.
         return view('livewire.product');
     }
