@@ -15,4 +15,15 @@ class PurchaseOrder extends Model
     {
         return $this->belongsTo(Purchase::class);
     }
+
+    public function expedition()
+    {
+        return $this->belongsTo(ekspedisi::class, 'expedition_id', 'id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+
+    }
 }
