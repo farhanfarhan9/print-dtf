@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Products;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
+use App\Models\Products;
 
 class Product extends Component
 {

@@ -3,13 +3,14 @@
 namespace App\Livewire\Ekspedisi;
 
 use Livewire\Component;
-use App\Models\Ekspedisi;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
+use App\Models\Ekspedisi;
 
 class Ekspedisis extends Component
 {
     use Actions;
-
     public $ekspedisi;
     public $search;
     public $confirmingEkspedisiDeletion = null;
@@ -44,6 +45,12 @@ class Ekspedisis extends Component
 
     public function delete(Ekspedisi $ekspedisi)
     {
+        $this->notification([
+            'title'       => 'Ekspedisi Berhasil di Hapus!',
+            'description' => 'Ekspedisi '. $ekspedisi->nama_ekspedisi .' di Hapus',
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
         $ekspedisi->delete();
     }
 }
