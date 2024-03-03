@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('purchase_orders', function (Blueprint $table) {
             $table->bigInteger('expedition_id')->after('product_id');
+            $table->bigInteger('expedition_price')->after('expedition_id');
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('purchase_orders', function (Blueprint $table) {
             $table->drop('expedition_id');
+            $table->drop('expedition_price');
         });
     }
 };

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('customer_id');
             $table->bigInteger('user_id');
-            $table->enum('payment_status', ['easy', 'hard']);
+            $table->enum('payment_status', ['open', 'close']);
             $table->timestamps();
         });
     }
