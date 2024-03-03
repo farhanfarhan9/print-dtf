@@ -62,7 +62,7 @@
                     </button>
                     <ul id="dropdown-example" class="hidden py-2 ml-3 space-y-2">
                         <li>
-                            <a href="#"
+                            <a href="{{ route('order.index') }}"
                                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                 :class="{ 'justify-center': !sidebarOpen }">
                                 <svg xmlns="http://www.w3.org/2000/svg"
