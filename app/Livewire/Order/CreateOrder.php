@@ -48,13 +48,18 @@ class CreateOrder extends Component
         if ($existingOpenOrder) {
             dd('tes');
         } else {
-            $purchase = Purchase::create([
+            $purchaseData = [
                 'customer_id' => $this->customer_id,
                 'user_id' => Auth::id(),
                 'payment_status' => 'open'
-            ]);
+            ];
+            if ($this->status == 'Lunas') {
+                $purchaseData['payment_status'] = 'close';
+            }
 
-            $purchaseOrder = PurchaseOrder::create([
+            $purchase = Purchase::create($purchaseData);
+
+            $purchaseOrderData = [
                 'purchase_id' => $purchase->id,
                 'product_id' => $this->product->id,
                 'expedition_id' => $this->expedition_id,
@@ -63,8 +68,15 @@ class CreateOrder extends Component
                 'product_price' => $this->product_price,
                 'qty' => $this->qty,
                 'status' => $this->status,
+                'po_status' => 'open',
                 'total_price' => $this->total_price,
-            ]);
+            ];
+
+            if ($this->status == 'Lunas') {
+                $purchaseOrderData['po_status'] = 'close';
+            }
+
+            $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
             
             if ($this->status == 'Cicil' && $this->amount != 0) {
                 Payment::create([
