@@ -204,7 +204,7 @@ class CreateOrder extends Component
         //         'stok' => $this->product->stok - $this->qty
         //     ]);
         // }
-        session()->flash('OrderCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
+        session()->flash('orderCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('order.index'), navigate: true);
 
         // } catch (\Exception $e) {
