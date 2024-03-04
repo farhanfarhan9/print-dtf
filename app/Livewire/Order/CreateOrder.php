@@ -53,107 +53,157 @@ class CreateOrder extends Component
 
     public function save()
     {
-        // $this->validate();
+        $this->validate();
+        
         $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
+        $purchaseData = [
+            'customer_id' => $this->customer_id,
+            'user_id' => Auth::id(),
+            'payment_status' => $this->status == 'Lunas' ? 'close' : 'open',
+        ];
+        
         if ($existingOpenOrder) {
-            $purchaseOrderData = [
-                'invoice_code' => $this->invoice_code,
-                'purchase_id' => $existingOpenOrder->id,
-                'product_id' => $this->product->id,
-                'expedition_id' => $this->expedition_id,
-                'user_id' => Auth::id(),
-                'expedition_price' => $this->expedition->ongkir,
-                'deposit_cut' => $this->deposit_cut,
-                'product_price' => $this->product_price,
-                'qty' => $this->qty,
-                'status' => $this->status,
-                'po_status' => 'open',
-                'total_price' => $this->total_price,
-            ];
-
-            if ($this->status == 'Lunas') {
-                $purchaseOrderData['po_status'] = 'close';
-            }
-
-            $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
-
-            if ($this->status == 'Cicil' && $this->amount != 0) {
-                Payment::create([
-                    'purchase_order_id' => $purchaseOrder->id,
-                    'amount' => $this->amount,
-                ]);
-            } elseif ($this->status == 'Lunas') {
-                Payment::create([
-                    'purchase_order_id' => $purchaseOrder->id,
-                    'amount' => $this->total_price,
-                ]);
-            }
-
-            if ($this->is_deposit) {
-                $this->customer->update([
-                    'deposit' => $this->customer->deposit - $this->deposit_cut
-                ]);
-            }
-
-            $this->product->update([
-                'stok' => $this->product->stok - $this->qty
-            ]);
-
+            $purchase = $existingOpenOrder;
         } else {
-            $purchaseData = [
-                'customer_id' => $this->customer_id,
-                'user_id' => Auth::id(),
-                'payment_status' => 'open'
-            ];
-            if ($this->status == 'Lunas') {
-                $purchaseData['payment_status'] = 'close';
-            }
-
             $purchase = Purchase::create($purchaseData);
-
-            $purchaseOrderData = [
-                'invoice_code' => $this->invoice_code,
-                'purchase_id' => $purchase->id,
-                'product_id' => $this->product->id,
-                'expedition_id' => $this->expedition_id,
-                'user_id' => Auth::id(),
-                'expedition_price' => $this->expedition->ongkir,
-                'deposit_cut' => $this->deposit_cut,
-                'product_price' => $this->product_price,
-                'qty' => $this->qty,
-                'status' => $this->status,
-                'po_status' => 'open',
-                'total_price' => $this->total_price,
-            ];
-
-            if ($this->status == 'Lunas') {
-                $purchaseOrderData['po_status'] = 'close';
-            }
-
-            $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
-
-            if ($this->status == 'Cicil' && $this->amount != 0) {
-                Payment::create([
-                    'purchase_order_id' => $purchaseOrder->id,
-                    'amount' => $this->amount,
-                ]);
-            } elseif ($this->status == 'Lunas') {
-                Payment::create([
-                    'purchase_order_id' => $purchaseOrder->id,
-                    'amount' => $this->total_price,
-                ]);
-            }
-
-            if ($this->is_deposit) {
-                $this->customer->update([
-                    'deposit' => $this->customer->deposit - $this->deposit_cut
-                ]);
-            }
-
-            $this->product->update([
-                'stok' => $this->product->stok - $this->qty
+        }
+        
+        $purchaseOrderData = [
+            'invoice_code' => $this->invoice_code,
+            'purchase_id' => $purchase->id,
+            'product_id' => $this->product->id,
+            'expedition_id' => $this->expedition_id,
+            'user_id' => Auth::id(),
+            'expedition_price' => $this->expedition->ongkir,
+            'deposit_cut' => $this->deposit_cut,
+            'product_price' => $this->product_price,
+            'qty' => $this->qty,
+            'status' => $this->status,
+            'po_status' => 'open',
+            'total_price' => $this->total_price,
+        ];
+        
+        if ($this->status == 'Lunas') {
+            $purchaseOrderData['po_status'] = 'close';
+        }
+        
+        $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
+        
+        $paymentAmount = $this->status == 'Cicil' && $this->amount != 0 ? $this->amount : $this->total_price;
+        
+        Payment::create([
+            'purchase_order_id' => $purchaseOrder->id,
+            'amount' => $paymentAmount,
+        ]);
+        
+        if ($this->is_deposit) {
+            $this->customer->update([
+                'deposit' => $this->customer->deposit - $this->deposit_cut
             ]);
         }
+        
+        $this->product->update([
+            'stok' => $this->product->stok - $this->qty
+        ]);
+        // if ($existingOpenOrder) {
+        //     $purchaseOrderData = [
+        //         'invoice_code' => $this->invoice_code,
+        //         'purchase_id' => $existingOpenOrder->id,
+        //         'product_id' => $this->product->id,
+        //         'expedition_id' => $this->expedition_id,
+        //         'user_id' => Auth::id(),
+        //         'expedition_price' => $this->expedition->ongkir,
+        //         'deposit_cut' => $this->deposit_cut,
+        //         'product_price' => $this->product_price,
+        //         'qty' => $this->qty,
+        //         'status' => $this->status,
+        //         'po_status' => 'open',
+        //         'total_price' => $this->total_price,
+        //     ];
+
+        //     if ($this->status == 'Lunas') {
+        //         $purchaseOrderData['po_status'] = 'close';
+        //     }
+
+        //     $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
+
+        //     if ($this->status == 'Cicil' && $this->amount != 0) {
+        //         Payment::create([
+        //             'purchase_order_id' => $purchaseOrder->id,
+        //             'amount' => $this->amount,
+        //         ]);
+        //     } elseif ($this->status == 'Lunas') {
+        //         Payment::create([
+        //             'purchase_order_id' => $purchaseOrder->id,
+        //             'amount' => $this->total_price,
+        //         ]);
+        //     }
+
+        //     if ($this->is_deposit) {
+        //         $this->customer->update([
+        //             'deposit' => $this->customer->deposit - $this->deposit_cut
+        //         ]);
+        //     }
+
+        //     $this->product->update([
+        //         'stok' => $this->product->stok - $this->qty
+        //     ]);
+
+        // } else {
+        //     $purchaseData = [
+        //         'customer_id' => $this->customer_id,
+        //         'user_id' => Auth::id(),
+        //         'payment_status' => 'open'
+        //     ];
+        //     if ($this->status == 'Lunas') {
+        //         $purchaseData['payment_status'] = 'close';
+        //     }
+
+        //     $purchase = Purchase::create($purchaseData);
+
+        //     $purchaseOrderData = [
+        //         'invoice_code' => $this->invoice_code,
+        //         'purchase_id' => $purchase->id,
+        //         'product_id' => $this->product->id,
+        //         'expedition_id' => $this->expedition_id,
+        //         'user_id' => Auth::id(),
+        //         'expedition_price' => $this->expedition->ongkir,
+        //         'deposit_cut' => $this->deposit_cut,
+        //         'product_price' => $this->product_price,
+        //         'qty' => $this->qty,
+        //         'status' => $this->status,
+        //         'po_status' => 'open',
+        //         'total_price' => $this->total_price,
+        //     ];
+
+        //     if ($this->status == 'Lunas') {
+        //         $purchaseOrderData['po_status'] = 'close';
+        //     }
+
+        //     $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
+
+        //     if ($this->status == 'Cicil' && $this->amount != 0) {
+        //         Payment::create([
+        //             'purchase_order_id' => $purchaseOrder->id,
+        //             'amount' => $this->amount,
+        //         ]);
+        //     } elseif ($this->status == 'Lunas') {
+        //         Payment::create([
+        //             'purchase_order_id' => $purchaseOrder->id,
+        //             'amount' => $this->total_price,
+        //         ]);
+        //     }
+
+        //     if ($this->is_deposit) {
+        //         $this->customer->update([
+        //             'deposit' => $this->customer->deposit - $this->deposit_cut
+        //         ]);
+        //     }
+
+        //     $this->product->update([
+        //         'stok' => $this->product->stok - $this->qty
+        //     ]);
+        // }
         session()->flash('OrderCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('order.index'), navigate: true);
 
