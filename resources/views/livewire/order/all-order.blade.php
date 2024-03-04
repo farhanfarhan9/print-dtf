@@ -95,8 +95,12 @@
                     <x-button href="{{route('po.allPo', $purchase->id)}}" label="Detail order" primary icon="tag" />
                 </div>
             </div>
+            
         </div>
     @empty
         No Data
     @endforelse
+    <div class="mt-2">
+        {{ $purchases->links() }}
+    </div>
 </div>

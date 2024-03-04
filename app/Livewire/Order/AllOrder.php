@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Order;
 
-use App\Models\Purchase;
 use Livewire\Component;
+use App\Models\Purchase;
+use Livewire\WithPagination;
 
 class AllOrder extends Component
 {
+    use WithPagination;
     public $search;
 
     public function render()
