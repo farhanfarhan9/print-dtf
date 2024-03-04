@@ -50,12 +50,12 @@
                 <div class="flex justify-between mt-5">
                     <div>
                         <p class="font-medium text-slate-500">Produk</p>
-                        <p class="font-semibold">{{ $item->product->nama_produk }} ({{ $item->qty }}m)</p>
+                        <p class="font-semibold">{{ $item->product->nama_produk }} ({{ $item->qty }}m) Rp.{{$item->product_price}}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Total Bayar <button type="button"
                                 class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
-                        <p class="font-semibold">Rp.{{ $item->product_price }}</p>
+                        <p class="font-semibold">Rp.{{ $item->total_price }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Status Pembayaran</p>

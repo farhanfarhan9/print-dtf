@@ -56,6 +56,49 @@ class CreateOrder extends Component
         // $this->validate();
         $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
         if ($existingOpenOrder) {
+            $purchaseOrderData = [
+                'invoice_code' => $this->invoice_code,
+                'purchase_id' => $existingOpenOrder->id,
+                'product_id' => $this->product->id,
+                'expedition_id' => $this->expedition_id,
+                'user_id' => Auth::id(),
+                'expedition_price' => $this->expedition->ongkir,
+                'deposit_cut' => $this->deposit_cut,
+                'product_price' => $this->product_price,
+                'qty' => $this->qty,
+                'status' => $this->status,
+                'po_status' => 'open',
+                'total_price' => $this->total_price,
+            ];
+
+            if ($this->status == 'Lunas') {
+                $purchaseOrderData['po_status'] = 'close';
+            }
+
+            $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
+
+            if ($this->status == 'Cicil' && $this->amount != 0) {
+                Payment::create([
+                    'purchase_order_id' => $purchaseOrder->id,
+                    'amount' => $this->amount,
+                ]);
+            } elseif ($this->status == 'Lunas') {
+                Payment::create([
+                    'purchase_order_id' => $purchaseOrder->id,
+                    'amount' => $this->total_price,
+                ]);
+            }
+
+            if ($this->is_deposit) {
+                $this->customer->update([
+                    'deposit' => $this->customer->deposit - $this->deposit_cut
+                ]);
+            }
+
+            $this->product->update([
+                'stok' => $this->product->stok - $this->qty
+            ]);
+
         } else {
             $purchaseData = [
                 'customer_id' => $this->customer_id,
@@ -111,9 +154,9 @@ class CreateOrder extends Component
                 'stok' => $this->product->stok - $this->qty
             ]);
         }
-        session()->flash('OrderCreated',['Sukses', 'Berhasil menambahkan data', 'success']);
+        session()->flash('OrderCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('order.index'), navigate: true);
-        
+
         // } catch (\Exception $e) {
         //     DB::rollBack();
         //     return redirect()->back()->with('error', 'An error occurred while processing your request.');
