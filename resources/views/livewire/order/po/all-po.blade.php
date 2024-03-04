@@ -102,4 +102,7 @@
     @empty
         No Data
     @endforelse
+    <div class="mt-2">
+        {{ $purchase_orders->links() }}
+    </div>
 </div>

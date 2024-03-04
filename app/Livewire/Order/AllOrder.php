@@ -14,7 +14,7 @@ class AllOrder extends Component
     public function render()
     {
         return view('livewire.order.all-order',[
-            'purchases' => Purchase::paginate(15)
+            'purchases' => Purchase::orderBy('created_at','desc')->paginate(10)
         ]);
     }
 }
