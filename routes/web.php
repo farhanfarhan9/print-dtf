@@ -18,6 +18,7 @@ use App\Livewire\Bank\CreateBankInformations;
 use App\Livewire\Order\AllOrder;
 use App\Livewire\Order\CreateOrder;
 use App\Livewire\Order\Po\AllPo;
+use App\Livewire\Order\Po\EditPo;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create', CreateOrder::class)->name('order.create');
 
         Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo');
+        Route::get('/{order}/purchase_order/{po}/edit', EditPo::class)->name('po.editPo');
 
     });
 });

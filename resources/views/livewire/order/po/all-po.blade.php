@@ -50,7 +50,8 @@
                 <div class="flex justify-between mt-5">
                     <div>
                         <p class="font-medium text-slate-500">Produk</p>
-                        <p class="font-semibold">{{ $item->product->nama_produk }} ({{ $item->qty }}m) Rp.{{$item->product_price}}</p>
+                        <p class="font-semibold">{{ $item->product->nama_produk }} ({{ $item->qty }}m)
+                            Rp.{{ $item->product_price }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Total Bayar <button type="button"
@@ -86,14 +87,14 @@
                     <div class="flex gap-5">
                         <x-button label="Update Pembayaran" class="items-center" primary icon="currency-dollar" />
                         <div class="inline-flex rounded-md shadow-sm" role="group">
-                            <button type="button"
+                            <a href="{{ route('po.editPo', [$order, $item->id]) }}"
                                 class="px-4 py-2 text-sm font-medium text-blue-400 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                                 Edit order
-                            </button>
-                            <button type="button"
+                            </a>
+                            <a
                                 class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                                 Cancel Order
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
