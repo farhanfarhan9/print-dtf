@@ -91,6 +91,9 @@
                         </p>
                     </div>
                 </div>
+                <div class="flex justify-end">
+                    <x-button href="{{route('po.allPo', $purchase->id)}}" label="Detail order" primary icon="tag" />
+                </div>
             </div>
         </div>
     @empty
