@@ -13,6 +13,12 @@ class CreateCustomer extends Component
     public $phone;
     public $deposit;
     public $address;
+    public $selectedLocation;
+
+    public function mount()
+    {
+        $this->selectedLocation = null;
+    }
 
     public function rules()
     {
@@ -41,6 +47,11 @@ class CreateCustomer extends Component
 
         session()->flash('customerCreated',['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('customer.index'), navigate: true);
+    }
+
+    public function formatLabel($item)
+    {
+        return "{$item['KOTA']}, {$item['KECAMATAN']}, {$item['PROVINSI']}";
     }
 
     public function render()

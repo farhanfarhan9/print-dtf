@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\ViewKodePosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('bank/index', [BankController::class, 'index'])->name('api.bank.index');
 
+Route::get('/kode-pos', [ViewKodePosController::class, 'index'])->name('api.kode-pos.index');

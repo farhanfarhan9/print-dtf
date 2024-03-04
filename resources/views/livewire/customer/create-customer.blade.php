@@ -14,7 +14,17 @@
             <form action="" method="post" wire:submit='save' class="space-y-7">
                 <x-input label="Nama Customer" wire:model='name' placeholder="Nama Customer" />
                 <div class="flex justify-between gap-10">
-                    <x-input label="Kota/Kecamatan" wire:model='city' placeholder="Kota/Kecamatan" />
+<x-select
+    label="Kota/Kecamatan/Provinsi"
+    wire:model.defer="selectedLocation"
+    placeholder="Select Kota/Kecamatan/Provinsi"
+    :async-data="route('api.kode-pos.index')"
+    option-label="formatLabel"
+    option-value="ID"
+/>
+
+
+                    {{-- <x-input label="Kota/Kecamatan" wire:model='city' placeholder="Kota/Kecamatan" /> --}}
                     <x-input type="number" label="Kode Pos" wire:model='postal' placeholder="Kode Pos" />
                 </div>
                 <div class="flex justify-between gap-10">
