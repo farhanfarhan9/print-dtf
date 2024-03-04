@@ -15,7 +15,9 @@ use App\Livewire\Ekspedisi\EkspedisiAdd;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Ekspedisi\EkspedisiEdit;
 use App\Livewire\Bank\CreateBankInformations;
-
+use App\Livewire\Order\AllOrder;
+use App\Livewire\Order\CreateOrder;
+use App\Livewire\Order\Po\AllPo;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +67,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ekspedisi', Ekspedisis::class)->name('ekspedisi-view');
     Route::get('/ekspedisi/add', EkspedisiAdd::class)->name('ekspedisi.add');
     Route::get('/ekspedisi/edit/{ekspedisi}', EkspedisiEdit::class)->name('ekspedisi-edit');
+
+    Route::prefix('orders')->group(function () {
+        Route::get('/', AllOrder::class)->name('order.index');
+        Route::get('/create', CreateOrder::class)->name('order.create');
+
+        Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo');
+
+    });
 });
 
 
