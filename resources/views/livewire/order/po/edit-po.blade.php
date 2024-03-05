@@ -1,6 +1,6 @@
 <div>
     <x-slot name="header">
-        <a href="{{ route('order.index') }}" wire:navigate
+        <a href="{{ route('po.allPo', $order->id) }}" wire:navigate
             class="flex items-center w-1/12 gap-1 p-2 mb-5 text-lg rounded-lg hover:bg-gray-100">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                 stroke-width="2">
@@ -13,11 +13,9 @@
         <div class="flex justify-between mt-10 gap-7">
             <div class="w-2/5">
                 <x-card shadow='false'>
-                    <x-select label="Cari customer" wire:model.live="customer_id" placeholder="Pilih customer"
-                        :async-data="route('api.customers.index')" option-label="name" option-value="id" />
-
-                    <div class="mt-6 space-y-2">
+                    <div class="space-y-2">
                         @if ($customer_id)
+                            <p class="block text-sm font-medium">Nama: {{ $customer->name }}</p>
                             <p class="block text-sm font-medium">Alamat: {{ $customer->address }}</p>
                             <p class="block text-sm font-medium">Kota: {{ $customer->city }}</p>
                             <p class="block text-sm font-medium">Kode pos: {{ $customer->postal }}</p>
@@ -59,11 +57,17 @@
                                 <div class="mt-2">{{ $expedition->ongkir }}</div>
                             @endif
                         </div>
+                        @if ($deposit_cut > 0)
+                            <div class="flex justify-end gap-5 mt-2">
+                                <p class="text-red-500">Potongan deposit sebelumnya</p>
+                                <p class="text-red-500">{{ $deposit_cut }}</p>
+                            </div>
+                        @endif
                         @if ($customer_id && $expedition_id)
                             <div class="flex justify-between">
                                 <x-checkbox id="right-label" label="Potong deposit" wire:model.live="is_deposit" />
                                 @if ($is_deposit)
-                                    <p class="text-red-500">{{ $deposit_cut }}</p>
+                                    <p class="text-red-500">{{ $new_deposit_cut }}</p>
                                 @endif
                             </div>
                         @else
@@ -76,15 +80,6 @@
                     <div class="flex justify-between px-8">
                         <p>Total</p>
                         <p>{{ $total_price }}</p>
-                    </div>
-                </x-card>
-                <x-card shadow='false'>
-                    <div class="flex justify-between gap-5">
-                        <x-select label="Pilih Status" placeholder="Pilih Status" :options="['Cicil', 'Lunas']"
-                            wire:model.live="status" />
-                        @if ($status == 'Cicil')
-                            <x-input type="number" wire:model='amount' label="Dp" placeholder="Jumlah DP" />
-                        @endif
                     </div>
                 </x-card>
                 <div class="flex justify-end">

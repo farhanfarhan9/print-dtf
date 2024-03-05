@@ -38,7 +38,7 @@
         </div>
     </x-slot>
     @forelse ($purchase_orders as $item)
-        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7">
+        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key='{{$item->id}}'>
             <div class="flex justify-between pb-2 border-b">
                 <p class="my-auto text-sm text-slate-500">Dibuat Pada
                     {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</p>

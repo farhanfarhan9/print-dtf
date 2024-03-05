@@ -39,7 +39,7 @@
         </div>
     </div>
     @forelse ($purchases as $purchase)
-        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7">
+        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key="{{ $purchase->id }}">
             <div class="flex justify-between pb-2 border-b">
                 <p class="my-auto text-sm text-slate-500">Dibuat Pada
                     {{ \Carbon\Carbon::parse($purchase->created_at)->format('d F Y') }}</p>
@@ -92,10 +92,10 @@
                     </div>
                 </div>
                 <div class="flex justify-end">
-                    <x-button href="{{route('po.allPo', $purchase->id)}}" label="Detail order" primary icon="tag" />
+                    <x-button href="{{ route('po.allPo', $purchase->id) }}" label="Detail order" primary
+                        icon="tag" />
                 </div>
             </div>
-            
         </div>
     @empty
         No Data
