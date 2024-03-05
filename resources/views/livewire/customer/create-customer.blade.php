@@ -16,11 +16,11 @@
                 <div class="flex justify-between gap-10">
 <x-select
     label="Kota/Kecamatan/Provinsi"
-    wire:model.defer="selectedLocation"
+    wire:model.live="selectedLocation"
     placeholder="Select Kota/Kecamatan/Provinsi"
     :async-data="route('api.kode-pos.index')"
-    option-label="formatLabel"
-    option-value="ID"
+    option-label="kota"
+    option-value="id"
 />
 
 
