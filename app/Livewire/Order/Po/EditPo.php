@@ -47,8 +47,18 @@ class EditPo extends Component
         $this->deposit_cut = $po->deposit_cut;
     }
 
+    public function rules()
+    {
+        return [
+            'qty' => 'required',
+            'expedition_id' => 'required',
+        ];
+    }
+
     public function save()
     {
+        $this->validate();
+        
         $this->po->update([
             'deposit_cut' => $this->deposit_cut == 0 ? $this->deposit_cut : $this->deposit_cut + $this->new_deposit_cut,
             'expedition_id' => $this->expedition_id,
