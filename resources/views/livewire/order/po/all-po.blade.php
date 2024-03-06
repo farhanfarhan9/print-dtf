@@ -38,7 +38,7 @@
         </div>
     </x-slot>
     @forelse ($purchase_orders as $item)
-        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key='{{$item->id}}'>
+        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key='{{ $item->id }}'>
             <div class="flex justify-between pb-2 border-b">
                 <p class="my-auto text-sm text-slate-500">Dibuat Pada
                     {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</p>
@@ -55,6 +55,7 @@
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Total Bayar <button type="button"
+                                wire:click='showPaymentHistory({{ $item->id }})'
                                 class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
                         <p class="font-semibold">Rp.{{ $item->total_price }}</p>
                     </div>
@@ -106,4 +107,48 @@
     <div class="mt-2">
         {{ $purchase_orders->links() }}
     </div>
+    <x-modal.card title="History Pembayaran INV {{$selectedPoHistory ? $selectedPoHistory->invoice_code: ''}}" blur wire:model="paymentHistoryModal">
+        {{-- <x-input type="number" class="!pl-[2.5rem]" label="Jumlah deposit" prefix="Rp." wire:model="newDeposit" />
+
+        <x-slot name="footer">
+            <div class="flex justify-end gap-x-4">
+                <div class="flex">
+                    <x-button flat label="Cancel" x-on:click="close" />
+                    <x-button primary label="Simpan" wire:click="addDeposit" />
+                </div>
+            </div>
+        </x-slot> --}}
+        @if ($paymentHistories)
+            @forelse ($paymentHistories as $payment)
+                <div class="px-4 py-2 mt-2 border rounded-md" wire:key='{{ $payment->id }}'>
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Nominal yang dibayarkan</p>
+                            <p class="text-lg font-medium text-green-500">Rp.{{ $payment->amount }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Tanggal pembayaran</p>
+                            <p class="text-lg font-medium ">
+                                {{ \Carbon\Carbon::parse($payment->created_at)->format('d F Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center text">
+                    Belum ada History Pembayaran
+                </div>
+            @endforelse
+            <div class="flex justify-end mt-2 text-right">
+                <div>
+                    <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
+                    <p class="text-sm text-gray-500">
+                        Rp. {{ $selectedPoHistory->total_price - $paymentHistories->sum('amount') }}
+                    </p>
+                </div>
+            </div>
+        @endif
+
+
+
+    </x-modal.card>
 </div>
