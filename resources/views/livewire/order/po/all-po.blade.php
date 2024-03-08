@@ -107,7 +107,8 @@
     <div class="mt-2">
         {{ $purchase_orders->links() }}
     </div>
-    <x-modal.card title="History Pembayaran INV {{$selectedPoHistory ? $selectedPoHistory->invoice_code: ''}}" blur wire:model="paymentHistoryModal">
+    <x-modal.card title="History Pembayaran INV {{ $selectedPoHistory ? $selectedPoHistory->invoice_code : '' }}" blur
+        wire:model="paymentHistoryModal">
         {{-- <x-input type="number" class="!pl-[2.5rem]" label="Jumlah deposit" prefix="Rp." wire:model="newDeposit" />
 
         <x-slot name="footer">
@@ -120,23 +121,17 @@
         </x-slot> --}}
         @if ($paymentHistories)
             @forelse ($paymentHistories as $key=>$payment)
-
                 <div class="px-4 py-2 mt-2 border rounded-md" wire:key='{{ $payment->id }}'>
                     <div class="flex justify-between">
                         <div>
-                            <p class="text-lg font-semibold">Pembayaran ke-{{$key}}</p>
-                            {{-- <p class="text-lg font-medium text-green-500">Rp.{{ $payment->amount }}</p> --}}
+                            <p class="text-lg font-semibold">Pembayaran ke-{{ $key + 1 }}</p>
                         </div>
-                        {{-- <div>
-                            <p class="text-sm text-gray-500">Tanggal pembayaran</p>
-                            <p class="text-lg font-medium ">
-                                {{ \Carbon\Carbon::parse($payment->created_at)->format('d F Y') }}</p>
-                        </div> --}}
                     </div>
                     <div class="flex justify-between">
                         <div>
                             <p class="text-sm text-gray-500">Nominal yang dibayarkan</p>
-                            <p class="text-lg font-medium text-green-500">Rp.{{ $payment->amount }} {{$payment->is_dp ? '(DP)' : ''}}</p>
+                            <p class="text-lg font-medium text-green-500">Rp.{{ $payment->amount }}
+                                {{ $payment->is_dp ? '(DP)' : '' }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Tanggal pembayaran</p>
@@ -144,6 +139,16 @@
                                 {{ \Carbon\Carbon::parse($payment->created_at)->format('d F Y') }}</p>
                         </div>
                     </div>
+                    @if ($payment->file)
+                        <div>
+                            {{-- {{$payment}} --}}
+                            <p class="text-sm text-gray-500">Bukti Pembayaran</p>
+                            <a href="{{ asset('storage/' . $payment->file) }}" target="_blank">
+                                <img src="{{ asset('storage/' . $payment->file) }}" class="object-scale-down w-1/2"
+                                    alt="">
+                            </a>
+                        </div>
+                    @endif
                 </div>
             @empty
                 <div class="text-center text">
