@@ -86,6 +86,14 @@
                             <x-input type="number" wire:model='amount' label="Dp" placeholder="Jumlah DP" />
                         @endif
                     </div>
+                    @if ($status == 'Cicil')
+                        <div class="mt-5">
+                            <x-input-label>Testing</x-input-label>
+                            <x-input-file wire:model='file'></x-input-file>
+                            <x-input-error :messages="$errors->get('file')" class="mt-2" />
+
+                        </div>
+                    @endif
                 </x-card>
                 <div class="flex justify-end">
                     <x-button type="submit" spinner label="Simpan" green />

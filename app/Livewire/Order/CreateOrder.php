@@ -10,11 +10,14 @@ use App\Models\products;
 use App\Models\Purchase;
 use App\Models\ekspedisi;
 use App\Models\PurchaseOrder;
+use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class CreateOrder extends Component
 {
+    use WithFileUploads;
+
     public $customer_id;
     public $expedition_id;
     public $qty;
@@ -23,6 +26,7 @@ class CreateOrder extends Component
     public $shipped_price = 0;
     public $deposit_cut = 0;
     public $amount = 0;
+    public $file;
     public $status;
     public $is_deposit;
     public $invoice_code;
@@ -48,26 +52,27 @@ class CreateOrder extends Component
             'qty' => 'required',
             'expedition_id' => 'required',
             'status' => 'required',
+            'file' => 'nullable|file|max:2000'
         ];
     }
 
     public function save()
     {
         $this->validate();
-        
+
         $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
         $purchaseData = [
             'customer_id' => $this->customer_id,
             'user_id' => Auth::id(),
             'payment_status' => $this->status == 'Lunas' ? 'close' : 'open',
         ];
-        
+
         if ($existingOpenOrder) {
             $purchase = $existingOpenOrder;
         } else {
             $purchase = Purchase::create($purchaseData);
         }
-        
+
         $purchaseOrderData = [
             'invoice_code' => $this->invoice_code,
             'purchase_id' => $purchase->id,
@@ -82,26 +87,35 @@ class CreateOrder extends Component
             'po_status' => 'open',
             'total_price' => $this->total_price,
         ];
-        
+
         if ($this->status == 'Lunas') {
             $purchaseOrderData['po_status'] = 'close';
         }
-        
+
         $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
-        
-        $paymentAmount = $this->status == 'Cicil' && $this->amount != 0 ? $this->amount : $this->total_price;
-        
-        Payment::create([
-            'purchase_order_id' => $purchaseOrder->id,
-            'amount' => $paymentAmount,
-        ]);
-        
+
+        $paymentAmount = $this->status == 'Cicil' && (int)$this->amount != 0 ? (int)$this->amount : $this->total_price;
+        $is_dp = $this->status == 'Cicil' && (int)$this->amount != 0 ? 1 : 0;
+        if ($this->file) {
+            $this->file = $this->file->store('bukti_pembayaran', 'public');
+        }
+
+        if ($this->status == 'Cicil' && (int)$this->amount != 0) {
+            Payment::create([
+                'purchase_order_id' => $purchaseOrder->id,
+                'amount' => $paymentAmount == 0 ? 0 : $paymentAmount,
+                'is_dp' => $is_dp,
+                'file' => $this->file,
+            ]);
+        }
+
+
         if ($this->is_deposit) {
             $this->customer->update([
                 'deposit' => $this->customer->deposit - $this->deposit_cut
             ]);
         }
-        
+
         $this->product->update([
             'stok' => $this->product->stok - $this->qty
         ]);

@@ -119,12 +119,24 @@
             </div>
         </x-slot> --}}
         @if ($paymentHistories)
-            @forelse ($paymentHistories as $payment)
+            @forelse ($paymentHistories as $key=>$payment)
+
                 <div class="px-4 py-2 mt-2 border rounded-md" wire:key='{{ $payment->id }}'>
                     <div class="flex justify-between">
                         <div>
+                            <p class="text-lg font-semibold">Pembayaran ke-{{$key}}</p>
+                            {{-- <p class="text-lg font-medium text-green-500">Rp.{{ $payment->amount }}</p> --}}
+                        </div>
+                        {{-- <div>
+                            <p class="text-sm text-gray-500">Tanggal pembayaran</p>
+                            <p class="text-lg font-medium ">
+                                {{ \Carbon\Carbon::parse($payment->created_at)->format('d F Y') }}</p>
+                        </div> --}}
+                    </div>
+                    <div class="flex justify-between">
+                        <div>
                             <p class="text-sm text-gray-500">Nominal yang dibayarkan</p>
-                            <p class="text-lg font-medium text-green-500">Rp.{{ $payment->amount }}</p>
+                            <p class="text-lg font-medium text-green-500">Rp.{{ $payment->amount }} {{$payment->is_dp ? '(DP)' : ''}}</p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Tanggal pembayaran</p>
