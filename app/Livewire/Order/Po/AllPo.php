@@ -56,6 +56,8 @@ class AllPo extends Component
 
     public function updatePayment(PurchaseOrder $po)
     {
+        // dd($po->payments->sum(;'amount'));
+        // dd($po->total_price);
         $this->validate();
 
         if ($this->file) {
@@ -68,6 +70,12 @@ class AllPo extends Component
             'is_dp' => 0,
             'file' => $this->file,
         ]);
+
+        if($po->payments->sum('amount') >= $po->total_price){
+            $po->update([
+                'po_status' => 'close'
+            ]);
+        }
 
         $this->reset('paymentModal', 'amount', 'file');
         $this->notification([
