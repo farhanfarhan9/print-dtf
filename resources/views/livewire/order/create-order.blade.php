@@ -83,20 +83,47 @@
                         <x-select label="Pilih Status" placeholder="Pilih Status" :options="['Cicil', 'Lunas']"
                             wire:model.live="status" />
                         @if ($status == 'Cicil')
-                            <x-input type="number" wire:model='amount' label="Dp" placeholder="Jumlah DP" />
+                            <x-inputs.currency type="number" wire:model='amount' label="Dp"
+                                placeholder="Jumlah DP" />
                         @endif
                     </div>
                     @if ($status == 'Cicil')
                         <div class="mt-5">
-                            <x-input-label>Testing</x-input-label>
+                            <x-input-label>Bukti pembayaran</x-input-label>
                             <x-input-file wire:model='file'></x-input-file>
                             <x-input-error :messages="$errors->get('file')" class="mt-2" />
-
                         </div>
+
+                        @if ($file)
+                            <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2" alt="">
+                        @endif
                     @endif
                 </x-card>
                 <div class="flex justify-end">
-                    <x-button type="submit" spinner label="Simpan" green />
+                    <button type="button" wire:loading wire:target="file"
+                        class="px-4 py-2 text-sm font-semibold text-center text-white align-middle bg-gray-500 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 mx-auto" viewBox="0 0 200 200">
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="40"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4">
+                                </animate>
+                            </circle>
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="100"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2">
+                                </animate>
+                            </circle>
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="160"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0">
+                                </animate>
+                            </circle>
+                        </svg>
+                    </button>
+                    <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan" green />
                 </div>
             </div>
         </div>

@@ -38,7 +38,8 @@
         </div>
     </x-slot>
     @forelse ($purchase_orders as $item)
-        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key='{{ $item->id }}'>
+        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7 {{ $item->po_status == 'close' ? 'border-green-600' : '' }}"
+            wire:key='{{ $item->id }}'>
             <div class="flex justify-between pb-2 border-b">
                 <p class="my-auto text-sm text-slate-500">Dibuat Pada
                     {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</p>
@@ -66,8 +67,8 @@
                 </div>
                 <div class="flex justify-between mt-5">
                     <div>
-                        <p class="font-medium text-slate-500">Dibuat Oleh</p>
-                        <p class="font-semibold">{{ $item->user->name }}</p>
+                        <p class="font-medium text-slate-500">Total yang sudah dibayarkan</p>
+                        <p class="font-semibold">Rp.{{ $item->payments->sum('amount') }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Kurir</p>
@@ -80,13 +81,25 @@
                         <p class="font-semibold">Rp.{{ $item->deposit_cut }}</p>
                     </div>
                 </div>
+                <div>
+                    <div>
+                        <p class="font-medium text-slate-500">Dibuat oleh</p>
+                        <p class="font-semibold">{{ $item->user->name }}</p>
+                    </div>
+                </div>
                 <div class="flex justify-between">
                     <div>
                         <x-button label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
                         <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" />
                     </div>
                     <div class="flex gap-5">
-                        <x-button label="Update Pembayaran" class="items-center" primary icon="currency-dollar" />
+                        @if ($item->po_status == 'open')
+                            <x-button wire:click='updatePaymentModal({{ $item->id }})' label="Update Pembayaran"
+                                class="items-center" primary icon="currency-dollar" />
+                        @else
+                            <x-button label="Update Pembayaran" disabled class="items-center" secondary
+                                icon="currency-dollar" />
+                        @endif
                         <div class="inline-flex rounded-md shadow-sm" role="group">
                             <a href="{{ route('po.editPo', [$order, $item->id]) }}"
                                 class="px-4 py-2 text-sm font-medium text-blue-400 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
@@ -167,5 +180,67 @@
 
 
 
+    </x-modal.card>
+
+    {{--  --}}
+    <x-modal.card title="Pembayaran INV {{ $selectedPo ? $selectedPo->invoice_code : '' }}" blur
+        wire:model="paymentModal">
+        @if ($selectedPo)
+            @php
+                $remainingPayment = $selectedPo->total_price - $selectedPo->payments->sum('amount');
+            @endphp
+            <div>
+                <x-inputs.currency label="Nominal pembayaran *" max="{{ $remainingPayment }}"
+                    placeholder="Nominal pembayaran" wire:model="amount" />
+
+                <div class="mt-5">
+                    <x-input-label>Bukti pembayaran</x-input-label>
+                    <x-input-file wire:model='file'></x-input-file>
+                    <x-input-error :messages="$errors->get('file')" class="mt-2" />
+                </div>
+                @if ($file)
+                    <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2"
+                        alt="">
+                @endif
+            </div>
+
+            <div class="flex justify-end mt-2 text-right">
+                <div>
+                    <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
+                    <p class="text-sm text-gray-500">
+                        Rp. {{ $remainingPayment }}
+                    </p>
+                </div>
+            </div>
+
+            <x-slot name="footer">
+                <div class="flex justify-end">
+                    <button type="button" wire:loading wire:target="file"
+                        class="px-4 py-2 text-sm font-semibold text-center text-white align-middle bg-gray-500 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 mx-auto" viewBox="0 0 200 200">
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="40"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4">
+                                </animate>
+                            </circle>
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="100"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2">
+                                </animate>
+                            </circle>
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="160"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0">
+                                </animate>
+                            </circle>
+                        </svg>
+                    </button>
+                    <x-button primary wire:target="file" wire:loading.remove label="Simpan" wire:click="updatePayment({{ $selectedPo->id }})" />
+                </div>
+            </x-slot>
+        @endif
     </x-modal.card>
 </div>
