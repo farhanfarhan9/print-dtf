@@ -52,13 +52,13 @@
                     <div>
                         <p class="font-medium text-slate-500">Produk</p>
                         <p class="font-semibold">{{ $item->product->nama_produk }} ({{ $item->qty }}m)
-                            Rp.{{ $item->product_price }}</p>
+                            {{ rupiah_format($item->product_price) }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Total Bayar <button type="button"
                                 wire:click='showPaymentHistory({{ $item->id }})'
                                 class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
-                        <p class="font-semibold">Rp.{{ $item->total_price }}</p>
+                        <p class="font-semibold">{{ rupiah_format($item->total_price) }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Status Pembayaran</p>
@@ -68,12 +68,12 @@
                 <div class="flex justify-between mt-5">
                     <div>
                         <p class="font-medium text-slate-500">Total yang sudah dibayarkan</p>
-                        <p class="font-semibold">Rp.{{ $item->payments->sum('amount') }}</p>
+                        <p class="font-semibold">{{ rupiah_format($item->payments->sum('amount')) }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Kurir</p>
                         <p class="font-semibold">{{ $item->expedition->nama_ekspedisi }}
-                            (Rp.{{ $item->expedition_price }})
+                            ({{ rupiah_format($item->expedition_price) }})
                         </p>
                     </div>
                     <div>
@@ -143,7 +143,7 @@
                     <div class="flex justify-between">
                         <div>
                             <p class="text-sm text-gray-500">Nominal yang dibayarkan</p>
-                            <p class="text-lg font-medium text-green-500">Rp.{{ $payment->amount }}
+                            <p class="text-lg font-medium text-green-500">{{ rupiah_format($payment->amount) }}
                                 {{ $payment->is_dp ? '(DP)' : '' }}</p>
                         </div>
                         <div>
@@ -172,7 +172,7 @@
                 <div>
                     <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
                     <p class="text-sm text-gray-500">
-                        Rp. {{ $selectedPoHistory->total_price - $paymentHistories->sum('amount') }}
+                        {{ rupiah_format($selectedPoHistory->total_price - $paymentHistories->sum('amount')) }}
                     </p>
                 </div>
             </div>
