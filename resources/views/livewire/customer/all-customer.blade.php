@@ -93,7 +93,7 @@
                                 {{ $customer->phone }}
                             </td>
                             <td class="px-6 py-4">
-                                Rp. {{ number_format($customer->deposit, 0, ',', '.') }}
+                                {{ rupiah_format($customer->deposit) }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $customer->address }}

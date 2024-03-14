@@ -57,7 +57,7 @@
                         <tr class="bg-white border-b">
                             <td class="px-6 py-4">{{ $key + 1 }}</td>
                             <td class="px-6 py-4">{{ $ekspedisi->nama_ekspedisi }}</td>
-                            <td class="px-6 py-4">{{ $ekspedisi->ongkir }}</td>
+                            <td class="px-6 py-4">{{ rupiah_format($ekspedisi->ongkir) }}</td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex gap-5">
