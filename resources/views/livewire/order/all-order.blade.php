@@ -57,7 +57,7 @@
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Total Bayar</p>
-                        <p class="font-semibold">{{ $purchase->purchase_orders->sum('total_price') }}</p>
+                        <p class="font-semibold">Rp. {{ number_format($purchase->purchase_orders->sum('total_price'), 0, ',', '.') }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Status pembayaran</p>

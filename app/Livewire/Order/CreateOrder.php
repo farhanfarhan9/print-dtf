@@ -113,7 +113,7 @@ class CreateOrder extends Component
         }
         session()->flash('OrderCreated',['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('order.index'), navigate: true);
-        
+
         // } catch (\Exception $e) {
         //     DB::rollBack();
         //     return redirect()->back()->with('error', 'An error occurred while processing your request.');
