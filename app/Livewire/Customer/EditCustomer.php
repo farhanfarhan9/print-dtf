@@ -7,34 +7,36 @@ use Livewire\Component;
 
 class EditCustomer extends Component
 {
-    public $name;
-    public $city;
-    public $postal;
-    public $phone;
-    public $deposit;
-    public $address;
-    public $newDeposit;
-
+    public $name, $phone, $deposit, $address, $newDeposit;
+    public $selectedDataProvinsi, $selectedDataKota, $selectedDataPostal, $selectedDataKecamatan;
+    public $selectedDataNameProvinsi, $selectedDataNameKota, $selectedDataNameKecamatan;
+    public $selectedProvinsi, $selectedKota, $selectedPostal, $selectedKecamatan;
     public $customer;
+    public $change;
 
     public function mount(Customer $customer)
     {
+        $this->customer = $customer;
         $this->name = $customer->name;
-        $this->city = $customer->city;
-        $this->postal = $customer->postal;
+        $this->selectedDataProvinsi = $customer->provinsi;
+        $this->selectedDataKota = $customer->city;
+        $this->selectedDataKecamatan = $customer->district;
+        $this->selectedDataPostal = $customer->postal;
+        $this->selectedDataNameProvinsi = $customer->province->prov_name;
+        $this->selectedDataNameKota = $customer->kota->city_name;
+        $this->selectedDataNameKecamatan = $customer->kecamatans->dis_name;
         $this->phone = $customer->phone;
         $this->deposit = $customer->deposit;
         $this->address = $customer->address;
+        $this->change = false;
     }
 
     public function rules()
     {
         return [
             'name' => 'required',
-            'city' => 'required',
-            'postal' => 'required|min:3|numeric',
             'phone' => 'required',
-            'newDeposit' => 'nullable',
+            'newDeposit' => 'nullable|numeric',
             'address' => 'required',
         ];
     }
@@ -42,18 +44,42 @@ class EditCustomer extends Component
     public function save()
     {
         $this->validate();
-
-        $this->customer->update([
-            'name' => $this->name,
-            'city' => $this->city,
-            'postal' => $this->postal,
-            'phone' => $this->phone,
-            'deposit' => $this->deposit + $this->newDeposit,
-            'address' => $this->address,
-        ]);
+        if($this->change == true){
+            $this->customer->update([
+                'name' => $this->name,
+                'provinsi' => $this->selectedProvinsi,
+                'city' => $this->selectedKota,
+                'district' => $this->selectedKecamatan,
+                'postal' => $this->selectedPostal,
+                'phone' => $this->phone,
+                'deposit' => $this->deposit + ($this->newDeposit ?? 0),
+                'address' => $this->address,
+            ]);
+        }else{
+            $this->customer->update([
+                'name' => $this->name,
+                'provinsi' => $this->selectedDataProvinsi,
+                'city' => $this->selectedDataKota,
+                'district' => $this->selectedDataKecamatan,
+                'postal' => $this->selectedDataPostal,
+                'phone' => $this->phone,
+                'deposit' => $this->deposit + ($this->newDeposit ?? 0),
+                'address' => $this->address,
+            ]);
+        }
 
         session()->flash('customerEdited',['Sukses', 'Berhasil mengedit data', 'success']);
         $this->redirect(route('customer.index'), navigate: true);
+    }
+
+    public function changeLocation()
+    {
+        $this->change = true;
+    }
+
+    public function cancelChangeLocation()
+    {
+        $this->change = false;
     }
 
     public function render()

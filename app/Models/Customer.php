@@ -15,4 +15,19 @@ class Customer extends Model
     {
         return $this->hasMany(Purchase::class);
     }
+
+    public function province()
+    {
+        return $this->belongsTo(EcProvinsi::class, 'provinsi', 'prov_id');
+    }
+
+    public function kota()
+    {
+        return $this->belongsTo(EcKota::class, 'city', 'city_id');
+    }
+
+    public function kecamatans()
+    {
+        return $this->belongsTo(EcKecamatan::class, 'district', 'dis_id');
+    }
 }

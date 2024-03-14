@@ -7,51 +7,74 @@ use Livewire\Component;
 
 class CreateCustomer extends Component
 {
-    public $name;
-    public $city;
-    public $postal;
-    public $phone;
-    public $deposit;
-    public $address;
-    public $selectedLocation;
+    public $name, $city, $postal, $phone, $deposit, $address;
+    public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
 
     public function mount()
     {
-        $this->selectedLocation = null;
+        // Initialize any default values or perform actions when the component is loaded
     }
 
     public function rules()
     {
         return [
             'name' => 'required',
-            'city' => 'required',
-            'postal' => 'required|min:3|numeric',
+            'selectedProvinsi' => 'required',
+            'selectedKota' => 'required',
+            'selectedKecamatan' => 'required',
+            'selectedPostal' => 'required|min:3|numeric',
             'phone' => 'required',
-            'deposit' => 'nullable',
+            'deposit' => 'nullable|numeric',
             'address' => 'required',
         ];
     }
 
     public function save()
     {
-        $this->validate();
+        try {
+            logger('Save method triggered');
+            $this->validate();
+            logger('Validation passed');
 
-        Customer::create([
-            'name' => $this->name,
-            'city' => $this->city,
-            'postal' => $this->postal,
-            'phone' => $this->phone,
-            'deposit' => $this->deposit ? $this->deposit : 0,
-            'address' => $this->address,
-        ]);
+            $customer = Customer::create([
+                'name' => $this->name,
+                'provinsi' => $this->selectedProvinsi,
+                'city' => $this->selectedKota,
+                'district' => $this->selectedKecamatan,
+                'postal' => $this->selectedPostal,
+                'phone' => $this->phone,
+                'deposit' => $this->deposit ?: 0,
+                'address' => $this->address,
+            ]);
 
-        session()->flash('customerCreated',['Sukses', 'Berhasil menambahkan data', 'success']);
-        $this->redirect(route('customer.index'), navigate: true);
+            logger('Customer created: ' . $customer->id);
+
+            session()->flash('customerCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
+            return redirect()->route('customer.index');
+        } catch (\Exception $e) {
+            logger('Error: ' . $e->getMessage());
+        }
     }
 
-    public function formatLabel($item)
+    public function updateCities($value)
     {
-        return "{$item['KOTA']}, {$item['KECAMATAN']}, {$item['PROVINSI']}";
+        $this->selectedProvinsi = $value;
+        // Assuming you might want to reset the city and district when the province changes
+        $this->selectedKota = null;
+        $this->selectedKecamatan = null;
+        // Add logic here if you need to fetch cities based on the selected province
+    }
+
+    public function updateDistricts($value)
+    {
+        $this->selectedKota = $value;
+        // Reset districts when the city changes or add logic to fetch new districts
+        $this->selectedKecamatan = null;
+    }
+
+    public function updatePostal($value)
+    {
+        $this->selectedKecamatan = $value;
     }
 
     public function render()

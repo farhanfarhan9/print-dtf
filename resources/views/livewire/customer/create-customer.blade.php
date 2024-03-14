@@ -14,18 +14,54 @@
             <form action="" method="post" wire:submit='save' class="space-y-7">
                 <x-input label="Nama Customer" wire:model='name' placeholder="Nama Customer" />
                 <div class="flex justify-between gap-10">
-<x-select
-    label="Kota/Kecamatan/Provinsi"
-    wire:model.live="selectedLocation"
-    placeholder="Select Kota/Kecamatan/Provinsi"
-    :async-data="route('api.kode-pos.index')"
-    option-label="kota"
-    option-value="id"
-/>
 
+                <x-select
+                    label="Provinsi"
+                    wire:model.live="selectedProvinsi"
+                    placeholder="Select Provinsi"
+                    :async-data="route('api.provinsi.index')"
+                    option-label="name"
+                    option-value="id"
+                    wire:change="updateCities($event.target.value)"
+                />
+
+                @if($selectedProvinsi)
+                    <x-select
+                        label="Kota"
+                        wire:model.live="selectedKota"
+                        placeholder="Select Kota"
+                        :async-data="route('api.kota.index', ['province' => $selectedProvinsi])"
+                        option-label="name"
+                        option-value="id"
+                        wire:change="updateDistricts($event.target.value)"
+                    />
+                @endif
+
+                @if($selectedKota)
+                <x-select
+                    label="Kecamatan"
+                    wire:model.live="selectedKecamatan"
+                    placeholder="Select Kecamatan"
+                    :async-data="route('api.kecamatan.index', ['city' => $selectedKota])"
+                    option-label="name"
+                    option-value="id"
+                    wire:change="updatePostal($event.target.value)"
+                />
+                @endif
+
+                @if($selectedKecamatan)
+                <x-select
+                    label="Postal"
+                    wire:model.live="selectedPostal"
+                    placeholder="Select Kode Pos"
+                    :async-data="route('api.pos.index', ['province' => $selectedProvinsi,'city' => $selectedKota])"
+                    option-label="name"
+                    option-value="id"
+                />
+                @endif
 
                     {{-- <x-input label="Kota/Kecamatan" wire:model='city' placeholder="Kota/Kecamatan" /> --}}
-                    <x-input type="number" label="Kode Pos" wire:model='postal' placeholder="Kode Pos" />
+                    {{-- <x-input type="number" label="Kode Pos" wire:model='postal' placeholder="Kode Pos" /> --}}
                 </div>
                 <div class="flex justify-between gap-10">
                     <x-input type="number" label="No. Telp" wire:model='phone' placeholder="No. Telp" />
