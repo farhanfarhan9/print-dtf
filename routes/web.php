@@ -18,6 +18,7 @@ use App\Livewire\Bank\CreateBankInformations;
 use App\Livewire\Order\AllOrder;
 use App\Livewire\Order\CreateOrder;
 use App\Livewire\Order\Po\AllPo;
+use App\Http\Controllers\OrderController;
 use App\Livewire\Order\Po\EditPo;
 
 /*
@@ -36,6 +37,11 @@ Route::view('/tem', 'temdashboard');
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/print-shipping-label/{orderId}', [OrderController::class, 'printShippingLabel'])->name('print.shipping.label');
+    Route::get('/view-shipping-label/{orderId}', [OrderController::class, 'viewShippingLabel'])->name('view.shipping.label');
+    Route::get('/print-invoice-label/{orderId}', [OrderController::class, 'printInvoiceLabel'])->name('print.invoice.label');
+    Route::get('/view-invoice-label/{orderId}', [OrderController::class, 'viewInvoiceLabel'])->name('view.invoice.label');
+
 
     Route::view('dashboard', 'dashboard')
         ->middleware('verified')

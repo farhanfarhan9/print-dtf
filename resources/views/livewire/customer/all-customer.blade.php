@@ -47,6 +47,9 @@
                             Nama
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Provinsi
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Kota/Kecamatan
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -78,7 +81,10 @@
                                 {{ $customer->name }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $customer->city }}
+                                {{ $customer->province->prov_name }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $customer->kota->city_name }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $customer->postal }}

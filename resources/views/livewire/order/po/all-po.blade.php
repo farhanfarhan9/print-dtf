@@ -78,7 +78,7 @@
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Potongan deposit</p>
-                        <p class="font-semibold">Rp.{{ $item->deposit_cut }}</p>
+                        <p class="font-semibold">Rp. {{ number_format($item->deposit_cut, 0, ',', '.') }}</p>
                     </div>
                 </div>
                 <div>
@@ -89,8 +89,10 @@
                 </div>
                 <div class="flex justify-between">
                     <div>
-                        <x-button label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
-                        <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" />
+                        <x-button wire:click="printInvoice({{ $item->id }})" label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
+                        {{-- <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" /> --}}
+                        <x-button wire:click="printLabel({{ $item->id }})" label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" />
+
                     </div>
                     <div class="flex gap-5">
                         @if ($item->po_status == 'open')
