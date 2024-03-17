@@ -63,7 +63,7 @@
                                 <p class="text-red-500">{{ $deposit_cut }}</p>
                             </div>
                         @endif
-                        @if ($customer_id && $expedition_id)
+                        {{-- @if ($customer_id && $expedition_id)
                             <div class="flex justify-between">
                                 <x-checkbox id="right-label" label="Potong deposit" wire:model.live="is_deposit" />
                                 @if ($is_deposit)
@@ -74,7 +74,7 @@
                             <div class="flex justify-between">
                                 <x-checkbox disabled class="bg-slate-300" id="right-label" label="Potong deposit" />
                             </div>
-                        @endif
+                        @endif --}}
                     </div>
                     <hr class="my-5">
                     <div class="flex justify-between px-8">

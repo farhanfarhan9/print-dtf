@@ -60,7 +60,7 @@ class EditPo extends Component
         $this->validate();
         
         $this->po->update([
-            'deposit_cut' => $this->deposit_cut == 0 ? $this->deposit_cut : $this->deposit_cut + $this->new_deposit_cut,
+            // 'deposit_cut' => $this->deposit_cut == 0 ? $this->deposit_cut : $this->deposit_cut + $this->new_deposit_cut,
             'expedition_id' => $this->expedition_id,
             'expedition_price' => $this->expedition->ongkir,
             'product_price' => $this->product_price,
@@ -68,11 +68,11 @@ class EditPo extends Component
             'total_price' => $this->total_price,
         ]);
 
-        if ($this->is_deposit) {
-            $this->customer->update([
-                'deposit' => $this->customer->deposit - $this->new_deposit_cut
-            ]);
-        }
+        // if ($this->is_deposit) {
+        //     $this->customer->update([
+        //         'deposit' => $this->customer->deposit - $this->new_deposit_cut
+        //     ]);
+        // }
 
         if ($this->exist_qty > $this->qty) {
             $this->product->update([
@@ -104,10 +104,10 @@ class EditPo extends Component
         $this->shipped_price = $this->product_price - $this->deposit_cut + ($this->expedition ? $this->expedition->ongkir : 0);
 
         $this->total_price = $this->shipped_price;
-        if ($this->is_deposit && $this->customer) {
-            $this->new_deposit_cut = min($this->shipped_price, $this->customer->deposit);
-            $this->total_price -= $this->new_deposit_cut;
-        }
+        // if ($this->is_deposit && $this->customer) {
+        //     $this->new_deposit_cut = min($this->shipped_price, $this->customer->deposit);
+        //     $this->total_price -= $this->new_deposit_cut;
+        // }
 
 
         return view('livewire.order.po.edit-po');
