@@ -36,4 +36,9 @@ class PurchaseOrder extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function internal_process()
+    {
+        return $this->hasOne(InternalProcess::class);
+    }
 }

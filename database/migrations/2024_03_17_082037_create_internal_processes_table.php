@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('shift_no')->nullable();
             $table->integer('print_no')->nullable();
             $table->boolean('is_done')->default(0);
-            $table->boolean('is_comfirm')->default(0);
+            $table->boolean('is_confirm')->default(0);
             $table->date('execution_date');
             $table->timestamps();
         });

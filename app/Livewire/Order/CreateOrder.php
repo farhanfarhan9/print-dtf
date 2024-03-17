@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\products;
 use App\Models\Purchase;
 use App\Models\ekspedisi;
+use App\Models\InternalProcess;
 use App\Models\PurchaseOrder;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\DB;
@@ -93,6 +94,11 @@ class CreateOrder extends Component
         }
 
         $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
+
+        InternalProcess::create([
+            'purchase_order_id' => $purchaseOrder->id,
+            'execution_date' => Carbon::now(),
+        ]);
 
         $paymentAmount = $this->status == 'Cicil' && (int)$this->amount != 0 ? (int)$this->amount : $this->total_price;
         $is_dp = $this->status == 'Cicil' && (int)$this->amount != 0 ? 1 : 0;

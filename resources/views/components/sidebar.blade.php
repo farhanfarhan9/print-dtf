@@ -51,8 +51,7 @@
                             <path
                                 d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
                         </svg>
-                        <span
-                             class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap"
+                        <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap"
                             :class="{ 'hidden': !sidebarOpen }">Order</span>
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 10 6">
@@ -60,7 +59,7 @@
                                 d="m1 1 4 4 4-4" />
                         </svg>
                     </button>
-                    <ul class="py-2 ml-3 space-y-2" :class="{'hidden': !dropdownOrder}">
+                    <ul class="py-2 ml-3 space-y-2" :class="{ 'hidden': !dropdownOrder }">
                         <li>
                             <a href="{{ route('order.index') }}"
                                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -90,6 +89,20 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+                <li>
+                    <a href="{{ route('internal_process.index') }}"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                        :class="{ 'justify-center': !sidebarOpen }">
+                        <svg xmlns="http://www.w3.org/2000/svg"class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                            <path fill-rule="evenodd"
+                                d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Internal Process</span>
+                    </a>
                 </li>
             </div>
             <div>

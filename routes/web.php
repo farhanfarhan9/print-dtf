@@ -4,6 +4,10 @@ use App\Livewire\Product;
 use App\Livewire\ProductAdd;
 use App\Livewire\ProductEdit;
 use App\Livewire\Bank\AllBank;
+use App\Livewire\Order\AllOrder;
+use App\Livewire\Order\Po\AllPo;
+use App\Livewire\Order\Po\EditPo;
+use App\Livewire\Order\CreateOrder;
 use App\Livewire\Address\AllAddress;
 use App\Livewire\Address\EditAddress;
 use Illuminate\Support\Facades\Route;
@@ -12,14 +16,11 @@ use App\Livewire\Ekspedisi\Ekspedisis;
 use App\Livewire\Address\CreateAddress;
 use App\Livewire\Customer\EditCustomer;
 use App\Livewire\Ekspedisi\EkspedisiAdd;
+use App\Http\Controllers\OrderController;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Ekspedisi\EkspedisiEdit;
 use App\Livewire\Bank\CreateBankInformations;
-use App\Livewire\Order\AllOrder;
-use App\Livewire\Order\CreateOrder;
-use App\Livewire\Order\Po\AllPo;
-use App\Http\Controllers\OrderController;
-use App\Livewire\Order\Po\EditPo;
+use App\Livewire\InternalProcess\AllInternalProcess;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,7 +82,14 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo');
         Route::get('/{order}/purchase_order/{po}/edit', EditPo::class)->name('po.editPo');
+    });
 
+    Route::prefix('internal_process')->group(function () {
+        Route::get('/', AllInternalProcess::class)->name('internal_process.index');
+        // Route::get('/create', CreateOrder::class)->name('order.create');
+
+        // Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo');
+        // Route::get('/{order}/purchase_order/{po}/edit', EditPo::class)->name('po.editPo');
     });
 });
 
