@@ -27,7 +27,7 @@
 
                 @if($selectedProvinsi)
                     <x-select
-                        label="Kota"
+                        label="Kota/Kabupaten"
                         wire:model.live="selectedKota"
                         placeholder="Select Kota"
                         :async-data="route('api.kota.index', ['province' => $selectedProvinsi])"
@@ -56,7 +56,7 @@
                     placeholder="Select Kode Pos"
                     :async-data="route('api.pos.index', ['province' => $selectedProvinsi,'city' => $selectedKota])"
                     option-label="name"
-                    option-value="id"
+                    option-value="name"
                 />
                 @endif
 

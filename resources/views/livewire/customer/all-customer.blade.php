@@ -50,7 +50,10 @@
                             Provinsi
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Kota/Kecamatan
+                            Kota/Kabupaten
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Kecamatan
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Kode Pos
@@ -85,6 +88,9 @@
                             </td>
                             <td class="px-6 py-4">
                                 {{ $customer->kota->city_name }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $customer->kecamatans->dis_name }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $customer->postal }}

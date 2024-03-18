@@ -20,7 +20,7 @@
                 <div class="flex justify-between gap-10">
                     @if($change == false)
                         <x-input label="Provinsi" wire:model='selectedDataNameProvinsi' placeholder="Provinsi" readonly/>
-                        <x-input label="Kota" wire:model='selectedDataNameKota' placeholder="Kota" readonly/>
+                        <x-input label="Kota/Kabupaten" wire:model='selectedDataNameKota' placeholder="Kota" readonly/>
                         <x-input label="kecamatan" wire:model='selectedDataNameKecamatan' placeholder="kecamatan" readonly/>
                         <x-input label="Kode Pos" wire:model='selectedDataPostal' placeholder="Kode Pos" readonly/>
                     @endif
@@ -38,7 +38,7 @@
 
                         @if($selectedProvinsi)
                             <x-select
-                                label="Kota"
+                                label="Kota/Kabupaten"
                                 wire:model.live="selectedKota"
                                 placeholder="Select Kota"
                                 :async-data="route('api.kota.index', ['province' => $selectedProvinsi])"
@@ -67,7 +67,7 @@
                             placeholder="Select Kode Pos"
                             :async-data="route('api.pos.index', ['province' => $selectedProvinsi,'city' => $selectedKota])"
                             option-label="name"
-                            option-value="id"
+                            option-value="name"
                         />
                         @endif
                     @endif
