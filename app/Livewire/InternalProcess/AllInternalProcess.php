@@ -28,6 +28,8 @@ class AllInternalProcess extends Component
     #[Validate('required')] 
     public $machineNo;
 
+    public $printNos = [];
+
     public function ripDialog(InternalProcess $internal)
     {
         $this->selectedData = $internal;
@@ -61,6 +63,24 @@ class AllInternalProcess extends Component
         ]);
 
         $this->reset('selectedData', 'ripModal', 'machineNo');
+    }
+
+    public function addPrintNo(InternalProcess $internal)
+    {
+        $printNo = $this->printNos[$internal->id] ?? null;
+        
+        $internal->update([
+            'print_no' => $printNo
+        ]);
+
+        $this->notification([
+            'title'       => 'Sukses',
+            'description' => 'Berhasil Menambahkan Nomor Urut Print',
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
+
+        $this->printNos = [];
     }
 
     public function render()
