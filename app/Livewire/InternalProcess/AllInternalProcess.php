@@ -57,7 +57,7 @@ class AllInternalProcess extends Component
         
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil Menambahkan Nomor Mesin',
+            'description' => 'Berhasil Menambahkan Nomor Mesin Untuk Invoice'.$this->selectedData->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -75,7 +75,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil Menambahkan Nomor Urut Print',
+            'description' => 'Berhasil Menambahkan Nomor Urut Print Untuk Invoice'.$internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -91,7 +91,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Proses selesai',
+            'description' => 'Proses Selesai Untuk Invoice'.$internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -105,7 +105,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Proses Terkonfirmasi',
+            'description' => 'Proses Terkonfirmasi Untuk Invoice'.$internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
