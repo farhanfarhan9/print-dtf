@@ -83,6 +83,34 @@ class AllInternalProcess extends Component
         $this->printNos = [];
     }
 
+    public function doneProcess(InternalProcess $internal)
+    {
+        $internal->update([
+            'is_done' => 1
+        ]);
+
+        $this->notification([
+            'title'       => 'Sukses',
+            'description' => 'Proses selesai',
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
+    }
+
+    public function confirmProcess(InternalProcess $internal)
+    {
+        $internal->update([
+            'is_confirm' => 1
+        ]);
+
+        $this->notification([
+            'title'       => 'Sukses',
+            'description' => 'Proses Terkonfirmasi',
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
+    }
+
     public function render()
     {
         return view('livewire.internal-process.all-internal-process',[
