@@ -99,19 +99,42 @@
                                                 <th scope="row"
                                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if ($internal->machine_no && $internal->print_no == null)
-                                                        <x-button positive label="Print"
-                                                            wire:click='ripDialog({{ $internal->id }})' />
+                                                        <form action="" method="post"
+                                                            wire:submit='addPrintNo({{ $internal }})'>
+                                                            <div class="w-12 mx-2 mb-1">
+                                                                <x-input wire:model="printNos.{{ $internal->id }}"
+                                                                    placeholder="No urut" />
+                                                            </div>
+                                                            <x-button type="submit" positive spinner label="Submit" />
+                                                        </form>
+                                                    @elseif($internal->machine_no && $internal->print_no)
+                                                        {{ $internal->print_no }}
                                                     @else
                                                         Tidak tersedia
                                                     @endif
                                                 </th>
+
                                                 <th scope="row"
                                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    Jon
+                                                    @if ($internal->machine_no && $internal->print_no && $internal->is_done == null)
+                                                        <x-button positive label="Selesai"
+                                                            wire:click='doneProcess({{ $internal->id }})' />
+                                                    @elseif($internal->machine_no && $internal->print_no && $internal->is_done)
+                                                        <x-button icon="check" secondary label="Done" disabled />
+                                                    @else
+                                                        Tidak Tersedia
+                                                    @endif
                                                 </th>
                                                 <th scope="row"
                                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    Jon
+                                                    @if ($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_confirm == null)
+                                                        <x-button positive label="Selesai"
+                                                            wire:click='confirmProcess({{ $internal->id }})' />
+                                                    @elseif($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_confirm)
+                                                        <x-button icon="check" secondary label="Done" disabled />
+                                                    @else
+                                                        Tidak Tersedia
+                                                    @endif
                                                 </th>
                                             </tr>
                                         @endforeach
