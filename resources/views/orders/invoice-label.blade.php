@@ -62,22 +62,42 @@
             <td class="tg-0lax">{{ $order->product->nama_produk }}</td>
             <td class="tg-0lax">{{ number_format($order->qty, 0, ',', '.') }}</td>
             <td class="tg-0lax">Rp. {{ number_format($order->product_price, 0, ',', '.') }}</td>
-            <td class="tg-0lax">Rp. {{ number_format($order->qty * $order->product_price, 0, ',', '.') }}</td>
+            <td class="tg-0lax">Rp. {{ number_format($order->product_price, 0, ',', '.') }}</td>
           </tr>
           <tr>
-            <td class="tg-0lax" colspan="4"></td>
+            <td class="tg-0lax">Jasa Kirim</td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax">Rp. {{ number_format($order->expedition->ongkir, 0, ',', '.') }}</td>
+            <td class="tg-0lax">Rp. {{ number_format($order->expedition->ongkir, 0, ',', '.') }}</td>
+          </tr>
+          <tr>
+            <td class="tg-0lax" colspan="4">___________________________________________________________________________ +</td>
+          </tr>
+          @php
+              $cicilan = 0;
+          @endphp
+          @foreach($order->payments as $key => $pembayaran)
+          <tr>
+            <td class="tg-0lax">Pembayaran {{ $key+1 }}</td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax">Rp. {{ number_format($pembayaran['amount'], 0, ',', '.') }}</td>
+          </tr>
+          @php
+              $cicilan += $pembayaran['amount'];
+          @endphp
+          @endforeach
+          <tr>
+            <td class="tg-0lax" colspan="4">___________________________________________________________________________ -</td>
           </tr>
           <tr>
             <td class="tg-0lax">Total</td>
-            <td class="tg-0lax">255</td>
-            <td class="tg-0lax">455</td>
-            <td class="tg-0lax">333.333</td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax">Rp. {{ number_format(($order->product_price + $order->expedition->ongkir)-$cicilan, 0, ',', '.') }}</td>
           </tr>
           <tr>
-            <td class="tg-0lax" colspan="4"></td>
-          </tr>
-          <tr>
-            <td class="tg-0lax" colspan="4">Kurir : Ambil di toko</td>
+            <td class="tg-0lax" colspan="4">Kurir : {{ $order->expedition->nama_ekspedisi }}</td>
           </tr>
           <tr>
             <td class="tg-0lax" colspan="4">Admin : {{ Auth::user()->name }}</td>
