@@ -82,23 +82,15 @@
         <table class="tg" style="border: none;">
             <thead>
                 <tr>
-                    <th class="tg-0pky" rowspan="11" style="width: 20%"></th>
-                    <th class="tg-0pky">Kepada :</th>
-                    <th class="tg-c3ow"></th>
-                </tr>
-                <tr>
-                    <th class="tg-0pky">{{ $order->purchase->customer->name }}</th>
-                    <th class="tg-c3ow"></th>
-                </tr>
-                <tr>
-                    <th class="tg-0pky">{{ $order->purchase->customer->address }}</th>
+                    <th class="tg-0pky"></th>
+                    <th class="tg-0pky">Kepada :<br>{{ $order->purchase->customer->name }}<br>{{ $order->purchase->customer->address }}<br>Kec.  {{ $order->purchase->customer->kecamatans->dis_name }}, Kota {{ $order->purchase->customer->kota->city_name }}, O<br>Provinsi {{ $order->purchase->customer->province->prov_name }}<br>Telp: +62 {{ $order->purchase->customer->phone }}</th>
                     <th class="tg-c3ow"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td class="tg-0pky tg-0pkys"><img src="{{ asset('img/dtf.jpg') }}" alt="Company Logo" style="width:200px;"></td>
-                    <td class="tg-0pky">Kec.  {{ $order->purchase->customer->kecamatans->dis_name }}, Kota {{ $order->purchase->customer->kota->city_name }}, O<br>Provinsi {{ $order->purchase->customer->province->prov_name }}<br>Telp: +62 {{ $order->purchase->customer->phone }}</td>
+                    <td class="tg-0pky"></td>
                     <td class="tg-c3ow"></td>
                 </tr>
                 <tr>
@@ -123,7 +115,7 @@
                 </tr>
                 <tr>
                     <td class="tg-0pky">Mansyur DTF</td>
-                    <td class="tg-9wq8" rowspan="2">Kereta api (1.05 Kg)</td>
+                    <td class="tg-9wq8" rowspan="2">{{ "Jasa Ekspedisi : ".$order->expedition->nama_ekspedisi }}</td>
                 </tr>
                 <tr>
                     <td class="tg-0pky">012378342394</td>
