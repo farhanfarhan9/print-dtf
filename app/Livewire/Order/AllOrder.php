@@ -15,8 +15,18 @@ class AllOrder extends Component
 
     public function render()
     {
-        return view('livewire.order.all-order', [
-            'purchases' => Purchase::orderBy('created_at', 'desc')->paginate(10)
-        ]);
+        $query = Purchase::query();
+
+        // If search query is provided, filter by user name
+        if ($this->search) {
+            $query->whereHas('customer', function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            });
+        }
+
+        // Order by created_at in descending order and paginate
+        $purchases = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('livewire.order.all-order', compact('purchases'));
     }
 }
