@@ -17,11 +17,15 @@ use App\Livewire\Address\CreateAddress;
 use App\Livewire\Customer\EditCustomer;
 use App\Livewire\Ekspedisi\EkspedisiAdd;
 use App\Http\Controllers\OrderController;
+use App\Http\Middleware\isAdminMiddleware;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Ekspedisi\EkspedisiEdit;
 use App\Livewire\Bank\CreateBankInformations;
 use App\Livewire\Dashboard;
 use App\Livewire\InternalProcess\AllInternalProcess;
+use App\Livewire\User\AllUser;
+use App\Livewire\User\CreateUser;
+use App\Livewire\User\EditUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,9 +60,14 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('customers')->group(function () {
-        Route::get('/', AllCustomer::class)->name('customer.index');
-        Route::get('/create', CreateCustomer::class)->name('customer.create');
-        Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit');
+        Route::get('/', AllCustomer::class)->name('customer.index')->middleware(isAdminMiddleware::class);
+        Route::get('/create', CreateCustomer::class)->name('customer.create')->middleware(isAdminMiddleware::class);
+        Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit')->middleware(isAdminMiddleware::class);
+    });
+    Route::prefix('users')->group(function () {
+        Route::get('/', AllUser::class)->name('user.index')->middleware(isAdminMiddleware::class);
+        Route::get('/create', CreateUser::class)->name('user.create')->middleware(isAdminMiddleware::class);
+        Route::get('/{user}/edit', EditUser::class)->name('user.edit')->middleware(isAdminMiddleware::class);
     });
 
     Route::prefix('bank-informations')->group(function () {
@@ -67,20 +76,20 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit');
     });
 
-    Route::get('/products', Product::class)->name('products-view');
-    Route::get('/products/add', ProductAdd::class)->name('product.add');
-    Route::get('/product/edit/{product}', ProductEdit::class)->name('product-edit');
+    Route::get('/products', Product::class)->name('products-view')->middleware(isAdminMiddleware::class);
+    Route::get('/products/add', ProductAdd::class)->name('product.add')->middleware(isAdminMiddleware::class);
+    Route::get('/product/edit/{product}', ProductEdit::class)->name('product-edit')->middleware(isAdminMiddleware::class);
 
-    Route::get('/ekspedisi', Ekspedisis::class)->name('ekspedisi-view');
-    Route::get('/ekspedisi/add', EkspedisiAdd::class)->name('ekspedisi.add');
-    Route::get('/ekspedisi/edit/{ekspedisi}', EkspedisiEdit::class)->name('ekspedisi-edit');
+    Route::get('/ekspedisi', Ekspedisis::class)->name('ekspedisi-view')->middleware(isAdminMiddleware::class);
+    Route::get('/ekspedisi/add', EkspedisiAdd::class)->name('ekspedisi.add')->middleware(isAdminMiddleware::class);
+    Route::get('/ekspedisi/edit/{ekspedisi}', EkspedisiEdit::class)->name('ekspedisi-edit')->middleware(isAdminMiddleware::class);
 
     Route::prefix('orders')->group(function () {
-        Route::get('/', AllOrder::class)->name('order.index');
-        Route::get('/create', CreateOrder::class)->name('order.create');
+        Route::get('/', AllOrder::class)->name('order.index')->middleware(isAdminMiddleware::class);
+        Route::get('/create', CreateOrder::class)->name('order.create')->middleware(isAdminMiddleware::class);
 
-        Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo');
-        Route::get('/{order}/purchase_order/{po}/edit', EditPo::class)->name('po.editPo');
+        Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo')->middleware(isAdminMiddleware::class);
+        Route::get('/{order}/purchase_order/{po}/edit', EditPo::class)->name('po.editPo')->middleware(isAdminMiddleware::class);
     });
 
     Route::prefix('internal_process')->group(function () {
