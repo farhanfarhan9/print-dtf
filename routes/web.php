@@ -20,6 +20,7 @@ use App\Http\Controllers\OrderController;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Ekspedisi\EkspedisiEdit;
 use App\Livewire\Bank\CreateBankInformations;
+use App\Livewire\Dashboard;
 use App\Livewire\InternalProcess\AllInternalProcess;
 
 /*
@@ -33,7 +34,7 @@ use App\Livewire\InternalProcess\AllInternalProcess;
 |
 */
 
-Route::view('/', 'welcome');
+// Route::view('/', 'welcome');
 Route::view('/tem', 'temdashboard');
 
 
@@ -44,9 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/view-invoice-label/{orderId}', [OrderController::class, 'viewInvoiceLabel'])->name('view.invoice.label');
 
 
-    Route::view('dashboard', 'dashboard')
-        ->middleware('verified')
-        ->name('dashboard');
+    Route::get('/', Dashboard::class)->name('dashboard');
 
     Route::prefix('profile')->group(function () {
         Route::view('/', 'profile')->name('profile');
