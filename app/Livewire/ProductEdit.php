@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Products;
+use Illuminate\Support\Facades\Gate;
 
 class ProductEdit extends Component
 {
@@ -13,6 +14,8 @@ class ProductEdit extends Component
 
     public function mount(Products $product) // Correct type hinting
     {
+        Gate::authorize('update');
+
         $this->product = $product;
         $this->nama_produk = $product->nama_produk;
         $this->stok = $product->stok;

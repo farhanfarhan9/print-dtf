@@ -5,6 +5,7 @@ namespace App\Livewire\Ekspedisi;
 use Livewire\Component;
 use App\Models\Ekspedisi;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\Gate;
 
 class EkspedisiEdit extends Component
 {
@@ -14,6 +15,7 @@ class EkspedisiEdit extends Component
 
     public function mount(Ekspedisi $ekspedisi)
     {
+        Gate::authorize('update');
         $this->ekspedisi = $ekspedisi;
         $this->namaEkspedisi = $ekspedisi->nama_ekspedisi;
         $this->ongkir = $ekspedisi->ongkir;

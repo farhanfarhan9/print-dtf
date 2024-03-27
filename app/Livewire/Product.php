@@ -3,10 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use WireUi\Traits\Actions;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
 use App\Models\Products;
+use WireUi\Traits\Actions;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class Product extends Component
 {
@@ -14,7 +15,11 @@ class Product extends Component
     public $products;
     public $search;
     public $confirmingProductDeletion = null;
-
+    
+    public function mount()
+    {
+        Gate::authorize('update');
+    }
     public function render()
     {
         // $this->products = Products::all();

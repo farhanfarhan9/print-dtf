@@ -2,8 +2,9 @@
 
 namespace App\Livewire\Customer;
 
-use App\Models\Customer;
 use Livewire\Component;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Gate;
 
 class EditCustomer extends Component
 {
@@ -16,6 +17,7 @@ class EditCustomer extends Component
 
     public function mount(Customer $customer)
     {
+        Gate::authorize('update');
         $this->customer = $customer;
         $this->name = $customer->name;
         $this->selectedDataProvinsi = $customer->provinsi;

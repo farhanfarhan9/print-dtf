@@ -8,6 +8,7 @@ use WireUi\Traits\Actions;
 use Livewire\WithPagination;
 use App\Models\InternalProcess;
 use Livewire\Attributes\Validate;
+use Illuminate\Support\Facades\Gate;
 
 class AllInternalProcess extends Component
 {

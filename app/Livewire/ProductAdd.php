@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Products;
+use Illuminate\Support\Facades\Gate;
 
 class ProductAdd extends Component
 {
@@ -13,10 +14,12 @@ class ProductAdd extends Component
 
     public function mount()
     {
+        Gate::authorize('update');
+
         // Initialize with one price range
         $this->priceRanges[] = ['start' => 0, 'end' => 0, 'price' => 0];
     }
-
+    
     public function addPriceRange()
     {
         $this->priceRanges[] = ['start' => 0, 'end' => 0, 'price' => 0];
