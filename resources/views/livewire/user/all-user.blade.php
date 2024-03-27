@@ -33,8 +33,8 @@
         <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari User" />
-            <x-button label="Tambah User" href="{{ route('user.create') }}" class="w-1/3 mt-2 sm:w-1/6 sm:mt-0"
-                green icon="plus" />
+            <x-button label="Tambah User" href="{{ route('user.create') }}" class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green
+                icon="plus" />
         </div>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
@@ -72,12 +72,17 @@
                                 {{ $user->email }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $user->roles }}
+                                @if ($user->roles == 'admin')
+                                    <div class="inline-block px-4 py-1 text-white bg-green-500 rounded-xl">
+                                        {{ $user->roles }}</div>
+                                @else
+                                    <div class="inline-block px-4 py-1 text-white bg-orange-500 rounded-xl">
+                                        {{ $user->roles }}</div>
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-5">
-                                    <x-button href="{{ route('user.edit', $user->id) }}" label="Edit"
-                                        primary />
+                                    <x-button href="{{ route('user.edit', $user->id) }}" label="Edit" primary />
                                     <x-button wire:click="deleteDialog({{ $user->id }})" label="Hapus" red />
                                 </div>
                             </td>
