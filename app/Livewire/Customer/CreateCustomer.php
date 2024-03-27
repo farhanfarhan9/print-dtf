@@ -11,11 +11,6 @@ class CreateCustomer extends Component
     public $name, $city, $postal, $phone, $deposit, $address;
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
 
-    public function mount()
-    {
-        Gate::authorize('update');
-    }
-
     public function rules()
     {
         return [

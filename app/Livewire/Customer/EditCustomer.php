@@ -17,7 +17,6 @@ class EditCustomer extends Component
 
     public function mount(Customer $customer)
     {
-        Gate::authorize('update');
         $this->customer = $customer;
         $this->name = $customer->name;
         $this->selectedDataProvinsi = $customer->provinsi;

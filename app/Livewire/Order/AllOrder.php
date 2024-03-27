@@ -5,22 +5,18 @@ namespace App\Livewire\Order;
 use Livewire\Component;
 use App\Models\Purchase;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AllOrder extends Component
 {
     use WithPagination;
     public $search;
-    
-    public function mount()
-    {
-        Gate::authorize('update');
-    }
 
     public function render()
     {
-        return view('livewire.order.all-order',[
-            'purchases' => Purchase::orderBy('created_at','desc')->paginate(10)
+        return view('livewire.order.all-order', [
+            'purchases' => Purchase::orderBy('created_at', 'desc')->paginate(10)
         ]);
     }
 }

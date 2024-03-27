@@ -16,12 +16,6 @@ class Ekspedisis extends Component
     public $search;
     public $confirmingEkspedisiDeletion = null;
 
-    
-    public function mount()
-    {
-        Gate::authorize('update');
-    }
-    
     public function render()
     {
         $this->ekspedisi = Ekspedisi::where('nama_ekspedisi', 'like', "%{$this->search}%")->get();

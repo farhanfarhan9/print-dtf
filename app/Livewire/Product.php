@@ -16,10 +16,7 @@ class Product extends Component
     public $search;
     public $confirmingProductDeletion = null;
     
-    public function mount()
-    {
-        Gate::authorize('update');
-    }
+    
     public function render()
     {
         // $this->products = Products::all();

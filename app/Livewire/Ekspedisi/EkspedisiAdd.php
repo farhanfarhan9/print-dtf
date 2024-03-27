@@ -14,11 +14,6 @@ class EkspedisiAdd extends Component
     public $namaEkspedisi;
     public $ongkir;
     
-    public function mount()
-    {
-        Gate::authorize('update');
-    }
-
     public function save()
     {
         // Validation and product creation logic

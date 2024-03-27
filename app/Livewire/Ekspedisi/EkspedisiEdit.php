@@ -15,7 +15,6 @@ class EkspedisiEdit extends Component
 
     public function mount(Ekspedisi $ekspedisi)
     {
-        Gate::authorize('update');
         $this->ekspedisi = $ekspedisi;
         $this->namaEkspedisi = $ekspedisi->nama_ekspedisi;
         $this->ongkir = $ekspedisi->ongkir;

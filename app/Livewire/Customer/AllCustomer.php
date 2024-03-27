@@ -17,10 +17,6 @@ class AllCustomer extends Component
     public $editedUser;
     public $newDeposit;
 
-    public function mount()
-    {
-        Gate::authorize('update');
-    }
 
     public function depositDialog(Customer $customer)
     {

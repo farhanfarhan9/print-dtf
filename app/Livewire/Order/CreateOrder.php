@@ -36,9 +36,9 @@ class CreateOrder extends Component
     public $customer;
     public $expedition;
     public $product;
+    
     public function mount()
     {
-        Gate::authorize('update');
         $dateTime = Carbon::now();
         $timestamp = $dateTime->format('U'); // Get current Unix timestamp
         $randomSeed = $timestamp % 100000; // Ensure it's a 5-digit number
