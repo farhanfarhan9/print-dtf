@@ -65,7 +65,7 @@
                 </div>
                 <div class="flex justify-between gap-10">
                     <x-input type="number" label="No. Telp" wire:model='phone' placeholder="No. Telp" />
-                    <x-input type="number" label="Deposit" wire:model='deposit' placeholder="Deposit" />
+                    <x-inputs.currency type="number" label="Deposit" wire:model='deposit' placeholder="Deposit" />
                 </div>
                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
 

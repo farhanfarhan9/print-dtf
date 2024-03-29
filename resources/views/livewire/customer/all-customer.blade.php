@@ -123,8 +123,8 @@
                 </tbody>
             </table>
             <x-modal.card title="{{ isset($editedUser) ? $editedUser->name : '' }}" blur wire:model.defer="depositModal">
-                <x-input type="number" class="!pl-[2.5rem]" label="Jumlah deposit" prefix="Rp."
-                    wire:model="machineNo" />
+                <x-inputs.currency  class="!pl-[2.5rem]" label="Jumlah deposit" prefix="Rp."
+                    wire:model="newDeposit" />
 
                 <x-slot name="footer">
                     <div class="flex justify-end gap-x-4">
