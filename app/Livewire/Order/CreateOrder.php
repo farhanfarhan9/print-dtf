@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\products;
 use App\Models\Purchase;
 use App\Models\ekspedisi;
+use Livewire\Attributes\On;
 use App\Models\PurchaseOrder;
 use Livewire\WithFileUploads;
 use App\Models\InternalProcess;
@@ -36,6 +37,12 @@ class CreateOrder extends Component
     public $customer;
     public $expedition;
     public $product;
+
+    public $customerModal;
+
+    public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
+    public $name, $city, $postal, $phone, $deposit, $address;
+
     
     public function mount()
     {
@@ -56,6 +63,62 @@ class CreateOrder extends Component
             'status' => 'required',
             'file' => 'nullable|file|max:2000'
         ];
+    }
+
+    public function addCustomerModal()
+    {
+        $this->customerModal = 1;
+    }
+
+    public function updateCities($value)
+    {
+        $this->selectedProvinsi = $value;
+        // Assuming you might want to reset the city and district when the province changes
+        $this->selectedKota = null;
+        $this->selectedKecamatan = null;
+        // Add logic here if you need to fetch cities based on the selected province
+    }
+
+    public function updateDistricts($value)
+    {
+        $this->selectedKota = $value;
+        // Reset districts when the city changes or add logic to fetch new districts
+        $this->selectedKecamatan = null;
+    }
+
+    public function updatePostal($value)
+    {
+        $this->selectedKecamatan = $value;
+    }
+
+    public function addUser()
+    {
+        $this->validate([
+            'name' => 'required',
+            'selectedProvinsi' => 'required',
+            'selectedKota' => 'required',
+            'selectedKecamatan' => 'required',
+            'selectedPostal' => 'required|min:3|numeric',
+            'phone' => 'required',
+            'deposit' => 'nullable|numeric',
+            'address' => 'required',
+        ]);
+
+        $customer = Customer::create([
+            'name' => $this->name,
+            'provinsi' => $this->selectedProvinsi,
+            'city' => $this->selectedKota,
+            'district' => $this->selectedKecamatan,
+            'postal' => $this->selectedPostal,
+            'phone' => $this->phone,
+            'deposit' => $this->deposit ?: 0,
+            'address' => $this->address,
+        ]);
+
+        session()->flash('customerCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
+        $this->customerModal = 0;
+        $this->reset('customerModal', 'name', 'selectedProvinsi', 'selectedKota', 'selectedKecamatan', 'selectedPostal', 'phone', 'deposit', 'address');
+        $this->dispatch('customer-created')->self();
     }
 
     public function save()
