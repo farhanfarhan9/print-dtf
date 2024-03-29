@@ -19,7 +19,7 @@
                     <div class="mt-6 space-y-2">
                         @if ($customer_id)
                             <p class="block text-sm font-medium">Alamat: {{ $customer->address }}</p>
-                            <p class="block text-sm font-medium">Kota: {{ $customer->city }}</p>
+                            <p class="block text-sm font-medium">Kota: {{ $customer->kota->city_name }}</p>
                             <p class="block text-sm font-medium">Kode pos: {{ $customer->postal }}</p>
                             <p class="block text-sm font-medium">Nomor hp: {{ $customer->phone }}</p>
                             <p class="block text-sm font-medium">
@@ -83,13 +83,13 @@
                         <x-select label="Pilih Status" placeholder="Pilih Status" :options="['Cicil', 'Lunas']"
                             wire:model.live="status" />
                         @if ($status == 'Cicil')
-                            <x-inputs.currency type="number" wire:model='amount' label="Dp"
+                            <x-inputs.currency type="number" wire:model='amount' label="Dp (boleh dikosongkan)"
                                 placeholder="Jumlah DP" />
                         @endif
                     </div>
                     @if ($status == 'Cicil')
                         <div class="mt-5">
-                            <x-input-label>Bukti pembayaran</x-input-label>
+                            <x-input-label>Bukti pembayaran (boleh dikosongkan)</x-input-label>
                             <x-input-file wire:model='file'></x-input-file>
                             <x-input-error :messages="$errors->get('file')" class="mt-2" />
                         </div>
