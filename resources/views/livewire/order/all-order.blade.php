@@ -57,7 +57,8 @@
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Total Bayar</p>
-                        <p class="font-semibold">{{ rupiah_format($purchase->purchase_orders->sum('total_price')) }}</p>
+                        <p class="font-semibold">{{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
+                        </p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Status pembayaran</p>
@@ -65,10 +66,14 @@
                             @php
                                 $poStatuses = $purchase->purchase_orders->pluck('po_status');
                             @endphp
-                            @if ($poStatuses->contains('open'))
-                                Unpaid
+                            @if ($purchase->purchase_orders->count() == 1 && $purchase->purchase_orders[0]->status == 'cancel')
+                                Cancel
                             @else
-                                Paid
+                                @if ($poStatuses->contains('open'))
+                                    Unpaid
+                                @else
+                                    Paid
+                                @endif
                             @endif
                         </p>
                     </div>
@@ -76,7 +81,7 @@
                 <div class="flex justify-between">
                     <div>
                         <p class="font-medium text-slate-500">Jumlah order</p>
-                        <p class="font-semibold">{{ count($purchase->purchase_orders) }}</p>
+                        <p class="font-semibold">{{ count($purchase->purchase_orders->where('status', '!=', 'cancel')) }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Jumlah order yang sudah dibayar</p>
