@@ -128,8 +128,12 @@
                                                 <th scope="row"
                                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if ($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_confirm == null)
-                                                        <x-button positive label="Selesai"
-                                                            wire:click='confirmProcess({{ $internal->id }})' />
+                                                        @if (Auth::user()->roles == 'admin')
+                                                            <x-button positive label="Selesai"
+                                                                wire:click='confirmProcess({{ $internal->id }})' />
+                                                        @else
+                                                            Menunggu konfirmasi admin
+                                                        @endif
                                                     @elseif($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_confirm)
                                                         <x-button icon="check" secondary label="Done" disabled />
                                                     @else
