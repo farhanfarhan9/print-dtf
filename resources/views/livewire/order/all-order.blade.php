@@ -67,12 +67,12 @@
                                 $poStatuses = $purchase->purchase_orders->pluck('po_status');
                             @endphp
                             @if ($purchase->purchase_orders->count() == 1 && $purchase->purchase_orders[0]->status == 'cancel')
-                                Cancel
+                                <p class="inline-block px-4 py-1 font-semibold text-white bg-yellow-400 rounded-lg">Cancel</p>
                             @else
                                 @if ($poStatuses->contains('open'))
-                                    Unpaid
+                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-red-400 rounded-lg">Unpaid</p>
                                 @else
-                                    Paid
+                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-green-400 rounded-lg">Paid</p>
                                 @endif
                             @endif
                         </p>
