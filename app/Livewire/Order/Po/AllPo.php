@@ -105,6 +105,7 @@ class AllPo extends Component
 
     public function cancelPo(PurchaseOrder $po)
     {
+        // dd($po->internal_process);
         $po->update([
             'status' => 'cancel',
             'po_status' => 'cancel'
@@ -115,6 +116,8 @@ class AllPo extends Component
                 'payment_status' => 'close'
             ]);
         }
+
+        $po->internal_process->delete();
 
         $this->notification([
             'title'       => 'Sukses',
