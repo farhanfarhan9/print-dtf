@@ -118,7 +118,6 @@ class CreateOrder extends Component
         session()->flash('customerCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->customerModal = 0;
         $this->reset('customerModal', 'name', 'selectedProvinsi', 'selectedKota', 'selectedKecamatan', 'selectedPostal', 'phone', 'deposit', 'address');
-        $this->dispatch('customer-created')->self();
     }
 
     public function save()
