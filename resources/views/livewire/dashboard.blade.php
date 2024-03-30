@@ -1,9 +1,10 @@
 <div>
     <x-slot name="header">
-        <div class="flex justify-between">
+        <div class="space-y-6 ">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
                 Dasboard
             </h2>
+            <p class="text-2xl font-semibold">Selamat datang {{Auth::user()->name}}</p>
         </div>
     </x-slot>
     <div class="py-12">
