@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ekspedisi;
+use App\Models\Ekspedisi;
 use Illuminate\Http\Request;
 
 class EkspedisiController extends Controller
