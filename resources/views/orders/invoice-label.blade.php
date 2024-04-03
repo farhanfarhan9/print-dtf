@@ -73,6 +73,12 @@
           <tr>
             <td class="tg-0lax" colspan="4">___________________________________________________________________________ +</td>
           </tr>
+          <tr>
+            <td class="tg-0lax">Deposit</td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax" colspan="4">Rp. {{ number_format($order->deposit_cut, 0, ',', '.') }}</td>
+          </tr>
           @php
               $cicilan = 0;
           @endphp
@@ -94,7 +100,7 @@
             <td class="tg-0lax">Total</td>
             <td class="tg-0lax"></td>
             <td class="tg-0lax"></td>
-            <td class="tg-0lax">Rp. {{ number_format(($order->product_price + $order->expedition->ongkir)-$cicilan, 0, ',', '.') }}</td>
+            <td class="tg-0lax">Rp. {{ number_format((($order->product_price + $order->expedition->ongkir)-$order->deposit_cut)-$cicilan, 0, ',', '.') }}</td>
           </tr>
           <tr>
             <td class="tg-0lax" colspan="4">Kurir : {{ $order->expedition->nama_ekspedisi }}</td>

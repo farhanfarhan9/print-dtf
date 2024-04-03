@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.0",
         "livewire/volt": "^1.0",
+        "maatwebsite/excel": "3.*",
         "wire-elements/modal": "^2.0",
         "wireui/wireui": "^1.18"
     },

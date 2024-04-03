@@ -12,6 +12,7 @@ use App\Livewire\Address\AllAddress;
 use App\Livewire\Address\EditAddress;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Customer\AllCustomer;
+use App\Livewire\CustomerImportData;
 use App\Livewire\Ekspedisi\Ekspedisis;
 use App\Livewire\Address\CreateAddress;
 use App\Livewire\Customer\EditCustomer;
@@ -59,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('customers')->group(function () {
         Route::get('/', AllCustomer::class)->name('customer.index');
         Route::get('/create', CreateCustomer::class)->name('customer.create');
+        Route::get('/upload', CustomerImportData::class)->name('customer.upload');
         Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit');
     });
 

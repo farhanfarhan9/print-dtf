@@ -33,6 +33,8 @@
         <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Customer" />
+            <x-button label="Import Customer Data" href="{{ route('customer.upload') }}" class="w-1/3 mt-2 mx-2 sm:w-1/6 sm:mt-0"
+                blue icon="upload" />
             <x-button label="Tambah Customer" href="{{ route('customer.create') }}" class="w-1/3 mt-2 sm:w-1/6 sm:mt-0"
                 green icon="plus" />
         </div>
