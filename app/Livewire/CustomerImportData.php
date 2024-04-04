@@ -30,10 +30,10 @@ class CustomerImportData extends Component
             // Generate a temporary file path with the correct extension
             $tempPath = $this->file->getRealPath();
             $newPath = $tempPath . '.xlsx'; // Append .xlsx to the temp file path
-    
+
             // Copy the file to the new path with the correct extension
             copy($tempPath, $newPath);
-    
+
             try {
                 $this->data = Excel::toArray(new CustomerImport, $newPath)[0];
                 $this->typeerror = false;
@@ -45,7 +45,7 @@ class CustomerImportData extends Component
                     $this->typeerror = "An error occurred: " . $th->getMessage();
                 }
             }
-    
+
             // Optionally, delete the copied file after processing
             @unlink($newPath);
         }
@@ -55,18 +55,18 @@ class CustomerImportData extends Component
     function save()
     {
         foreach ($this->data as $key => $value) {
-            if ($key == 0) {
+            if ($key < 4) {
                 continue;
             }
             Customer::create([
-                "name" => $value[0],
+                "name" => $value[1],
                 "provinsi" => 2,
                 "city" => 55,
                 "district" => 629,
                 "postal" => 20771,
-                "phone" => $value[1],
+                "phone" => $value[8],
                 "deposit" => 0,
-                "address" => $value[2],
+                "address" => $value[3],
             ]);
         }
         session()->flash('customerCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
