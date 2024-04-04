@@ -39,7 +39,7 @@
                 <tbody>
                     @if ($data)
                     @foreach ($data as $key => $value)
-                        @if ($key == 0)
+                        @if ($key < 4)
                             @continue
                         @endif
                         <tr
@@ -49,13 +49,13 @@
                                 {{ $key }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ $value[0] }}
-                            </td>
-                            <td class="px-6 py-4">
                                 {{ $value[1] }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $value[2] }}
+                                {{ $value[8] }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $value[3] }}
                             </td>
                         </tr>
                     @endforeach
