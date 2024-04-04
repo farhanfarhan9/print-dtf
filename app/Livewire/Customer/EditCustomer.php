@@ -2,8 +2,9 @@
 
 namespace App\Livewire\Customer;
 
-use App\Models\Customer;
 use Livewire\Component;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Gate;
 
 class EditCustomer extends Component
 {

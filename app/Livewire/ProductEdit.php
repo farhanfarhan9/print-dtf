@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Products;
+use Illuminate\Support\Facades\Gate;
 
 class ProductEdit extends Component
 {

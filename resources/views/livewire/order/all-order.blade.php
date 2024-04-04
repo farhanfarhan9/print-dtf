@@ -57,7 +57,8 @@
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Total Bayar</p>
-                        <p class="font-semibold">{{ rupiah_format($purchase->purchase_orders->sum('total_price')) }}</p>
+                        <p class="font-semibold">{{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
+                        </p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Status pembayaran</p>
@@ -65,10 +66,14 @@
                             @php
                                 $poStatuses = $purchase->purchase_orders->pluck('po_status');
                             @endphp
-                            @if ($poStatuses->contains('open'))
-                                Unpaid
+                            @if ($purchase->purchase_orders->count() == 1 && $purchase->purchase_orders[0]->status == 'cancel')
+                                <p class="inline-block px-4 py-1 font-semibold text-white bg-yellow-400 rounded-lg">Cancel</p>
                             @else
-                                Paid
+                                @if ($poStatuses->contains('open'))
+                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-red-400 rounded-lg">Unpaid</p>
+                                @else
+                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-green-400 rounded-lg">Paid</p>
+                                @endif
                             @endif
                         </p>
                     </div>
@@ -76,7 +81,7 @@
                 <div class="flex justify-between">
                     <div>
                         <p class="font-medium text-slate-500">Jumlah order</p>
-                        <p class="font-semibold">{{ count($purchase->purchase_orders) }}</p>
+                        <p class="font-semibold">{{ count($purchase->purchase_orders->where('status', '!=', 'cancel')) }}</p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Jumlah order yang sudah dibayar</p>

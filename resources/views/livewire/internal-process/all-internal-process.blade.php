@@ -10,7 +10,7 @@
         @forelse ($internals as $execution_date => $internalProcesses)
             <div class="mb-10" wire:key='key-{{ $execution_date }}'>
                 <x-card>
-                    <div class="mb-2">Batch {{ \Carbon\Carbon::parse($execution_date)->format('d F Y') }}</div>
+                    <div class="mb-2 text-xl font-semibold">Batch {{ \Carbon\Carbon::parse($execution_date)->format('d F Y') }}</div>
                     @php
                         $byShift = $internalProcesses->groupBy('shift_no')->sortBy(function ($value, $key) {
                             // Sorting by machine_no, putting empty string first
@@ -21,7 +21,7 @@
                     @foreach ($byShift as $shift => $shiftProcesses)
                         <div class="p-5 mb-5 border rounded-md">
                             @if ($shift != null)
-                                <p class="mb-2 font-medium">Shift {{ $shift }}</p>
+                                <p class="mb-2 text-xl font-semibold">Shift {{ $shift }}</p>
                             @endif
                             @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                 @if ($machine != null)
@@ -128,8 +128,12 @@
                                                 <th scope="row"
                                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if ($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_confirm == null)
-                                                        <x-button positive label="Selesai"
-                                                            wire:click='confirmProcess({{ $internal->id }})' />
+                                                        @if (Auth::user()->roles == 'admin')
+                                                            <x-button positive label="Selesai"
+                                                                wire:click='confirmProcess({{ $internal->id }})' />
+                                                        @else
+                                                            Menunggu konfirmasi admin
+                                                        @endif
                                                     @elseif($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_confirm)
                                                         <x-button icon="check" secondary label="Done" disabled />
                                                     @else

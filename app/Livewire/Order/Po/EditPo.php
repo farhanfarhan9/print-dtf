@@ -4,9 +4,9 @@ namespace App\Livewire\Order\Po;
 
 use Livewire\Component;
 use App\Models\Customer;
-use App\Models\products;
+use App\Models\Products;
 use App\Models\Purchase;
-use App\Models\ekspedisi;
+use App\Models\Ekspedisi;
 use App\Models\PurchaseOrder;
 
 class EditPo extends Component

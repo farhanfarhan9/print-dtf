@@ -8,6 +8,7 @@ use WireUi\Traits\Actions;
 use Livewire\WithPagination;
 use App\Models\InternalProcess;
 use Livewire\Attributes\Validate;
+use Illuminate\Support\Facades\Gate;
 
 class AllInternalProcess extends Component
 {
@@ -57,7 +58,7 @@ class AllInternalProcess extends Component
         
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil Menambahkan Nomor Mesin',
+            'description' => 'Berhasil Menambahkan Nomor Mesin Untuk Invoice'.$this->selectedData->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -75,7 +76,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil Menambahkan Nomor Urut Print',
+            'description' => 'Berhasil Menambahkan Nomor Urut Print Untuk Invoice'.$internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -91,7 +92,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Proses selesai',
+            'description' => 'Proses Selesai Untuk Invoice'.$internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -105,7 +106,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Proses Terkonfirmasi',
+            'description' => 'Proses Terkonfirmasi Untuk Invoice'.$internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -119,7 +120,7 @@ class AllInternalProcess extends Component
             // })->paginate(10)
             'internals'=>InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel');
-            })->get()->groupBy(function($internal) {
+            })->get()->sortByDesc('created_at')->groupBy(function($internal) {
                 return $internal->execution_date; // Grouping by creation date
             })
         ]);

@@ -75,7 +75,7 @@
                 <div class="flex justify-between gap-10">
                     <x-input type="number" label="No. Telp" wire:model='phone' placeholder="No. Telp" />
                     <div class="w-full">
-                        <x-input type="number" label="Tambah Deposit" wire:model='newDeposit' placeholder="Tambah Deposit" />
+                        <x-inputs.currency type="number" label="Tambah Deposit" wire:model='newDeposit' placeholder="Tambah Deposit" />
                         <p>Deposit saat ini {{rupiah_format($deposit)}}</p>
                     </div>
                 </div>

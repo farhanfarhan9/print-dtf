@@ -5,6 +5,7 @@ namespace App\Livewire\Ekspedisi;
 use Livewire\Component;
 use App\Models\Ekspedisi;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\Gate;
 
 class EkspedisiEdit extends Component
 {

@@ -3,10 +3,11 @@
 namespace App\Livewire\Ekspedisi;
 
 use Livewire\Component;
-use WireUi\Traits\Actions;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
 use App\Models\Ekspedisi;
+use WireUi\Traits\Actions;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class Ekspedisis extends Component
 {

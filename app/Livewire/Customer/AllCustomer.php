@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Customer;
 use WireUi\Traits\Actions;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Gate;
 
 class AllCustomer extends Component
 {
@@ -16,9 +17,6 @@ class AllCustomer extends Component
     public $editedUser;
     public $newDeposit;
 
-    public function mount()
-    {
-    }
 
     public function depositDialog(Customer $customer)
     {

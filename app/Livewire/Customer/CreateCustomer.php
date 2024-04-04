@@ -2,18 +2,14 @@
 
 namespace App\Livewire\Customer;
 
-use App\Models\Customer;
 use Livewire\Component;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Gate;
 
 class CreateCustomer extends Component
 {
     public $name, $city, $postal, $phone, $deposit, $address;
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
-
-    public function mount()
-    {
-        // Initialize any default values or perform actions when the component is loaded
-    }
 
     public function rules()
     {

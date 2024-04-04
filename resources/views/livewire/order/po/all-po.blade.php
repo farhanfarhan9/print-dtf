@@ -62,7 +62,12 @@
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Status Pembayaran</p>
-                        <p class="font-semibold">{{ $item->po_status == 'close' ? 'Paid' : 'Unpaid' }}</p>
+                        @if ($item->po_status == 'close')
+                            <p class="inline-block px-4 py-1 font-semibold text-white bg-green-400 rounded-lg">Paid</p>
+                        @elseif($item->po_status == 'open')
+                            <p class="inline-block px-4 py-1 font-semibold text-white bg-red-400 rounded-lg">Unpaid</p>
+                        @endif
+                        {{-- <p class="font-semibold">{{ $item->po_status == 'close' ? 'Paid' : 'Unpaid' }}</p> --}}
                     </div>
                 </div>
                 <div class="flex justify-between mt-5">
@@ -89,9 +94,11 @@
                 </div>
                 <div class="flex justify-between">
                     <div>
-                        <x-button wire:click="printInvoice({{ $item->id }})" label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
+                        <x-button wire:click="printInvoice({{ $item->id }})" label="Print Invoice"
+                            class="rounded-xl" primary icon="receipt-tax" />
                         {{-- <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" /> --}}
-                        <x-button wire:click="printLabel({{ $item->id }})" label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" />
+                        <x-button wire:click="printLabel({{ $item->id }})" label="Print Label Pengiriman"
+                            class="rounded-xl" primary icon="truck" />
 
                     </div>
                     <div class="flex gap-5">
@@ -107,10 +114,10 @@
                                 class="px-4 py-2 text-sm font-medium text-blue-400 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                                 Edit order
                             </a>
-                            <a
+                            <button type="button" wire:click='cancelPo({{ $item->id }})'
                                 class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
                                 Cancel Order
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -201,8 +208,7 @@
                     <x-input-error :messages="$errors->get('file')" class="mt-2" />
                 </div>
                 @if ($file)
-                    <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2"
-                        alt="">
+                    <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2" alt="">
                 @endif
             </div>
 
@@ -210,7 +216,7 @@
                 <div>
                     <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
                     <p class="text-sm text-gray-500">
-                        Rp. {{ $remainingPayment }}
+                        {{ rupiah_format($remainingPayment) }}
                     </p>
                 </div>
             </div>
@@ -240,7 +246,8 @@
                             </circle>
                         </svg>
                     </button>
-                    <x-button primary wire:target="file" wire:loading.remove label="Simpan" wire:click="updatePayment({{ $selectedPo->id }})" />
+                    <x-button primary wire:target="file" wire:loading.remove label="Simpan"
+                        wire:click="updatePayment({{ $selectedPo->id }})" />
                 </div>
             </x-slot>
         @endif

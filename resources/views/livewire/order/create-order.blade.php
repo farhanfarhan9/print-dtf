@@ -14,12 +14,12 @@
             <div class="w-2/5">
                 <x-card shadow='false'>
                     <x-select label="Cari customer" wire:model.live="customer_id" placeholder="Pilih customer"
-                        :async-data="route('api.customers.index')" option-label="name" option-value="id" />
+                        :async-data="route('api.customers.index')" always-fetch option-label="name" option-value="id" />
 
                     <div class="mt-6 space-y-2">
                         @if ($customer_id)
                             <p class="block text-sm font-medium">Alamat: {{ $customer->address }}</p>
-                            <p class="block text-sm font-medium">Kota: {{ $customer->city }}</p>
+                            <p class="block text-sm font-medium">Kota: {{ $customer->kota->city_name }}</p>
                             <p class="block text-sm font-medium">Kode pos: {{ $customer->postal }}</p>
                             <p class="block text-sm font-medium">Nomor hp: {{ $customer->phone }}</p>
                             <p class="block text-sm font-medium">
@@ -30,6 +30,59 @@
                             </p>
                         @endif
                     </div>
+
+                    <x-button wire:click='addCustomerModal' label="Tambah User" green />
+                    <x-modal wire:model.defer="customerModal" max-width="5xl">
+                        <x-card title="Tambah Customer">
+                            <div class="space-y-7">
+                                <x-input label="Nama Customer" wire:model='name' placeholder="Nama Customer" />
+                                <div class="flex justify-between gap-10">
+
+                                    <x-select label="Provinsi" wire:model.live="selectedProvinsi"
+                                        placeholder="Select Provinsi" :async-data="route('api.provinsi.index')" option-label="name"
+                                        option-value="id" wire:change="updateCities($event.target.value)" />
+
+                                    @if ($selectedProvinsi)
+                                        <x-select label="Kota/Kabupaten" wire:model.live="selectedKota"
+                                            placeholder="Select Kota" :async-data="route('api.kota.index', ['province' => $selectedProvinsi])" option-label="name"
+                                            option-value="id" wire:change="updateDistricts($event.target.value)" />
+                                    @endif
+
+                                    @if ($selectedKota)
+                                        <x-select label="Kecamatan" wire:model.live="selectedKecamatan"
+                                            placeholder="Select Kecamatan" :async-data="route('api.kecamatan.index', ['city' => $selectedKota])" option-label="name"
+                                            option-value="id" wire:change="updatePostal($event.target.value)" />
+                                    @endif
+
+                                    @if ($selectedKecamatan)
+                                        <x-select label="Postal" wire:model.live="selectedPostal"
+                                            placeholder="Select Kode Pos" :async-data="route('api.pos.index', [
+                                                'province' => $selectedProvinsi,
+                                                'city' => $selectedKota,
+                                            ])" option-label="name"
+                                            option-value="name" />
+                                    @endif
+
+                                    {{-- <x-input label="Kota/Kecamatan" wire:model='city' placeholder="Kota/Kecamatan" /> --}}
+                                    {{-- <x-input type="number" label="Kode Pos" wire:model='postal' placeholder="Kode Pos" /> --}}
+                                </div>
+                                <div class="flex justify-between gap-10">
+                                    <x-input type="number" label="No. Telp" wire:model='phone'
+                                        placeholder="No. Telp" />
+                                    <x-inputs.currency type="number" label="Deposit" wire:model='deposit'
+                                        placeholder="Deposit" />
+                                </div>
+                                <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
+                            </div>
+
+                            <x-slot name="footer">
+                                <div class="flex justify-end gap-x-4">
+                                    <x-button flat label="Cancel" x-on:click="close" />
+                                    <x-button primary label="Submit" wire:click="addUser" />
+                                </div>
+                            </x-slot>
+                        </x-card>
+                    </x-modal>
                 </x-card>
             </div>
             <div class="w-3/5 space-y-5">
@@ -83,13 +136,13 @@
                         <x-select label="Pilih Status" placeholder="Pilih Status" :options="['Cicil', 'Lunas']"
                             wire:model.live="status" />
                         @if ($status == 'Cicil')
-                            <x-inputs.currency type="number" wire:model='amount' label="Dp"
+                            <x-inputs.currency type="number" wire:model='amount' label="Dp (boleh dikosongkan)"
                                 placeholder="Jumlah DP" />
                         @endif
                     </div>
                     @if ($status == 'Cicil')
                         <div class="mt-5">
-                            <x-input-label>Bukti pembayaran</x-input-label>
+                            <x-input-label>Bukti pembayaran (boleh dikosongkan)</x-input-label>
                             <x-input-file wire:model='file'></x-input-file>
                             <x-input-error :messages="$errors->get('file')" class="mt-2" />
                         </div>

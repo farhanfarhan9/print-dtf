@@ -3,6 +3,7 @@
 namespace App\Livewire\Order\Po;
 
 use App\Models\Payment;
+use App\Models\Purchase;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 use Livewire\WithPagination;
@@ -47,7 +48,7 @@ class AllPo extends Component
         $this->paymentHistories = Payment::where('purchase_order_id', $po->id)->get();
         $this->paymentHistoryModal = 1;
     }
-    
+
     public function updatePaymentModal(PurchaseOrder $po)
     {
         $this->selectedPo = $po;
@@ -57,7 +58,9 @@ class AllPo extends Component
     public function updatePayment(PurchaseOrder $po)
     {
         // dd($po->payments->sum(;'amount'));
-        // dd($po->total_price);
+        // dd($po->purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price'));
+        // dd($po->payments->sum('amount'));
+
         $this->validate();
 
         if ($this->file) {
@@ -71,11 +74,25 @@ class AllPo extends Component
             'file' => $this->file,
         ]);
 
-        if($po->payments->sum('amount') >= $po->total_price){
+        if ($po->payments->sum('amount') >= $po->total_price) {
             $po->update([
                 'po_status' => 'close'
             ]);
         }
+
+        if($po->purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price') >= $po->payments->sum('amount'))
+        {
+            $po->purchase->update([
+                'payment_status' => 'close'
+            ]);
+        }
+
+
+        // if ($po->po_status == 'close' && $po->purchase->purchase_orders->count() == 1) {
+        //     $po->purchase->update([
+        //         'payment_status' => 'close'
+        //     ]);
+        // }
 
         $this->reset('paymentModal', 'amount', 'file');
         $this->notification([
@@ -84,7 +101,30 @@ class AllPo extends Component
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
+    }
 
+    public function cancelPo(PurchaseOrder $po)
+    {
+        // dd($po->internal_process);
+        $po->update([
+            'status' => 'cancel',
+            'po_status' => 'cancel'
+        ]);
+
+        if ($po->purchase->purchase_orders->count() == 1) {
+            $po->purchase->update([
+                'payment_status' => 'close'
+            ]);
+        }
+
+        $po->internal_process->delete();
+
+        $this->notification([
+            'title'       => 'Sukses',
+            'description' => "'Berhasil membatalkan pesanan pada INV' .$po->invoice_code",
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
     }
 
 
@@ -103,7 +143,7 @@ class AllPo extends Component
     public function render()
     {
         return view('livewire.order.po.all-po', [
-            'purchase_orders' => PurchaseOrder::where('purchase_id', $this->order)->orderBy('created_at', 'desc')->paginate(10),
+            'purchase_orders' => PurchaseOrder::where('purchase_id', $this->order)->where('status', '!=', 'cancel')->orderBy('created_at', 'desc')->paginate(10),
         ]);
     }
 }
