@@ -58,7 +58,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithS
     public function styles(Worksheet $sheet)
     {
         // Style the title row
-        $sheet->mergeCells('A1:C1');
+        $sheet->mergeCells('A1:j1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
         // Define the style array for borders

@@ -17,12 +17,21 @@ class ExportProductView extends Component
 
     public function exportExcel()
     {
-        $startDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('Y-m-d') : null;
-        $endDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('Y-m-d') : null;
+        $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
+        $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
+
+        $filename = 'data_produk';
+        $filename .= $formattedStartDate ? "_{$formattedStartDate}" : '';
+        $filename .= $formattedEndDate ? "_-_$formattedEndDate" : '';
+        $filename .= '.xlsx';
 
         $productsSold = $this->getProductsSold();
 
-        return Excel::download(new ProductsExport($productsSold, $startDate, $endDate), 'products_sold.xlsx');
+        // Convert the original date format to a display format only if dates are set
+        $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
+        $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->isoFormat('dddd, D MMMM YYYY') : null;
+
+        return Excel::download(new ProductsExport($productsSold, $displayStartDate, $displayEndDate), $filename);
     }
 
     private function getProductsSold()

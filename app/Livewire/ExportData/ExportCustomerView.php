@@ -11,6 +11,7 @@ use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CustomersExport;
 use DB;
+use Carbon\Carbon;
 
 class ExportCustomerView extends Component
 {
@@ -23,14 +24,25 @@ class ExportCustomerView extends Component
 
     public function exportExcel()
     {
-        // Assuming you have methods to determine the start and end date
-        $startDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
-        $endDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->isoFormat('dddd, D MMMM YYYY') : null;
-        // Fetch the customer orders data as per your existing logic
-        $customerOrders = $this->getCustomerOrders(); // Make sure this method exists and returns the correct data
+        // Format the start and end dates or leave them as an empty string if not set
+        $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
+        $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
+
+        // Construct the filename using the formatted dates
+        $filename = 'data_customers';
+        $filename .= $formattedStartDate ? "_{$formattedStartDate}" : '';
+        $filename .= $formattedEndDate ? "_-_$formattedEndDate" : '';
+        $filename .= '.xlsx';
+
+        // Fetch the data for export
+        $customerOrders = $this->getCustomerOrders(); // Ensure this method exists and returns the correct data
+
+        // Convert the original date format to a display format only if dates are set
+        $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
+        $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->isoFormat('dddd, D MMMM YYYY') : null;
 
         // Return the download response
-        return Excel::download(new CustomersExport($customerOrders, $startDate, $endDate), 'customers.xlsx');
+        return Excel::download(new CustomersExport($customerOrders, $displayStartDate, $displayEndDate), $filename);
     }
 
     private function getCustomerOrders()
