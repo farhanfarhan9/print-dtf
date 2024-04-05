@@ -23,9 +23,10 @@ class EditCustomer extends Component
         $this->selectedDataKota = $customer->city;
         $this->selectedDataKecamatan = $customer->district;
         $this->selectedDataPostal = $customer->postal;
-        $this->selectedDataNameProvinsi = $customer->province->prov_name;
-        $this->selectedDataNameKota = $customer->kota->city_name;
-        $this->selectedDataNameKecamatan = $customer->kecamatans->dis_name;
+        // Safely access properties of related models
+        $this->selectedDataNameProvinsi = $customer->province ? $customer->province->prov_name : null;
+        $this->selectedDataNameKota = $customer->kota ? $customer->kota->city_name : null;
+        $this->selectedDataNameKecamatan = $customer->kecamatans ? $customer->kecamatans->dis_name : null;
         $this->phone = $customer->phone;
         $this->deposit = $customer->deposit;
         $this->address = $customer->address;

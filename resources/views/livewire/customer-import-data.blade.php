@@ -34,6 +34,16 @@
                         <th scope="col" class="px-6 py-3">
                             Alamat
                         </th>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Provinsi
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Kota
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Kecamatan
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,6 +66,16 @@
                             </td>
                             <td class="px-6 py-4">
                                 {{ $value[3] }}
+                            </td>
+                            </th>
+                            <td class="px-6 py-4">
+                                {{ $value[4] }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $value[5] }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $value[6] }}
                             </td>
                         </tr>
                     @endforeach

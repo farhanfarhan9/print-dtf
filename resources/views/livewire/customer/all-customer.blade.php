@@ -86,16 +86,32 @@
                                 {{ $customer->name }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $customer->province->prov_name }}
+                                @if($customer->province && $customer->province->prov_name !== null)
+                                    {{ $customer->province->prov_name }}
+                                @else
+                                    {{ $customer->provinsi_name }}
+                                @endif
                             </td>
                             <td class="px-6 py-4">
-                                {{ $customer->kota->city_name }}
+                                @if($customer->kota && $customer->kota->city_name !== null)
+                                    {{ $customer->kota->city_name }}
+                                @else
+                                    {{ $customer->city_name }}
+                                @endif
                             </td>
                             <td class="px-6 py-4">
-                                {{ $customer->kecamatans->dis_name }}
+                                @if($customer->kecamatans && $customer->kecamatans->dis_name !== null)
+                                    {{ $customer->kecamatans->dis_name }}
+                                @else
+                                    {{ $customer->district_name }}
+                                @endif
                             </td>
                             <td class="px-6 py-4">
-                                {{ $customer->postal }}
+                                @if($customer->postal !== null)
+                                    {{ $customer->postal }}
+                                @else
+                                    {{ "" }}
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 {{ $customer->phone }}

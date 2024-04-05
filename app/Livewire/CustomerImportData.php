@@ -60,10 +60,10 @@ class CustomerImportData extends Component
             }
             Customer::create([
                 "name" => $value[1],
-                "provinsi" => 2,
-                "city" => 55,
-                "district" => 629,
-                "postal" => 20771,
+                "provinsi_name" => $value[4],
+                "city_name" => $value[5],
+                "district_name" => $value[6],
+                "postal" => null,
                 "phone" => $value[8],
                 "deposit" => 0,
                 "address" => $value[3],
