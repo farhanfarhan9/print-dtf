@@ -19,7 +19,7 @@
                     <div class="mt-6 space-y-2">
                         @if ($customer_id)
                             <p class="block text-sm font-medium">Alamat: {{ $customer->address }}</p>
-                            <p class="block text-sm font-medium">Kota: {{ $customer->kota->city_name }}</p>
+                            <p class="block text-sm font-medium">Kota: {{ optional($customer->kota)->city_name ?? $customer->city_name }}</p>
                             <p class="block text-sm font-medium">Kode pos: {{ $customer->postal }}</p>
                             <p class="block text-sm font-medium">Nomor hp: {{ $customer->phone }}</p>
                             <p class="block text-sm font-medium">
