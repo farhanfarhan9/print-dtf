@@ -43,7 +43,7 @@ class CreateOrder extends Component
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
     public $name, $city, $postal, $phone, $deposit, $address;
 
-    
+
     public function mount()
     {
         $dateTime = Carbon::now();
@@ -300,10 +300,10 @@ class CreateOrder extends Component
     public function render()
     {
 
-        $this->product = products::first();
+        $this->product = Products::first();
         $price_range = json_decode($this->product['detail_harga'], true);
         $this->customer = Customer::find($this->customer_id);
-        $this->expedition = ekspedisi::find($this->expedition_id);
+        $this->expedition = Ekspedisi::find($this->expedition_id);
 
         foreach ($price_range as $range) {
             if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {

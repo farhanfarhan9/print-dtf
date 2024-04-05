@@ -17,7 +17,7 @@ class ProductAdd extends Component
         // Initialize with one price range
         $this->priceRanges[] = ['start' => 0, 'end' => 0, 'price' => 0];
     }
-    
+
     public function addPriceRange()
     {
         $this->priceRanges[] = ['start' => 0, 'end' => 0, 'price' => 0];

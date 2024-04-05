@@ -13,7 +13,7 @@ class ProductsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        products::create([
+        Products::create([
             'nama_produk' => 'Kain A',
             'detail_harga' => json_encode([
                 'detail_1' => [

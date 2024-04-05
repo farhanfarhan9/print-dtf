@@ -15,7 +15,7 @@ class ExpeditionController extends Controller
      */
     public function index(Request $request): Collection
     {
-        return ekspedisi::query()
+        return Ekspedisi::query()
             ->select('id', 'nama_ekspedisi', 'ongkir')
             ->orderBy('nama_ekspedisi')
             ->when(

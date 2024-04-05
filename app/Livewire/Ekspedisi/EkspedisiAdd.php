@@ -13,7 +13,7 @@ class EkspedisiAdd extends Component
 
     public $namaEkspedisi;
     public $ongkir;
-    
+
     public function save()
     {
         // Validation and product creation logic

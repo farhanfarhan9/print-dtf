@@ -15,8 +15,8 @@ class Product extends Component
     public $products;
     public $search;
     public $confirmingProductDeletion = null;
-    
-    
+
+
     public function render()
     {
         // $this->products = Products::all();

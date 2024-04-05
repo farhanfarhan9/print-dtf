@@ -58,7 +58,7 @@ class EditPo extends Component
     public function save()
     {
         $this->validate();
-        
+
         $this->po->update([
             // 'deposit_cut' => $this->deposit_cut == 0 ? $this->deposit_cut : $this->deposit_cut + $this->new_deposit_cut,
             'expedition_id' => $this->expedition_id,
@@ -91,8 +91,8 @@ class EditPo extends Component
 
     public function render()
     {
-        $this->product = products::first();
-        $this->expedition = ekspedisi::find($this->expedition_id);
+        $this->product = Products::first();
+        $this->expedition = Ekspedisi::find($this->expedition_id);
         $price_range = json_decode($this->product['detail_harga'], true);
         foreach ($price_range as $range) {
             if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
