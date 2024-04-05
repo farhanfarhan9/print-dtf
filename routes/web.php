@@ -24,6 +24,8 @@ use App\Livewire\Ekspedisi\EkspedisiEdit;
 use App\Livewire\Bank\CreateBankInformations;
 use App\Livewire\Dashboard;
 use App\Livewire\InternalProcess\AllInternalProcess;
+use App\Livewire\ExportData\ExportCustomerView;
+use App\Livewire\ExportData\ExportProductView;
 use App\Livewire\User\AllUser;
 use App\Livewire\User\CreateUser;
 use App\Livewire\User\EditUser;
@@ -92,6 +94,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo')->middleware(isAdminMiddleware::class);
         Route::get('/{order}/purchase_order/{po}/edit', EditPo::class)->name('po.editPo')->middleware(isAdminMiddleware::class);
+    });
+
+    Route::prefix('export-data')->group(function () {
+        Route::get('/customer', ExportCustomerView::class)->name('export-customer.index');
+        Route::get('/product', ExportProductView::class)->name('export-product.index');
     });
 
     Route::prefix('internal_process')->group(function () {

@@ -30,7 +30,7 @@ class AllCustomer extends Component
         $this->editedUser->update([
             'deposit' => $existingDeposit + $this->newDeposit,
         ]);
-        
+
         session()->flash('customerCreated',['Sukses', 'Berhasil menambahkan deposit', 'success']);
         $this->reset('editedUser', 'depositModal', 'newDeposit');
     }
@@ -57,6 +57,7 @@ class AllCustomer extends Component
         ]);
         $customer->delete();
     }
+
     public function render()
     {
         return view('livewire.customer.all-customer', [
