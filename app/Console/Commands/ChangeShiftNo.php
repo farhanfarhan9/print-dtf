@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class ChangeShiftNo extends Command
 {
     protected $signature = 'internalprocess:change-shift-no';
-    protected $description = 'Changes shift number from 2 to 1 where conditions are met';
+    protected $description = 'Changes shift number from 1 to 2 where conditions are met';
 
     public function handle()
     {
