@@ -48,7 +48,7 @@ class ExportProductView extends Component
         return $query->groupBy('product_id')->get()->map(function ($order) {
             return [
                 'total_sold' => $order->total_sold,
-                'product_name' => $order->product->nama_produk, // Assuming the related product has a 'name' attribute
+                'product_name' => optional($order->product)->nama_produk, // Assuming the related product has a 'name' attribute
             ];
         });
     }
