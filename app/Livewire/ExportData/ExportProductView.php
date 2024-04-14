@@ -38,7 +38,7 @@ class ExportProductView extends Component
     {
         $query = PurchaseOrder::query()
             ->with('product')
-            ->select('product_id', DB::raw('SUM(qty) as total_sold'))
+            ->select('product_id', DB::raw('SUM(qty) as total_sold'), DB::raw('SUM(product_price) as total_omzet'))
             ->where('status', 'Lunas');
 
         if ($this->startDate && $this->endDate) {
@@ -48,6 +48,7 @@ class ExportProductView extends Component
         return $query->groupBy('product_id')->get()->map(function ($order) {
             return [
                 'total_sold' => $order->total_sold,
+                'total_omzet' => $order->total_omzet,
                 'product_name' => optional($order->product)->nama_produk, // Assuming the related product has a 'name' attribute
             ];
         });
