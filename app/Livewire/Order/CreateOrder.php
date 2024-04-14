@@ -40,7 +40,7 @@ class CreateOrder extends Component
 
     public $customerModal;
 
-    public $found = true;
+    public $found;
 
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
     public $name, $city, $postal, $phone, $deposit, $address;
@@ -308,17 +308,15 @@ class CreateOrder extends Component
         $this->expedition = Ekspedisi::find($this->expedition_id);
 
         foreach ($price_range as $range) {
+            $this->found = false; // Initialize the found flag to false for each iteration
             if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
                 $this->product_price = $range['price'] * $this->qty;
                 $this->found = true;
                 break;
-            }else{
-                $this->found = false;
-                break;
             }
         }
 
-       
+
 
         $this->shipped_price = $this->product_price + ($this->expedition ? $this->expedition->ongkir : 0);
         $this->total_price = $this->shipped_price;
