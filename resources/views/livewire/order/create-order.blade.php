@@ -109,6 +109,8 @@
                     </div>
                     @if ($found == false)
                         <p class="text-red-500">Panjang produk tidak dalam range harga produk</p>
+                    @elseif($outOfStock == true)
+                        <p class="text-red-500">Stok produk tidak mencukupi</p>
                     @endif
                     <div class="px-8 mt-3">
                         {{-- <p class="text-slate-600">Ekspedisi</p> --}}
@@ -188,7 +190,11 @@
                             </circle>
                         </svg>
                     </button>
-                    <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan" green />
+                    @if($outOfStock == true)
+                        <x-button wire:target="file" label="Simpan" secondary disabled />
+                    @else
+                        <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan" green />
+                    @endif
                 </div>
             </div>
         </div>
