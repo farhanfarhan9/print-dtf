@@ -76,7 +76,7 @@
                                                 </th>
                                                 <th scope="row"
                                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ $internal->purchase_order->user->name }}
+                                                    {{ $internal->purchase_order->purchase->customer->name }}
                                                 </th>
                                                 <th scope="row"
                                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
