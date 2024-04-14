@@ -190,7 +190,7 @@
                             </circle>
                         </svg>
                     </button>
-                    @if($outOfStock == true)
+                    @if($outOfStock == true || $found == false)
                         <x-button wire:target="file" label="Simpan" secondary disabled />
                     @else
                         <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan" green />
