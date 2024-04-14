@@ -83,7 +83,7 @@
             <thead>
                 <tr>
                     <th class="tg-0pky"></th>
-                    <th class="tg-0pky">Kepada :<br>{{ $order->purchase->customer->name }}<br>{{ $order->purchase->customer->address }}<br>Kec.  {{ $order->purchase->customer->kecamatans->dis_name }}, Kota {{ $order->purchase->customer->kota->city_name }}, O<br>Provinsi {{ $order->purchase->customer->province->prov_name }}<br>Telp: +62 {{ $order->purchase->customer->phone }}</th>
+                    <th class="tg-0pky">Kepada :<br>{{ $order->purchase->customer->name }}<br>{{ $order->purchase->customer->address }}<br>Kec.  {{ ($order->purchase->customer->district) ? $order->purchase->customer->kecamatans->dis_name : $order->purchase->customer->district_name }}, Kota {{ ($order->purchase->customer->city) ? $order->purchase->customer->kota->city_name : $order->purchase->customer->city_name }}, <br>Provinsi {{ ($order->purchase->customer->provinsi) ? $order->purchase->customer->province->prov_name : $order->purchase->customer->provinsi_name }}<br>Telp: +62 {{ $order->purchase->customer->phone }}</th>
                     <th class="tg-c3ow"></th>
                 </tr>
             </thead>
