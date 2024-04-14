@@ -43,7 +43,7 @@
                                                 Pemesan
                                             </th>
                                             <th scope="col" class="px-6 py-3">
-                                                Jumlah
+                                                Panjang
                                             </th>
                                             <th scope="col" class="px-6 py-3">
                                                 Harga

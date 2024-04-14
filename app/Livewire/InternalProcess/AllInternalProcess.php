@@ -120,7 +120,7 @@ class AllInternalProcess extends Component
             // })->paginate(10)
             'internals'=>InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel');
-            })->get()->sortByDesc('created_at')->groupBy(function($internal) {
+            })->get()->sortByDesc('execution_date')->groupBy(function($internal) {
                 return $internal->execution_date; // Grouping by creation date
             })
         ]);

@@ -40,6 +40,9 @@ class CreateOrder extends Component
 
     public $customerModal;
 
+    public $found;
+    public $outOfStock;
+
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
     public $name, $city, $postal, $phone, $deposit, $address;
 
@@ -305,11 +308,18 @@ class CreateOrder extends Component
         $this->customer = Customer::find($this->customer_id);
         $this->expedition = Ekspedisi::find($this->expedition_id);
 
-        foreach ($price_range as $range) {
-            if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
-                $this->product_price = $range['price'] * $this->qty;
-                break;
+        if ($this->qty <= $this->product->stok) {
+            $this->outOfStock = false;
+            foreach ($price_range as $range) {
+                $this->found = false; // Initialize the found flag to false for each iteration
+                if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
+                    $this->product_price = $range['price'] * $this->qty;
+                    $this->found = true;
+                    break;
+                }
             }
+        }else{
+            $this->outOfStock = true;
         }
 
         $this->shipped_price = $this->product_price + ($this->expedition ? $this->expedition->ongkir : 0);

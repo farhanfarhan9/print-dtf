@@ -19,11 +19,12 @@
                     <div class="mt-6 space-y-2">
                         @if ($customer_id)
                             <p class="block text-sm font-medium">Alamat: {{ $customer->address }}</p>
-                            <p class="block text-sm font-medium">Kota: {{ optional($customer->kota)->city_name ?? $customer->city_name }}</p>
+                            <p class="block text-sm font-medium">Kota:
+                                {{ optional($customer->kota)->city_name ?? $customer->city_name }}</p>
                             <p class="block text-sm font-medium">Kode pos: {{ $customer->postal }}</p>
                             <p class="block text-sm font-medium">Nomor hp: {{ $customer->phone }}</p>
                             <p class="block text-sm font-medium">
-                                Total Deposit: Rp. {{ $customer->deposit }}
+                                Total Deposit: {{ rupiah_format($customer->deposit) }}
                                 @if ($is_deposit)
                                     <span class="text-green-400">({{ $customer->deposit - $deposit_cut }})</span>
                                 @endif
@@ -99,9 +100,18 @@
                         </div>
                         <div>
                             <p class="text-slate-600">Total</p>
-                            <p class="text-slate-600">{{ $product_price }}</p>
+                            @if ($found)
+                                <p class="text-slate-600">{{ rupiah_format($product_price) }}</p>
+                            @else
+                                <p class="text-slate-500">Rp. 0</p>
+                            @endif
                         </div>
                     </div>
+                    @if ($found == false)
+                        <p class="text-red-500">Panjang produk tidak dalam range harga produk</p>
+                    @elseif($outOfStock == true)
+                        <p class="text-red-500">Stok produk tidak mencukupi</p>
+                    @endif
                     <div class="px-8 mt-3">
                         {{-- <p class="text-slate-600">Ekspedisi</p> --}}
                         <x-select wire:model.live="expedition_id" label='Ekspedisi' placeholder="Pilih ekspedisi"
@@ -109,14 +119,14 @@
                         <div class="flex justify-end mt-2">
 
                             @if ($expedition_id)
-                                <div class="mt-2">{{ $expedition->ongkir }}</div>
+                                <div class="mt-2">{{ rupiah_format($expedition->ongkir) }}</div>
                             @endif
                         </div>
                         @if ($customer_id && $expedition_id)
                             <div class="flex justify-between">
                                 <x-checkbox id="right-label" label="Potong deposit" wire:model.live="is_deposit" />
                                 @if ($is_deposit)
-                                    <p class="text-red-500">{{ $deposit_cut }}</p>
+                                    <p class="text-red-500">{{ rupiah_format($deposit_cut) }}</p>
                                 @endif
                             </div>
                         @else
@@ -128,7 +138,11 @@
                     <hr class="my-5">
                     <div class="flex justify-between px-8">
                         <p>Total</p>
-                        <p>{{ $total_price }}</p>
+                        @if ($found)
+                            <p>{{ rupiah_format($total_price) }}</p>
+                        @else
+                            <p class="">Rp. 0</p>
+                        @endif
                     </div>
                 </x-card>
                 <x-card shadow='false'>
@@ -176,7 +190,11 @@
                             </circle>
                         </svg>
                     </button>
-                    <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan" green />
+                    @if($outOfStock == true)
+                        <x-button wire:target="file" label="Simpan" secondary disabled />
+                    @else
+                        <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan" green />
+                    @endif
                 </div>
             </div>
         </div>

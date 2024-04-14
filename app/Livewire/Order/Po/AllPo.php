@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Order\Po;
 
+use App\Livewire\Product;
 use App\Models\Payment;
 use App\Models\Purchase;
 use Livewire\Component;
@@ -103,9 +104,23 @@ class AllPo extends Component
         ]);
     }
 
+    public function deleteDialog(PurchaseOrder $po)
+    {
+        $this->dialog()->confirm([
+            'title'       => 'Membatalkan Order',
+            'description' => 'Yakin Ingin Membatalkan Order?',
+            'acceptLabel' => 'Ya',
+            'method'      => 'cancelPo',
+            'params'      => $po,
+            'timeout'     => 3000
+        ]);
+    }
+
     public function cancelPo(PurchaseOrder $po)
     {
+        dd('tes');
         // dd($po->internal_process);
+        // dd($po->product);
         $po->update([
             'status' => 'cancel',
             'po_status' => 'cancel'
@@ -118,7 +133,9 @@ class AllPo extends Component
         }
 
         $po->internal_process->delete();
-
+        $po->product->update([
+            'stok' => $po->product->stok + $po->qty,
+        ]);
         $this->notification([
             'title'       => 'Sukses',
             'description' => "'Berhasil membatalkan pesanan pada INV' .$po->invoice_code",
