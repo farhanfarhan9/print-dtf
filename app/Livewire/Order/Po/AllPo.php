@@ -104,8 +104,21 @@ class AllPo extends Component
         ]);
     }
 
+    public function deleteDialog(PurchaseOrder $po)
+    {
+        $this->dialog()->confirm([
+            'title'       => 'Membatalkan Order',
+            'description' => 'Yakin Ingin Membatalkan Order?',
+            'acceptLabel' => 'Ya',
+            'method'      => 'cancelPo',
+            'params'      => $po,
+            'timeout'     => 3000
+        ]);
+    }
+
     public function cancelPo(PurchaseOrder $po)
     {
+        dd('tes');
         // dd($po->internal_process);
         // dd($po->product);
         $po->update([
@@ -121,7 +134,7 @@ class AllPo extends Component
 
         $po->internal_process->delete();
         $po->product->update([
-            'stok' => $po->product->stock + $po->qty,
+            'stok' => $po->product->stok + $po->qty,
         ]);
         $this->notification([
             'title'       => 'Sukses',
