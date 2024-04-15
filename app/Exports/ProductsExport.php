@@ -34,32 +34,43 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithS
 
     public function headings(): array
     {
-        $title = 'Data Best Produk';
+        $title = 'Top Produk';
         if ($this->startDate && $this->endDate) {
-            $title .= " periode {$this->startDate} sampai {$this->endDate}";
+            $title2 = "Periode {$this->startDate} sampai {$this->endDate}";
+        }else{
+            $title2 = "Data Keseluruhan";
         }
 
         return [
             [$title],
+            [$title2],
             [], // Empty row for spacing
-            ['No', 'Product Terjual', 'Nama Product'], // Actual column headings for products
+            ['No', 'Nama Product', 'Deskripsi', 'Jenis Produk', 'Jumlah Terjual', 'Total Omzet (Net Sales)'], // Actual column headings for products
         ];
     }
 
     public function map($product): array
     {
+        $formattedOmzet = "Rp " . number_format($product['total_omzet'], 0, ',', '.');
         return [
             ++$this->currentRow, // No
-            $product['total_sold'], // Product Terjual
             $product['product_name'], // Nama Product
+            '',
+            'Stok Sendiri',
+            $product['total_sold'], // Product Terjual
+            $formattedOmzet, // Total Omzet
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         // Style the title row
-        $sheet->mergeCells('A1:j1');
+        $sheet->mergeCells('A1:F1');
+        $sheet->getStyle('A1:F1')->getAlignment()->setHorizontal('left');
+        $sheet->mergeCells('A2:F2');
+        $sheet->getStyle('A2:F2')->getAlignment()->setHorizontal('left');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A4:F4')->getFont()->setBold(true);
 
         // Define the style array for borders
         $styleArray = [
@@ -72,12 +83,14 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithS
         ];
 
         // Apply the style from the third row to the end of the data
-        $sheet->getStyle('A3:C' . (3 + count($this->productsSold)))->applyFromArray($styleArray);
+        $sheet->getStyle('A4:F' . (4 + count($this->productsSold)))->applyFromArray($styleArray);
 
         // Set auto-sizing for the columns
-        foreach (range('A', 'C') as $columnID) {
+        foreach (range('A', 'F') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
+
+        $sheet->getStyle('F5')->getAlignment()->setHorizontal('right');
     }
 
     public function title(): string

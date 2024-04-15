@@ -10,8 +10,8 @@
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <x-input wire:model.debounce.300ms="search" icon="search" placeholder="Cari Customer" class="w-full sm:w-1/4" shadowless="true" />
             <div class="flex space-x-4">
-                <x-input wire:model="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
-                <x-input wire:model="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
+                <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
+                <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
             </div>
             <x-button wire:click="exportExcel" label="Export" blue icon="download" class="w-full sm:w-auto" />
         </div>

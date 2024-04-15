@@ -17,6 +17,9 @@ class ExportProductView extends Component
 
     public function exportExcel()
     {
+        // Set Carbon's locale to Indonesian
+        Carbon::setLocale('id');
+        
         $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
         $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
 
@@ -38,7 +41,7 @@ class ExportProductView extends Component
     {
         $query = PurchaseOrder::query()
             ->with('product')
-            ->select('product_id', DB::raw('SUM(qty) as total_sold'))
+            ->select('product_id', DB::raw('SUM(qty) as total_sold'), DB::raw('SUM(product_price) as total_omzet'))
             ->where('status', 'Lunas');
 
         if ($this->startDate && $this->endDate) {
@@ -48,7 +51,8 @@ class ExportProductView extends Component
         return $query->groupBy('product_id')->get()->map(function ($order) {
             return [
                 'total_sold' => $order->total_sold,
-                'product_name' => $order->product->nama_produk, // Assuming the related product has a 'name' attribute
+                'total_omzet' => $order->total_omzet,
+                'product_name' => optional($order->product)->nama_produk, // Assuming the related product has a 'name' attribute
             ];
         });
     }
