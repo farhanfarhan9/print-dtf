@@ -38,8 +38,8 @@ class AllCustomer extends Component
     public function deleteDialog(Customer $customer)
     {
         $this->dialog()->confirm([
-            'title'       => 'Menghapus Data',
-            'description' => 'Yakin Ingin Menghapus Data?',
+            'title'       => 'Arsipkan Data',
+            'description' => 'Yakin Ingin Mengarsipkan Data?',
             'acceptLabel' => 'Ya',
             'method'      => 'delete',
             'params'      => $customer,
@@ -51,7 +51,7 @@ class AllCustomer extends Component
     {
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil menghapus Customer',
+            'description' => 'Berhasil Mengarsipkan Data Customer',
             'icon'        => 'success',
             'timeout'     => 3000
         ]);

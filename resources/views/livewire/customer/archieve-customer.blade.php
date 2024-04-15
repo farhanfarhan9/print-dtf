@@ -1,31 +1,14 @@
 <div>
-    @if (session('customerCreated'))
-        <script>
-            Wireui.hook('notifications:load', () => {
-                window.$wireui.notify({
-                    title: '{{ session('customerCreated')[0] }}',
-                    description: '{{ session('customerCreated')[1] }}',
-                    icon: '{{ session('customerCreated')[2] }}',
-                    timeout: 3000
-                })
-            })
-        </script>
-    @elseif (session('customerEdited'))
-        <script>
-            Wireui.hook('notifications:load', () => {
-                window.$wireui.notify({
-                    title: '{{ session('customerEdited')[0] }}',
-                    description: '{{ session('customerEdited')[1] }}',
-                    icon: '{{ session('customerEdited')[2] }}',
-                    timeout: 3000
-                })
-            })
-        </script>
-    @endif
     <x-slot name="header">
+        <a href="{{ route('customer.index') }}" wire:navigate class="flex items-center w-1/12 gap-1 p-2 mb-5 text-lg rounded-lg hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Kembali
+        </a>
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
-                Data Customer
+                Data Arsip Customer
             </h2>
         </div>
     </x-slot>
@@ -33,12 +16,7 @@
         <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Customer" />
-            <x-button label="Import Customer Data" href="{{ route('customer.upload') }}" class="w-1/3 mx-2 mt-2 sm:w-1/6 sm:mt-0"
-                blue icon="upload" />
-            <x-button label="Tambah Customer" href="{{ route('customer.create') }}" class="w-1/3 mt-2 sm:w-1/6 sm:mt-0"
-                green icon="plus" />
         </div>
-        <a href="{{route('customer.archieve')}}" class="text-slate-600 hover:underline">Data Arsip</a>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -87,31 +65,31 @@
                                 {{ $customer->name }}
                             </td>
                             <td class="px-6 py-4">
-                                @if($customer->province && $customer->province->prov_name !== null)
+                                @if ($customer->province && $customer->province->prov_name !== null)
                                     {{ $customer->province->prov_name }}
                                 @else
                                     {{ $customer->provinsi_name }}
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($customer->kota && $customer->kota->city_name !== null)
+                                @if ($customer->kota && $customer->kota->city_name !== null)
                                     {{ $customer->kota->city_name }}
                                 @else
                                     {{ $customer->city_name }}
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($customer->kecamatans && $customer->kecamatans->dis_name !== null)
+                                @if ($customer->kecamatans && $customer->kecamatans->dis_name !== null)
                                     {{ $customer->kecamatans->dis_name }}
                                 @else
                                     {{ $customer->district_name }}
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($customer->postal !== null)
+                                @if ($customer->postal !== null)
                                     {{ $customer->postal }}
                                 @else
-                                    {{ "" }}
+                                    {{ '' }}
                                 @endif
                             </td>
                             <td class="px-6 py-4">
@@ -125,11 +103,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-5">
-                                    <x-button wire:click='depositDialog({{ $customer->id }})' label="Deposit" orange
-                                        icon="plus" />
-                                    <x-button href="{{ route('customer.edit', $customer->id) }}" label="Edit"
-                                        primary />
-                                    <x-button wire:click="deleteDialog({{ $customer->id }})" label="Arsip" red />
+                                    <x-button wire:click='restore({{ $customer->id }})' label="Restore" primary />
                                 </div>
                             </td>
                         </tr>
@@ -138,22 +112,8 @@
                             <td colspan="8" class="py-4 text-center">Data Kosong</td>
                         </tr>
                     @endforelse
-
                 </tbody>
             </table>
-            <x-modal.card title="{{ isset($editedUser) ? $editedUser->name : '' }}" blur wire:model.defer="depositModal">
-                <x-inputs.currency  class="!pl-[2.5rem]" label="Jumlah deposit" prefix="Rp."
-                    wire:model="newDeposit" />
-
-                <x-slot name="footer">
-                    <div class="flex justify-end gap-x-4">
-                        <div class="flex">
-                            <x-button flat label="Cancel" x-on:click="close" />
-                            <x-button primary label="Simpan" wire:click="addDeposit" />
-                        </div>
-                    </div>
-                </x-slot>
-            </x-modal.card>
         </div>
         <div class="mt-2">
             {{ $customers->links() }}

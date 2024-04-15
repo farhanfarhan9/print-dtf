@@ -22,6 +22,7 @@ use App\Http\Middleware\isAdminMiddleware;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Ekspedisi\EkspedisiEdit;
 use App\Livewire\Bank\CreateBankInformations;
+use App\Livewire\Customer\ArchieveCustomer;
 use App\Livewire\Dashboard;
 use App\Livewire\InternalProcess\AllInternalProcess;
 use App\Livewire\ExportData\ExportCustomerView;
@@ -67,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create', CreateCustomer::class)->name('customer.create')->middleware(isAdminMiddleware::class);
         Route::get('/upload', CustomerImportData::class)->name('customer.upload')->middleware(isAdminMiddleware::class);
         Route::get('/{customer}/edit', EditCustomer::class)->name('customer.edit')->middleware(isAdminMiddleware::class);
+        Route::get('/archieve', ArchieveCustomer::class)->name('customer.archieve')->middleware(isAdminMiddleware::class);
     });
     Route::prefix('users')->group(function () {
         Route::get('/', AllUser::class)->name('user.index')->middleware(isAdminMiddleware::class);
