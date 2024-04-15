@@ -72,7 +72,7 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center space-x-4">
                                     <x-button wire:click="editProduct({{ $product->id }})" label="Edit" primary />
-                                    <x-button wire:click="deleteDialog({{ $product->id }})" label="Hapus" red />
+                                    {{-- <x-button wire:click="deleteDialog({{ $product->id }})" label="Hapus" red /> --}}
                                 </div>
                             </td>
                         </tr>

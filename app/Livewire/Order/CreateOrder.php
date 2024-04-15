@@ -320,6 +320,7 @@ class CreateOrder extends Component
             }
         }else{
             $this->outOfStock = true;
+            $this->found = true;
         }
 
         $this->shipped_price = $this->product_price + ($this->expedition ? $this->expedition->ongkir : 0);
