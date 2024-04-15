@@ -20,7 +20,7 @@
                     </div>
                     <div>
                         <p class="text-3xl font-semibold">{{ $count_user }}</p>
-                        <p class="font-medium">Jumlah User</p>
+                        <p class="font-medium">Jumlah Customer</p>
                     </div>
                 </div>
                 <div class="border-t-2 border-[#70C276] px-4 py-2">
