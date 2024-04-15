@@ -29,6 +29,7 @@ use App\Livewire\InternalProcess\AllInternalProcess;
 use App\Livewire\ExportData\ExportCustomerView;
 use App\Livewire\ExportData\ExportProductView;
 use App\Livewire\User\AllUser;
+use App\Livewire\User\ArchieveUser;
 use App\Livewire\User\CreateUser;
 use App\Livewire\User\EditUser;
 
@@ -75,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', AllUser::class)->name('user.index')->middleware(isAdminMiddleware::class);
         Route::get('/create', CreateUser::class)->name('user.create')->middleware(isAdminMiddleware::class);
         Route::get('/{user}/edit', EditUser::class)->name('user.edit')->middleware(isAdminMiddleware::class);
+        Route::get('/archieve', ArchieveUser::class)->name('user.archieve')->middleware(isAdminMiddleware::class);
     });
 
     Route::prefix('bank-informations')->group(function () {

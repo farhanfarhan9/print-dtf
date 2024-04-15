@@ -1,31 +1,14 @@
 <div>
-    @if (session('userCreated'))
-        <script>
-            Wireui.hook('notifications:load', () => {
-                window.$wireui.notify({
-                    title: '{{ session('userCreated')[0] }}',
-                    description: '{{ session('userCreated')[1] }}',
-                    icon: '{{ session('userCreated')[2] }}',
-                    timeout: 3000
-                })
-            })
-        </script>
-    @elseif (session('userEdited'))
-        <script>
-            Wireui.hook('notifications:load', () => {
-                window.$wireui.notify({
-                    title: '{{ session('userEdited')[0] }}',
-                    description: '{{ session('userEdited')[1] }}',
-                    icon: '{{ session('userEdited')[2] }}',
-                    timeout: 3000
-                })
-            })
-        </script>
-    @endif
     <x-slot name="header">
+        <a href="{{ route('user.index') }}" wire:navigate class="flex items-center w-1/12 gap-1 p-2 mb-5 text-lg rounded-lg hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Kembali
+        </a>
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
-                Data User
+                Data Arsip User
             </h2>
         </div>
     </x-slot>
@@ -33,10 +16,7 @@
         <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari User" />
-            <x-button label="Tambah User" href="{{ route('user.create') }}" class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green
-                icon="plus" />
         </div>
-        <a href="{{route('user.archieve')}}" class="text-slate-600 hover:underline">Data Arsip</a>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -83,8 +63,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-5">
-                                    <x-button href="{{ route('user.edit', $user->id) }}" label="Edit" primary />
-                                    <x-button wire:click="deleteDialog({{ $user->id }})" label="Hapus" red />
+                                    <x-button wire:click="restore({{ $user->id }})" label="Restore" primary />
                                 </div>
                             </td>
                         </tr>
@@ -112,6 +91,5 @@
         </div>
         <div class="mt-2">
             {{ $users->links() }}
-        </div>
-    </div>
+        </div
 </div>
