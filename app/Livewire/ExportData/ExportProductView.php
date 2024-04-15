@@ -19,7 +19,7 @@ class ExportProductView extends Component
     {
         // Set Carbon's locale to Indonesian
         Carbon::setLocale('id');
-        
+
         $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
         $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
 
@@ -42,7 +42,7 @@ class ExportProductView extends Component
         $query = PurchaseOrder::query()
             ->with('product')
             ->select('product_id', DB::raw('SUM(qty) as total_sold'), DB::raw('SUM(product_price) as total_omzet'))
-            ->where('status', 'Lunas');
+            ->where('po_status', 'close');
 
         if ($this->startDate && $this->endDate) {
             $query->whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate]);
