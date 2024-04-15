@@ -8,8 +8,8 @@
         </div>
     </x-slot>
     <div class="py-12">
-        <div class="flex gap-8">
-            <div class="border-2 border-[#70C276] w-1/3 h-fit rounded-xl bg-[#EEFCEF] text-gray-800">
+        <div class=" md:flex md:mb-0 md:gap-8">
+            <div class="border-2 border-[#70C276] w-full mb-10 md:mb-0 md:w-1/3 h-fit rounded-xl bg-[#EEFCEF] text-gray-800">
                 <div class="flex gap-8 py-4 px-7">
                     <div class="p-2 my-auto bg-white border rounded-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#70c276]" viewBox="0 0 20 20"
@@ -35,7 +35,7 @@
                     </a>
                 </div>
             </div>
-            <div class="border-2 border-[#A69AEA] w-1/3 h-fit rounded-xl bg-[#F4F2FF] text-gray-800">
+            <div class="border-2 border-[#A69AEA] w-full mb-10 md:mb-0 md:w-1/3 h-fit rounded-xl bg-[#F4F2FF] text-gray-800">
                 <div class="flex gap-8 py-4 px-7">
                     <div class="p-2 my-auto bg-white border rounded-xl">
                         <svg class="h-5 w-5 text-[#A69AEA]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@
                     </a>
                 </div>
             </div>
-            <div class="border-2 border-[#F39264] w-1/3 h-fit rounded-xl bg-[#FFF1EE] text-gray-800">
+            <div class="border-2 border-[#F39264] w-full mb-10 md:mb-0 md:w-1/3 h-fit rounded-xl bg-[#FFF1EE] text-gray-800">
                 <div class="flex gap-8 py-4 px-7">
                     <div class="p-2 my-auto bg-white border rounded-xl">
                         <svg xmlns="http://www.w3.org/2000/svg"class="h-5 w-5 text-[#F39264]"
