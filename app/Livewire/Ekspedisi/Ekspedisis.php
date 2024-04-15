@@ -35,8 +35,8 @@ class Ekspedisis extends Component
     public function deleteDialog(Ekspedisi $ekspedisi)
     {
         $this->dialog()->confirm([
-            'title'       => 'Menghapus Data',
-            'description' => 'Yakin Ingin Menghapus Data?',
+            'title'       => 'Arsipkan Data',
+            'description' => 'Yakin Ingin Mengarsipkan Data?',
             'acceptLabel' => 'Ya',
             'method'      => 'delete',
             'params'      => $ekspedisi,
@@ -47,8 +47,8 @@ class Ekspedisis extends Component
     public function delete(Ekspedisi $ekspedisi)
     {
         $this->notification([
-            'title'       => 'Ekspedisi Berhasil di Hapus!',
-            'description' => 'Ekspedisi '. $ekspedisi->nama_ekspedisi .' di Hapus',
+            'title'       => 'Ekspedisi Berhasil di arsipkan!',
+            'description' => 'Ekspedisi '. $ekspedisi->nama_ekspedisi .' di arsipkan',
             'icon'        => 'success',
             'timeout'     => 3000
         ]);

@@ -19,7 +19,7 @@ class PurchaseOrder extends Model
 
     public function expedition()
     {
-        return $this->belongsTo(Ekspedisi::class, 'expedition_id', 'id');
+        return $this->belongsTo(Ekspedisi::class, 'expedition_id', 'id')->withTrashed();
     }
 
     public function payments()
@@ -39,7 +39,7 @@ class PurchaseOrder extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class)->withTrashed();
     }
 
     public function internal_process()

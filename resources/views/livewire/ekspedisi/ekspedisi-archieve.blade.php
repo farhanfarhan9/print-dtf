@@ -1,28 +1,11 @@
 <div>
-    @if (session('expeditionCreated'))
-        <script>
-            Wireui.hook('notifications:load', () => {
-                window.$wireui.notify({
-                    title: '{{ session('expeditionCreated')[0] }}',
-                    description: '{{ session('expeditionCreated')[1] }}',
-                    icon: '{{ session('expeditionCreated')[2] }}',
-                    timeout: 3000
-                })
-            })
-        </script>
-    @elseif (session('expeditionEdited'))
-        <script>
-            Wireui.hook('notifications:load', () => {
-                window.$wireui.notify({
-                    title: '{{ session('expeditionEdited')[0] }}',
-                    description: '{{ session('expeditionEdited')[1] }}',
-                    icon: '{{ session('expeditionEdited')[2] }}',
-                    timeout: 3000
-                })
-            })
-        </script>
-    @endif
     <x-slot name="header">
+        <a href="{{ route('ekspedisi-view') }}" wire:navigate class="flex items-center w-1/12 gap-1 p-2 mb-5 text-lg rounded-lg hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Kembali
+        </a>
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
                 Ekspedisi
@@ -30,18 +13,10 @@
         </div>
     </x-slot>
     <div class="py-12">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
         <div class="flex sm:justify-between">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Ekspedisi" />
-            <x-button label="Tambah Data Ekspedisi" href="{{ route('ekspedisi.add') }}"
-                class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green icon="plus" />
         </div>
-        <a href="{{route('ekspedisi-archieve')}}" class="text-slate-600 hover:underline">Data Arsip</a>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
@@ -61,9 +36,8 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex gap-5">
-                                        <x-button wire:click="editEkspedisi({{ $ekspedisi->id }})" label="Edit"
+                                        <x-button wire:click="restore({{ $ekspedisi->id }})" label="Edit"
                                             primary />
-                                        <x-button wire:click="deleteDialog({{ $ekspedisi->id }})" label="Arsip" red />
                                     </div>
                                 </div>
                             </td>
@@ -76,5 +50,4 @@
                 </tbody>
             </table>
         </div>
-    </div>
 </div>

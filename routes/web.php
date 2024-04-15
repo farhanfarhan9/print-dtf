@@ -24,6 +24,7 @@ use App\Livewire\Ekspedisi\EkspedisiEdit;
 use App\Livewire\Bank\CreateBankInformations;
 use App\Livewire\Customer\ArchieveCustomer;
 use App\Livewire\Dashboard;
+use App\Livewire\Ekspedisi\EkspedisiArchieve;
 use App\Livewire\InternalProcess\AllInternalProcess;
 use App\Livewire\ExportData\ExportCustomerView;
 use App\Livewire\ExportData\ExportProductView;
@@ -89,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ekspedisi', Ekspedisis::class)->name('ekspedisi-view')->middleware(isAdminMiddleware::class);
     Route::get('/ekspedisi/add', EkspedisiAdd::class)->name('ekspedisi.add')->middleware(isAdminMiddleware::class);
     Route::get('/ekspedisi/edit/{ekspedisi}', EkspedisiEdit::class)->name('ekspedisi-edit')->middleware(isAdminMiddleware::class);
+    Route::get('/ekspedisi/archieve', EkspedisiArchieve::class)->name('ekspedisi-archieve')->middleware(isAdminMiddleware::class);
 
     Route::prefix('orders')->group(function () {
         Route::get('/', AllOrder::class)->name('order.index')->middleware(isAdminMiddleware::class);

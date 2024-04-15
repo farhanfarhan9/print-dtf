@@ -43,7 +43,6 @@
             class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green icon="plus" />
             @endif
         </div>
-        {{-- <x-button label="+ Tambah Data Produk" primary wire:click='addData' /> --}}
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
