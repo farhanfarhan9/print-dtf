@@ -22,7 +22,7 @@ class CustomerController extends Controller
     {
         return Customer::query()
             ->select('id', 'name')
-            ->orderBy('name')
+            ->orderByDesc('created_at')
             ->when(
                 $request->search,
                 fn (Builder $query) => $query
