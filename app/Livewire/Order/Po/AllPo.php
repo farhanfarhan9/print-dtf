@@ -30,12 +30,14 @@ class AllPo extends Component
     public $amount;
     public $file;
     public $maxAmount;
+    public $bank_detail;
 
     public function rules()
     {
         return [
             'amount' => 'required|numeric|max:' . $this->maxAmount,
-            'file' => 'nullable|file|max:2000'
+            'file' => 'nullable|file|max:2000',
+            'bank_detail' => 'required',
         ];
     }
 
@@ -74,6 +76,7 @@ class AllPo extends Component
             'amount' => $this->amount,
             'is_dp' => 0,
             'file' => $this->file,
+            'bank_detail' => $this->bank_detail,
         ]);
 
         if ($po->payments->sum('amount') >= $po->total_price) {

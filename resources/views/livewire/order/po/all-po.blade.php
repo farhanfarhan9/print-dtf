@@ -118,11 +118,11 @@
                                 icon="currency-dollar" />
                         @endif
                         {{-- <div class="inline-flex rounded-md shadow-sm" role="group"> --}}
-                            <button type="button" wire:click='deleteDialog({{ $item->id }})'
-                                class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                                Cancel Order
-                            </button>
-                            {{-- <button type="button" wire:click="deleteDialog({{ $item->id }})" class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" label="Cancel Order" red </button> --}}
+                        <button type="button" wire:click='deleteDialog({{ $item->id }})'
+                            class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                            Cancel Order
+                        </button>
+                        {{-- <button type="button" wire:click="deleteDialog({{ $item->id }})" class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" label="Cancel Order" red </button> --}}
 
                         {{-- </div> --}}
                     </div>
@@ -211,10 +211,16 @@
                 <x-inputs.currency label="Nominal pembayaran *" max="{{ $remainingPayment }}"
                     placeholder="Nominal pembayaran" wire:model="amount" />
 
-                <div class="mt-5">
-                    <x-input-label>Bukti pembayaran</x-input-label>
-                    <x-input-file wire:model='file'></x-input-file>
-                    <x-input-error :messages="$errors->get('file')" class="mt-2" />
+                <div class="flex justify-between gap-5 mt-5">
+                    <div class="w-1/2">
+                        <x-input-label>Bukti pembayaran</x-input-label>
+                        <x-input-file wire:model='file'></x-input-file>
+                        <x-input-error :messages="$errors->get('file')" class="mt-2" />
+                    </div>
+                    <div class="w-1/2">
+                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                            wire:model.live="bank_detail" />
+                    </div>
                 </div>
                 @if ($file)
                     <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2" alt="">
