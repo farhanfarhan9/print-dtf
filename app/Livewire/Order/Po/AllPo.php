@@ -119,7 +119,6 @@ class AllPo extends Component
 
     public function cancelPo(PurchaseOrder $po)
     {
-        dd('tes');
         // dd($po->internal_process);
         // dd($po->product);
         $po->update([

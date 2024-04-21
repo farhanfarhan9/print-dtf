@@ -96,7 +96,8 @@
                         </div>
                         <div>
                             <p class="text-slate-600">Panjang (m)</p>
-                            <x-input shadowless="true" wire:model.live.debounce.300ms='qty' type="number" step=".01" placeholder="0" />
+                            <x-input shadowless="true" wire:model.live.debounce.300ms='qty' type="number"
+                                step=".01" placeholder="0" />
                         </div>
                         <div>
                             <p class="text-slate-600">Total</p>
@@ -117,10 +118,13 @@
                         <x-select wire:model.live="expedition_id" label='Ekspedisi' placeholder="Pilih ekspedisi"
                             :async-data="route('api.expeditions.index')" option-label="nama_ekspedisi" option-value="id" />
                         <div class="mt-2">
-                            <x-inputs.currency type="number" label="Biaya Tambahan" wire:model.live.debounce.300ms="additional_price" placeholder="Jumlah biaya tambahan" />
+                            <x-inputs.currency type="number" label="Biaya Tambahan"
+                                wire:model.live.debounce.300ms="additional_price"
+                                placeholder="Jumlah biaya tambahan" />
                         </div>
                         <div class="mt-2">
-                            <x-inputs.currency type="number" label="Diskon" wire:model.live.debounce.300ms="discount" placeholder="Jumlah diskon" />
+                            <x-inputs.currency type="number" label="Diskon"
+                                wire:model.live.debounce.300ms="discount" placeholder="Jumlah diskon" />
                         </div>
                         <div class="flex justify-between mt-2">
                             @if ($expedition_id)
@@ -129,16 +133,16 @@
                             @endif
                         </div>
                         @if ($additional_price)
-                        <div class="flex justify-between mt-2">
-                            <p>Biaya Tambahan</p>
-                            <div>{{ rupiah_format($additional_price) }}</div>
-                        </div>
+                            <div class="flex justify-between mt-2">
+                                <p>Biaya Tambahan</p>
+                                <div>{{ rupiah_format($additional_price) }}</div>
+                            </div>
                         @endif
                         @if ($discount)
-                        <div class="flex justify-between mt-2 text-red-500">
-                            <p>Diskon</p>
-                            <div>{{ rupiah_format($discount) }}</div>
-                        </div>
+                            <div class="flex justify-between mt-2 text-red-500">
+                                <p>Diskon</p>
+                                <div>{{ rupiah_format($discount) }}</div>
+                            </div>
                         @endif
                         @if ($customer_id && $expedition_id)
                             <div class="flex justify-between mt-2">
@@ -152,7 +156,7 @@
                                 <x-checkbox disabled class="bg-slate-300" id="right-label" label="Potong deposit" />
                             </div>
                         @endif
-                       
+
                     </div>
                     <hr class="my-5">
                     <div class="flex justify-between px-8">
@@ -166,7 +170,7 @@
                 </x-card>
                 <x-card shadow='false'>
                     <div class="flex justify-between gap-5">
-                        <x-select label="Pilih Status" placeholder="Pilih Status" :options="['Belum Bayar','Cicil', 'Lunas']"
+                        <x-select label="Pilih Status" placeholder="Pilih Status" :options="['Belum Bayar', 'Cicil', 'Lunas']"
                             wire:model.live="status" />
                         @if ($status == 'Cicil')
                             <x-inputs.currency type="number" wire:model='amount' label="Dp (boleh dikosongkan)"
@@ -174,10 +178,16 @@
                         @endif
                     </div>
                     @if ($status == 'Cicil')
-                        <div class="mt-5">
-                            <x-input-label>Bukti pembayaran (boleh dikosongkan)</x-input-label>
-                            <x-input-file wire:model='file'></x-input-file>
-                            <x-input-error :messages="$errors->get('file')" class="mt-2" />
+                        <div class="flex justify-between gap-5 mt-5">
+                            <div class="w-1/2">
+                                <x-input-label>Bukti pembayaran (boleh dikosongkan)</x-input-label>
+                                <x-input-file wire:model='file'></x-input-file>
+                                <x-input-error :messages="$errors->get('file')" class="mt-2" />
+                            </div>
+                            <div class="w-1/2">
+                                <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                                wire:model.live="bank_detail" />
+                            </div>
                         </div>
 
                         @if ($file)

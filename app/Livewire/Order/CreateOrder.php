@@ -31,6 +31,7 @@ class CreateOrder extends Component
     public $amount = 0;
     public $file;
     public $status;
+    public $bank_detail;
     public $is_deposit;
     public $invoice_code;
 
@@ -46,8 +47,8 @@ class CreateOrder extends Component
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
     public $name, $city, $postal, $phone, $deposit, $address;
 
-    public $additional_price;
-    public $discount;
+    public $additional_price = 0;
+    public $discount = 0;
 
 
     public function mount()
@@ -186,6 +187,7 @@ class CreateOrder extends Component
                 'amount' => $paymentAmount == 0 ? 0 : $paymentAmount,
                 'is_dp' => $is_dp,
                 'file' => $this->file,
+                'bank_detail' => $this->bank_detail,
             ]);
         }
 
