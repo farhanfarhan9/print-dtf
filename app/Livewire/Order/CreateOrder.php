@@ -189,6 +189,14 @@ class CreateOrder extends Component
                 'file' => $this->file,
                 'bank_detail' => $this->bank_detail,
             ]);
+        }elseif($this->status == 'Lunas'){
+            Payment::create([
+                'purchase_order_id' => $purchaseOrder->id,
+                'amount' => $this->total_price,
+                'is_dp' => 0,
+                'file' => $this->file,
+                'bank_detail' => $this->bank_detail,
+            ]);
         }
 
 

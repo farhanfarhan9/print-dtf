@@ -186,13 +186,16 @@
                             </div>
                             <div class="w-1/2">
                                 <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
-                                wire:model.live="bank_detail" />
+                                    wire:model.live="bank_detail" />
                             </div>
                         </div>
 
                         @if ($file)
                             <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2" alt="">
                         @endif
+                    @elseif($status == 'Lunas')
+                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                            wire:model.live="bank_detail" />
                     @endif
                 </x-card>
                 <div class="flex justify-end">
