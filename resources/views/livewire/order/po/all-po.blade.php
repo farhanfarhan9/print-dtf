@@ -82,8 +82,16 @@
                         </p>
                     </div>
                     <div>
+                        <p class="font-medium text-slate-500">Biaya tambahan</p>
+                        <p class="font-semibold">Rp. {{ number_format($item->additional_price) }}</p>
+                    </div>
+                    <div>
                         <p class="font-medium text-slate-500">Potongan deposit</p>
                         <p class="font-semibold">Rp. {{ number_format($item->deposit_cut, 0, ',', '.') }}</p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-slate-500">Diskon</p>
+                        <p class="font-semibold">Rp. {{ number_format($item->discount) }}</p>
                     </div>
                 </div>
                 <div>

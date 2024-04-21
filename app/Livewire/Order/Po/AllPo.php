@@ -29,11 +29,12 @@ class AllPo extends Component
     // Payment
     public $amount;
     public $file;
+    public $maxAmount;
 
     public function rules()
     {
         return [
-            'amount' => 'required',
+            'amount' => 'required|numeric|max:' . $this->maxAmount,
             'file' => 'nullable|file|max:2000'
         ];
     }
@@ -54,6 +55,7 @@ class AllPo extends Component
     {
         $this->selectedPo = $po;
         $this->paymentModal = 1;
+        $this->maxAmount = $po->total_price;
     }
 
     public function updatePayment(PurchaseOrder $po)
@@ -61,7 +63,6 @@ class AllPo extends Component
         // dd($po->payments->sum(;'amount'));
         // dd($po->purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price'));
         // dd($po->payments->sum('amount'));
-
         $this->validate();
 
         if ($this->file) {
