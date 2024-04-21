@@ -46,6 +46,9 @@ class CreateOrder extends Component
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
     public $name, $city, $postal, $phone, $deposit, $address;
 
+    public $additional_price;
+    public $discount;
+
 
     public function mount()
     {
@@ -64,7 +67,9 @@ class CreateOrder extends Component
             'qty' => 'required',
             'expedition_id' => 'required',
             'status' => 'required',
-            'file' => 'nullable|file|max:2000'
+            'file' => 'nullable|file|max:2000',
+            'additional_price' => 'nullable',
+            'discount' => 'nullable',
         ];
     }
 
@@ -126,6 +131,7 @@ class CreateOrder extends Component
     public function save()
     {
         $this->validate();
+        // dd($this->validate());
 
         $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
         $purchaseData = [
@@ -149,6 +155,8 @@ class CreateOrder extends Component
             'expedition_price' => $this->expedition->ongkir,
             'deposit_cut' => $this->deposit_cut,
             'product_price' => $this->product_price,
+            'additional_price' => $this->additional_price,
+            'discount' => $this->discount,
             'qty' => $this->qty,
             'status' => $this->status,
             'po_status' => 'open',
@@ -323,7 +331,7 @@ class CreateOrder extends Component
             $this->found = true;
         }
 
-        $this->shipped_price = $this->product_price + ($this->expedition ? $this->expedition->ongkir : 0);
+        $this->shipped_price = $this->product_price + ($this->expedition ? $this->expedition->ongkir : 0) + $this->additional_price - $this->discount;
         $this->total_price = $this->shipped_price;
 
         if ($this->is_deposit && $this->customer) {

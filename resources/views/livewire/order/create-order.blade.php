@@ -95,8 +95,8 @@
                             <p class="text-slate-600">{{ $product->nama_produk }}</p>
                         </div>
                         <div>
-                            <p class="text-slate-600">Panjang</p>
-                            <x-input shadowless="true" wire:model.live='qty' type="number" placeholder="0" />
+                            <p class="text-slate-600">Panjang (m)</p>
+                            <x-input shadowless="true" wire:model.live.debounce.300ms='qty' type="number" step=".01" placeholder="0" />
                         </div>
                         <div>
                             <p class="text-slate-600">Total</p>
@@ -116,14 +116,32 @@
                         {{-- <p class="text-slate-600">Ekspedisi</p> --}}
                         <x-select wire:model.live="expedition_id" label='Ekspedisi' placeholder="Pilih ekspedisi"
                             :async-data="route('api.expeditions.index')" option-label="nama_ekspedisi" option-value="id" />
-                        <div class="flex justify-end mt-2">
-
+                        <div class="mt-2">
+                            <x-inputs.currency type="number" label="Biaya Tambahan" wire:model.live.debounce.300ms="additional_price" placeholder="Jumlah biaya tambahan" />
+                        </div>
+                        <div class="mt-2">
+                            <x-inputs.currency type="number" label="Diskon" wire:model.live.debounce.300ms="discount" placeholder="Jumlah diskon" />
+                        </div>
+                        <div class="flex justify-between mt-2">
                             @if ($expedition_id)
+                                <p>Ongkir</p>
                                 <div class="mt-2">{{ rupiah_format($expedition->ongkir) }}</div>
                             @endif
                         </div>
+                        @if ($additional_price)
+                        <div class="flex justify-between mt-2">
+                            <p>Biaya Tambahan</p>
+                            <div>{{ rupiah_format($additional_price) }}</div>
+                        </div>
+                        @endif
+                        @if ($discount)
+                        <div class="flex justify-between mt-2 text-red-500">
+                            <p>Diskon</p>
+                            <div>{{ rupiah_format($discount) }}</div>
+                        </div>
+                        @endif
                         @if ($customer_id && $expedition_id)
-                            <div class="flex justify-between">
+                            <div class="flex justify-between mt-2">
                                 <x-checkbox id="right-label" label="Potong deposit" wire:model.live="is_deposit" />
                                 @if ($is_deposit)
                                     <p class="text-red-500">{{ rupiah_format($deposit_cut) }}</p>
@@ -134,6 +152,7 @@
                                 <x-checkbox disabled class="bg-slate-300" id="right-label" label="Potong deposit" />
                             </div>
                         @endif
+                       
                     </div>
                     <hr class="my-5">
                     <div class="flex justify-between px-8">
@@ -147,7 +166,7 @@
                 </x-card>
                 <x-card shadow='false'>
                     <div class="flex justify-between gap-5">
-                        <x-select label="Pilih Status" placeholder="Pilih Status" :options="['Cicil', 'Lunas']"
+                        <x-select label="Pilih Status" placeholder="Pilih Status" :options="['Belum Bayar','Cicil', 'Lunas']"
                             wire:model.live="status" />
                         @if ($status == 'Cicil')
                             <x-inputs.currency type="number" wire:model='amount' label="Dp (boleh dikosongkan)"
@@ -190,10 +209,11 @@
                             </circle>
                         </svg>
                     </button>
-                    @if($outOfStock == true || $found == false)
+                    @if ($outOfStock == true || $found == false)
                         <x-button wire:target="file" label="Simpan" secondary disabled />
                     @else
-                        <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan" green />
+                        <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan"
+                            green />
                     @endif
                 </div>
             </div>
