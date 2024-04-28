@@ -114,13 +114,15 @@ class AllInternalProcess extends Component
 
     public function render()
     {
+        $today = Carbon::today();
+        // dd($today);
         return view('livewire.internal-process.all-internal-process',[
             // 'internals' => InternalProcess::whereHas('purchase_order', function ($query) {
             //     $query->where('status', '!=', 'cancel');
             // })->paginate(10)
             'internals'=>InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel');
-            })->get()->sortByDesc('execution_date')->groupBy(function($internal) {
+            })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function($internal) {
                 return $internal->execution_date; // Grouping by creation date
             })
         ]);
