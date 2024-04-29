@@ -28,6 +28,7 @@ use App\Livewire\Ekspedisi\EkspedisiArchieve;
 use App\Livewire\InternalProcess\AllInternalProcess;
 use App\Livewire\ExportData\ExportCustomerView;
 use App\Livewire\ExportData\ExportProductView;
+use App\Livewire\InternalProcess\HistoryInternalProcess;
 use App\Livewire\User\AllUser;
 use App\Livewire\User\ArchieveUser;
 use App\Livewire\User\CreateUser;
@@ -109,7 +110,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('internal_process')->group(function () {
         Route::get('/', AllInternalProcess::class)->name('internal_process.index');
-        Route::get('/history', AllInternalProcess::class)->name('history_internal_process.index');
+        Route::get('/history', HistoryInternalProcess::class)->name('history_internal_process.index');
         // Route::get('/create', CreateOrder::class)->name('order.create');
 
         // Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo');
