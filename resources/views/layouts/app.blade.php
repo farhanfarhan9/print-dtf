@@ -21,7 +21,7 @@
     {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
 </head>
 
-<body class=" bg-[#F6F6F6] font-sans antialiased" x-data="{ sidebarOpen: true, dropdownOrder: false, dropdownExport: false }">
+<body class=" bg-[#F6F6F6] font-sans antialiased" x-data="{ sidebarOpen: true, dropdownOrder: false, dropdownExport: false, dropdownInternal:false }">
     <x-sidebar></x-sidebar>
     <x-dialog />
     {{-- <x-notifications /> --}}

@@ -109,6 +109,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('internal_process')->group(function () {
         Route::get('/', AllInternalProcess::class)->name('internal_process.index');
+        Route::get('/history', AllInternalProcess::class)->name('history_internal_process.index');
         // Route::get('/create', CreateOrder::class)->name('order.create');
 
         // Route::get('/{order}/purchase_order', AllPo::class)->name('po.allPo');
