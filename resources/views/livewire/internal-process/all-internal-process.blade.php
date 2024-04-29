@@ -68,10 +68,12 @@
                                             $totalQty = 0;
                                         @endphp
                                         @foreach ($processes as $key => $internal)
+                                            @if ($internal->is_done == 0)
+                                                @php
+                                                    $totalQty += $internal->purchase_order->qty;
+                                                @endphp
+                                            @endif
                                             @if ($internal->is_confirm == 0)
-                                            @php
-                                                $totalQty += $internal->purchase_order->qty;
-                                            @endphp
                                                 <tr wire:key="key-{{ $key }}"
                                                     class=" odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
                                                     <th scope="row"
@@ -99,11 +101,7 @@
                                                         @if ($internal->machine_no == null)
                                                             <x-button positive label="RIP"
                                                                 wire:click='ripDialog({{ $internal->id }})' />
-                                                        @else
-                                                            <x-button icon="check" secondary label="Done"
-                                                                disabled />
                                                         @endif
-
                                                     </th>
                                                     <th scope="row"
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -130,8 +128,7 @@
                                                             <x-button positive label="Selesai"
                                                                 wire:click='doneProcess({{ $internal->id }})' />
                                                         @elseif($internal->machine_no && $internal->print_no && $internal->is_done)
-                                                            <x-button icon="check" secondary label="Done"
-                                                                disabled />
+                                                            
                                                         @else
                                                             Tidak Tersedia
                                                         @endif
@@ -157,7 +154,8 @@
                                         @endforeach
                                         <tr>
                                             <td colspan="3" class="text-xl font-bold text-center">Total</td>
-                                            <td colspan="3" class="text-xl font-bold text-center">{{$totalQty}}</td>
+                                            <td colspan="3" class="text-xl font-bold text-center">
+                                                {{ $totalQty }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
