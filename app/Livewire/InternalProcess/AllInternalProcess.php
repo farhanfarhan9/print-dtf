@@ -92,7 +92,20 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Proses Selesai Untuk Invoice'.$internal->purchase_order->invoice_code,
+            'description' => 'Proses Print Selesai Untuk Invoice'.$internal->purchase_order->invoice_code,
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
+    }
+    public function packingProcess(InternalProcess $internal)
+    {
+        $internal->update([
+            'is_packing' => 1
+        ]);
+
+        $this->notification([
+            'title'       => 'Sukses',
+            'description' => 'Proses Packing Selesai Untuk Invoice'.$internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);

@@ -49,18 +49,6 @@
                                             <th scope="col" class="px-6 py-3">
                                                 Harga
                                             </th>
-                                            <th scope="col" class="px-6 py-3">
-                                                RIP
-                                            </th>
-                                            <th scope="col" class="px-6 py-3">
-                                                Print
-                                            </th>
-                                            <th scope="col" class="px-6 py-3">
-                                                Packing
-                                            </th>
-                                            <th scope="col" class="px-6 py-3 rounded-e-lg">
-                                                Konfirmasi
-                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -92,47 +80,6 @@
                                                 <th scope="row"
                                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     {{ rupiah_format($internal->purchase_order->total_price) }}
-                                                </th>
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    
-                                                </th>
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    @if ($internal->machine_no && $internal->print_no == null)
-                                                        <form action="" method="post"
-                                                            wire:submit='addPrintNo({{ $internal }})'>
-                                                            <div class="w-12 mx-2 mb-1">
-                                                                <x-input wire:model="printNos.{{ $internal->id }}"
-                                                                    placeholder="No urut" />
-                                                            </div>
-                                                            <x-button type="submit" positive spinner label="Submit" />
-                                                        </form>
-                                                    @elseif($internal->machine_no && $internal->print_no)
-                                                        {{ $internal->print_no }}
-                                                    @else
-                                                        Tidak tersedia
-                                                    @endif
-                                                </th>
-
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    
-                                                </th>
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    @if ($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_confirm == null)
-                                                        @if (Auth::user()->roles == 'admin')
-                                                            <x-button positive label="Selesai"
-                                                                wire:click='confirmProcess({{ $internal->id }})' />
-                                                        @else
-                                                            Menunggu konfirmasi admin
-                                                        @endif
-                                                    @elseif($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_confirm)
-                                                        <x-button icon="check" secondary label="Done" disabled />
-                                                    @else
-                                                        Tidak Tersedia
-                                                    @endif
                                                 </th>
                                             </tr>
                                         @endforeach
