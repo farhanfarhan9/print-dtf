@@ -1,3 +1,26 @@
+@if (session('exportSuccess'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{session('exportSuccess')[0]}}',
+                    description: '{{session('exportSuccess')[1]}}',
+                    icon: '{{session('exportSuccess')[2]}}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('exportFailed'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: 'Gagal',
+                    description: 'Salah satu Tanggal Belum di isi',
+                    icon: 'error',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @endif
 <div>
     <x-slot name="header">
         <div class="flex justify-between">

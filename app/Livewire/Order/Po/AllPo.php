@@ -148,6 +148,18 @@ class AllPo extends Component
     }
 
 
+    public function printViewLabel($orderId)
+    {
+        // You might need to use the fully qualified route name depending on your Laravel version.
+        return redirect()->route('view.shipping.label', ['orderId' => $orderId]);
+    }
+
+    public function printViewInvoice($orderId)
+    {
+        // You might need to use the fully qualified route name depending on your Laravel version.
+        return redirect()->route('view.invoice.label', ['orderId' => $orderId]);
+    }
+
     public function printLabel($orderId)
     {
         // You might need to use the fully qualified route name depending on your Laravel version.

@@ -23,8 +23,8 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
     public function __construct($customerOrders, $startDate = null, $endDate = null)
     {
         $this->customerOrders = $customerOrders;
-        $this->startDate = $startDate ? Carbon::parse($startDate)->isoFormat('dddd, D MMM YYYY') : null;
-        $this->endDate = $endDate ? Carbon::parse($endDate)->isoFormat('dddd, D MMM YYYY') : null;
+        $this->startDate = $startDate ? $startDate : null;
+        $this->endDate = $endDate ? $endDate : null;
     }
 
     public function collection()
@@ -44,7 +44,8 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
         return [
             [$title], // Title with formatted dates or without dates
             [], // Empty row for spacing
-            ['No', 'Jumlah Order', 'Nama', 'Alamat', 'No Tlpn', 'Email'], // Actual column headings
+            // ['No', 'Jumlah Order', 'Nama', 'Alamat', 'No Tlpn', 'Email'], // Actual column headings
+            ['No', 'Jumlah Order', 'Nama', 'Frekuensi Pembelian'], // Actual column headings
         ];
     }
 
@@ -55,9 +56,10 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
             $this->currentRow,
             $order['jumlah_order'],
             $order['nama_customer'],
-            $order['alamat'],
-            $order['phone'],
-            $order['email']
+            $order['frekuensi'],
+            // $order['alamat'],
+            // $order['phone'],
+            // $order['email']
         ];
     }
 

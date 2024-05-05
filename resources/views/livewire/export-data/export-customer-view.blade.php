@@ -1,3 +1,26 @@
+    @if (session('exportSuccess'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{session('exportSuccess')[0]}}',
+                    description: '{{session('exportSuccess')[1]}}',
+                    icon: '{{session('exportSuccess')[2]}}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('exportFailed'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: 'Gagal',
+                    description: 'Salah satu Tanggal Belum di isi',
+                    icon: 'error',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @endif
 <div>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -29,11 +52,14 @@
                             Nama Customer
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Frekuensi
+                        </th>
+                        <!-- <th scope="col" class="px-6 py-3">
                             Alamat
-                        </th>
-                        <th scope="col" class="px-6 py-3">
+                        </th> -->
+                        <!-- <th scope="col" class="px-6 py-3">
                             No Telpon
-                        </th>
+                        </th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -42,8 +68,7 @@
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $index + 1 }}</td>
                         <td class="px-6 py-4">{{ $order['jumlah_order'] }}</td>
                         <td class="px-6 py-4">{{ $order['nama_customer'] }}</td>
-                        <td class="px-6 py-4">{{ $order['alamat'] }}</td>
-                        <td class="px-6 py-4">{{ "+62".$order['phone'] }}</td>
+                        <td class="px-6 py-4">{{ $order['frekuensi'] }}</td>
                     </tr>
                 @empty
                     <tr>

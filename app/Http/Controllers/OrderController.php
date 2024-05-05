@@ -8,19 +8,34 @@ use PDF;
 
 class OrderController extends Controller
 {
+    // public function printShippingLabel($orderId)
+    // {
+    //     $order = PurchaseOrder::findOrFail($orderId);
+    //     $pdf = PDF::loadView('orders.shipping-label', compact('order'))
+    //                 ->setPaper('a4', 'landscape');
+    //     return $pdf->download('shipping-label-' . $orderId . '.pdf');
+    // }
+
+    // public function printInvoiceLabel($orderId)
+    // {
+    //     $order = PurchaseOrder::findOrFail($orderId);
+    //     $pdf = PDF::loadView('orders.invoice-label', compact('order'));
+    //     return $pdf->download('invoice-label-' . $orderId . '.pdf');
+    // }
+
     public function printShippingLabel($orderId)
     {
         $order = PurchaseOrder::findOrFail($orderId);
         $pdf = PDF::loadView('orders.shipping-label', compact('order'))
                     ->setPaper('a4', 'landscape');
-        return $pdf->download('shipping-label-' . $orderId . '.pdf');
+        return $pdf->stream('shipping-label-' . $orderId . '.pdf');
     }
-
+    
     public function printInvoiceLabel($orderId)
     {
         $order = PurchaseOrder::findOrFail($orderId);
         $pdf = PDF::loadView('orders.invoice-label', compact('order'));
-        return $pdf->download('invoice-label-' . $orderId . '.pdf');
+        return $pdf->stream('invoice-label-' . $orderId . '.pdf');
     }
 
     public function viewInvoiceLabel($orderId)

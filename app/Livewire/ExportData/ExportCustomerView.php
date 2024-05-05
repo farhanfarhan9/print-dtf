@@ -24,35 +24,39 @@ class ExportCustomerView extends Component
 
     public function exportExcel()
     {
-        // Set Carbon's locale to Indonesian
-        Carbon::setLocale('id');
+        if (($this->startDate == null && $this->endDate == null) || ($this->startDate != null && $this->endDate != null)) {
+            // Set Carbon's locale to Indonesian
+            Carbon::setLocale('id');
 
-        // Format the start and end dates or leave them as an empty string if not set
-        $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
-        $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
+            // Format the start and end dates or leave them as an empty string if not set
+            $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
+            $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
 
-        // Construct the filename using the formatted dates
-        $filename = 'data_customers';
-        $filename .= $formattedStartDate ? "_{$formattedStartDate}" : '';
-        $filename .= $formattedEndDate ? "_-_$formattedEndDate" : '';
-        $filename .= '.xlsx';
+            // Construct the filename using the formatted dates
+            $filename = 'data_customers';
+            $filename .= $formattedStartDate ? "_{$formattedStartDate}" : '';
+            $filename .= $formattedEndDate ? "_-_$formattedEndDate" : '';
+            $filename .= '.xlsx';
 
-        // Fetch the data for export
-        $customerOrders = $this->getCustomerOrders(); // Ensure this method exists and returns the correct data
+            // Fetch the data for export
+            $customerOrders = $this->getCustomerOrders(); // Ensure this method exists and returns the correct data
 
-        // Convert the original date format to a display format only if dates are set
-        $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
-        $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->isoFormat('dddd, D MMMM YYYY') : null;
+            // Convert the original date format to a display format only if dates are set
+            $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
+            $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->isoFormat('dddd, D MMMM YYYY') : null;
 
-        // Return the download response
-        return Excel::download(new CustomersExport($customerOrders, $displayStartDate, $displayEndDate), $filename);
+            // Return the download response
+            return Excel::download(new CustomersExport($customerOrders, $displayStartDate, $displayEndDate), $filename);
+        }else if ($this->startDate == null || $this->endDate == null){
+            session()->flash('exportFailed');
+            $this->redirect(route('export-customer.index'), navigate: true);
+        }
     }
 
     private function getCustomerOrders()
     {
         $query = PurchaseOrder::query()
-            ->select('purchase_id', DB::raw('SUM(qty) as total_qty'))
-            ->where('status', 'Lunas');
+            ->select('purchase_id', DB::raw('SUM(qty) as total_qty'));
 
         // Apply date range filtering if both start and end dates are set
         if ($this->startDate && $this->endDate) {
@@ -93,10 +97,11 @@ class ExportCustomerView extends Component
             return [
                 'jumlah_order' => $customerTotals[$customerId],
                 'nama_customer' => $customer ? $customer->name : 'N/A',
-                'alamat' => $customer ? $customer->address : 'N/A',
-                'phone' => $customer ? $customer->phone : 'N/A',
+                'frekuensi' => $customer ? 'Soon' : 'N/A',
+                // 'alamat' => $customer ? $customer->address : 'N/A',
+                // 'phone' => $customer ? $customer->phone : 'N/A',
                 // Assuming the email is also a part of your Customer model
-                'email' => $customer ? $customer->email : 'N/A',
+                // 'email' => $customer ? $customer->email : 'N/A',
             ];
         }, array_keys($customerTotals));
 
