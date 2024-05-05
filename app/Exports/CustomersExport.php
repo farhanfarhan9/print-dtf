@@ -66,9 +66,9 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
     public function styles(Worksheet $sheet)
     {
         // Set the title row styles
-        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:F1')->getFont()->setSize(14);
-        $sheet->mergeCells('A1:F1'); // Merge title cells
+        $sheet->getStyle('A1:D1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:D1')->getFont()->setSize(14);
+        $sheet->mergeCells('A1:G1'); // Merge title cells
 
         // Define the style array for borders
         $styleArray = [
@@ -81,10 +81,10 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
         ];
 
         // Apply the style from the third row to the end of the data
-        $sheet->getStyle('A3:F' . (3 + count($this->customerOrders)))->applyFromArray($styleArray);
+        $sheet->getStyle('A3:D' . (3 + count($this->customerOrders)))->applyFromArray($styleArray);
 
         // Set auto-sizing for the columns
-        foreach (range('A', 'F') as $columnID) {
+        foreach (range('A', 'D') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
     }

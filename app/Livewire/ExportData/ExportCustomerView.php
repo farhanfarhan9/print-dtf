@@ -70,6 +70,16 @@ class ExportCustomerView extends Component
             ->whereIn('id', $purchasesWithTotalQty->keys())
             ->pluck('customer_id', 'id');
 
+        // Menghitung frekuensi pembelian setiap pelanggan dengan mempertimbangkan tanggal
+        $customerFrequencies = Purchase::query()
+            ->select('customer_id', DB::raw('COUNT(*) as frequency'))
+            ->whereIn('id', $purchasesWithTotalQty->keys())
+            ->when($this->startDate && $this->endDate, function ($query) {
+                $query->whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate]);
+            })
+            ->groupBy('customer_id')
+            ->pluck('frequency', 'customer_id');
+
         // Calculate the total QTY for each customer
         $customerTotals = [];
         foreach ($purchasesWithTotalQty as $purchaseId => $totalQty) {
@@ -92,12 +102,12 @@ class ExportCustomerView extends Component
             ->keyBy('id');
 
         // Prepare the array for export
-        $customerOrders = array_map(function ($customerId) use ($customers, $customerTotals) {
+        $customerOrders = array_map(function ($customerId) use ($customers, $customerTotals, $customerFrequencies) {
             $customer = $customers->get($customerId);
             return [
-                'jumlah_order' => $customerTotals[$customerId],
+                'jumlah_order' => $customerTotals[$customerId] ?? 0,
                 'nama_customer' => $customer ? $customer->name : 'N/A',
-                'frekuensi' => $customer ? 'Soon' : 'N/A',
+                'frekuensi' => $customerFrequencies[$customerId] ?? 0,
                 // 'alamat' => $customer ? $customer->address : 'N/A',
                 // 'phone' => $customer ? $customer->phone : 'N/A',
                 // Assuming the email is also a part of your Customer model

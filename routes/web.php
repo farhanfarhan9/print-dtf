@@ -28,6 +28,7 @@ use App\Livewire\Ekspedisi\EkspedisiArchieve;
 use App\Livewire\InternalProcess\AllInternalProcess;
 use App\Livewire\ExportData\ExportCustomerView;
 use App\Livewire\ExportData\ExportProductView;
+use App\Livewire\ExportData\ExportBookkeepingView;
 use App\Livewire\InternalProcess\HistoryInternalProcess;
 use App\Livewire\User\AllUser;
 use App\Livewire\User\ArchieveUser;
@@ -106,6 +107,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('export-data')->group(function () {
         Route::get('/customer', ExportCustomerView::class)->name('export-customer.index');
         Route::get('/product', ExportProductView::class)->name('export-product.index');
+        Route::get('/bookkeeping', ExportBookkeepingView::class)->name('export-bookkeeping.index');
     });
 
     Route::prefix('internal_process')->group(function () {
