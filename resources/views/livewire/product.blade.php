@@ -50,6 +50,7 @@
                         <th scope="col" class="px-6 py-3">Product Name</th>
                         <th scope="col" class="px-6 py-3">Stock</th>
                         <th scope="col" class="px-6 py-3">Price Details</th>
+                        <th scope="col" class="px-6 py-3">Price Retail Details</th>
                         <th scope="col" class="px-6 py-3">Aksi</th>
                     </tr>
                 </thead>
@@ -66,6 +67,16 @@
                                 @foreach ($detailHarga as $detail)
                                     Range: {{ $detail['start'] }} m - {{ $detail['end'] }} m, Harga:
                                     Rp.{{ $detail['price'] }}<br>
+                                @endforeach
+                            </td>
+                            <td class="px-6 py-4">
+                                @php
+                                    $detailHargaRetail = json_decode($product->detail_harga_retail, true);
+                                @endphp
+
+                                @foreach ($detailHargaRetail as $detailRetail)
+                                    Range: {{ $detailRetail['start'] }} m - {{ $detailRetail['end'] }} m, Harga Retail:
+                                    Rp.{{ $detailRetail['price'] }}<br>
                                 @endforeach
                             </td>
                             <td class="px-6 py-4">

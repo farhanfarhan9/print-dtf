@@ -12,10 +12,12 @@ class Products extends Model
     protected $fillable = [
         'nama_produk',
         'detail_harga',
+        'detail_harga_retail',
         'stok',
     ];
 
     protected $casts = [
         'detail_harga' => 'json',
+        'detail_harga_retail' => 'json',
     ];
 }

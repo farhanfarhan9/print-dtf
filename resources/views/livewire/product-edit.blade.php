@@ -32,6 +32,24 @@
                     <x-button label="+" primary wire:click.prevent="addPriceRange" />
                 </div>
 
+                <label for="title" class="block mt-4 text-sm font-medium">Range Retail Harga (dalam meter)</label>
+
+                @foreach ($priceRetailRanges as $index => $rangeRetail)
+                    <div class="flex items-center mt-2 space-x-2">
+                        <x-input type="number" placeholder="Start"
+                            wire:model.defer="priceRetailRanges.{{ $index }}.start" />
+                        <span>—</span>
+                        <x-input type="number" placeholder="End"
+                            wire:model.defer="priceRetailRanges.{{ $index }}.end" />
+                        <x-input placeholder="Harga" wire:model.defer="priceRetailRanges.{{ $index }}.price" />
+                        <x-button label="-" negative wire:click.prevent="removePriceRetailRange({{ $index }})" />
+                    </div>
+                @endforeach
+
+                <div class="my-4">
+                    <x-button label="+" primary wire:click.prevent="addPriceRetailRange" />
+                </div>
+
                 <x-input label="Stok (dalam meter)" wire:model.defer="stok" />
 
                 <div class="mt-4">
