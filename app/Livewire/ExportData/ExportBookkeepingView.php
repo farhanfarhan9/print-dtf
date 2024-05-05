@@ -72,7 +72,7 @@ class ExportBookkeepingView extends Component
                 return [
                     'customer_name' => optional($purchase->customer)->name, // Menggunakan optional untuk menghindari error jika customer tidak ditemukan
                     'payment_status' => $this->translatePaymentStatus($purchase->payment_status),
-                    'purchase_date' => $purchase->created_at->format('Y-m-d'), // Format tanggal sesuai yang diinginkan
+                    'purchase_date' => $purchase->created_at->format('Y-m-d, H:i:s'), // Format tanggal sesuai yang diinginkan
                 ];
             });
 
