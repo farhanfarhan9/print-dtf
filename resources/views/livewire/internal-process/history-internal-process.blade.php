@@ -56,32 +56,34 @@
                                             $totalQty = 0;
                                         @endphp
                                         @foreach ($processes as $key => $internal)
-                                            @php
-                                                $totalQty += $internal->purchase_order->qty;
-                                            @endphp
-                                            <tr wire:key="key-{{ $key }}"
-                                                class=" odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ $key + 1 }}
-                                                </th>
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ $internal->purchase_order->invoice_code }}
-                                                </th>
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ $internal->purchase_order->purchase->customer->name }}
-                                                </th>
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ $internal->purchase_order->qty }}
-                                                </th>
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ rupiah_format($internal->purchase_order->total_price) }}
-                                                </th>
-                                            </tr>
+                                            @if ($internal->is_confirm)
+                                                @php
+                                                    $totalQty += $internal->purchase_order->qty;
+                                                @endphp
+                                                <tr wire:key="key-{{ $key }}"
+                                                    class=" odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
+                                                    <th scope="row"
+                                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ $key + 1 }}
+                                                    </th>
+                                                    <th scope="row"
+                                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ $internal->purchase_order->invoice_code }}
+                                                    </th>
+                                                    <th scope="row"
+                                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ $internal->purchase_order->purchase->customer->name }}
+                                                    </th>
+                                                    <th scope="row"
+                                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ $internal->purchase_order->qty }}
+                                                    </th>
+                                                    <th scope="row"
+                                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ rupiah_format($internal->purchase_order->total_price) }}
+                                                    </th>
+                                                </tr>
+                                            @endif
                                         @endforeach
                                         <tr>
                                             <td colspan="3" class="text-xl font-bold text-center">Total</td>
