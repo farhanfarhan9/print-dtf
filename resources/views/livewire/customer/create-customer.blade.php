@@ -69,7 +69,7 @@
                 </div>
                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
                 {{-- Checkbox for Is Reseller --}}
-                <x-checkbox label="Is Reseller" wire:model="isReseller" />
+                <x-checkbox label="Reseller" wire:model="isReseller" />
 
                 <x-button type="submit" spinner label="Simpan" green />
                 <x-button href="{{ route('customer.index') }}" wire:navigate label="Batal" red />

@@ -45,7 +45,7 @@ class CreateOrder extends Component
     public $outOfStock;
 
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
-    public $name, $city, $postal, $phone, $deposit, $address;
+    public $name, $city, $postal, $phone, $deposit, $address, $isReseller;
 
     public $additional_price = 0;
     public $discount = 0;
@@ -113,7 +113,7 @@ class CreateOrder extends Component
             'address' => 'required',
         ]);
 
-        $customer = Customer::create([
+        Customer::create([
             'name' => $this->name,
             'provinsi' => $this->selectedProvinsi,
             'city' => $this->selectedKota,
@@ -122,11 +122,12 @@ class CreateOrder extends Component
             'phone' => $this->phone,
             'deposit' => $this->deposit ?: 0,
             'address' => $this->address,
+            'is_reseller' => $this->isReseller ? true : false,
         ]);
 
         session()->flash('customerCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->customerModal = 0;
-        $this->reset('customerModal', 'name', 'selectedProvinsi', 'selectedKota', 'selectedKecamatan', 'selectedPostal', 'phone', 'deposit', 'address');
+        $this->reset('customerModal', 'name', 'selectedProvinsi', 'selectedKota', 'selectedKecamatan', 'selectedPostal', 'phone', 'deposit', 'address', 'isReseller');
     }
 
     public function save()

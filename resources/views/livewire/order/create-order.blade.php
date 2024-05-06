@@ -74,6 +74,8 @@
                                         placeholder="Deposit" />
                                 </div>
                                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
+                                <x-checkbox label="Reseller" wire:model="isReseller" />
+
                             </div>
 
                             <x-slot name="footer">
