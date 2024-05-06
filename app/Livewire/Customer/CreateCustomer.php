@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Gate;
 
 class CreateCustomer extends Component
 {
-    public $name, $city, $postal, $phone, $deposit, $address;
+    public $name, $city, $postal, $phone, $deposit, $address, $isReseller;
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
 
     public function rules()
@@ -41,6 +41,7 @@ class CreateCustomer extends Component
                 'phone' => $this->phone,
                 'deposit' => $this->deposit ?: 0,
                 'address' => $this->address,
+                'is_reseller' => $this->isReseller ? true : false,
             ]);
 
             logger('Customer created: ' . $customer->id);

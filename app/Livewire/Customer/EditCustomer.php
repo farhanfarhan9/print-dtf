@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Gate;
 
 class EditCustomer extends Component
 {
-    public $name, $phone, $deposit, $address, $newDeposit;
+    public $name, $phone, $deposit, $address, $newDeposit, $isReseller;
     public $selectedDataProvinsi, $selectedDataKota, $selectedDataPostal, $selectedDataKecamatan;
     public $selectedDataNameProvinsi, $selectedDataNameKota, $selectedDataNameKecamatan;
     public $selectedProvinsi, $selectedKota, $selectedPostal, $selectedKecamatan;
@@ -30,6 +30,7 @@ class EditCustomer extends Component
         $this->phone = $customer->phone;
         $this->deposit = $customer->deposit;
         $this->address = $customer->address;
+        $this->isReseller = (bool) $customer->is_reseller;
         $this->change = false;
     }
 
@@ -56,6 +57,7 @@ class EditCustomer extends Component
                 'phone' => $this->phone,
                 'deposit' => $this->deposit + ($this->newDeposit ?? 0),
                 'address' => $this->address,
+                'is_reseller' => $this->isReseller ? true : false,
             ]);
         }else{
             $this->customer->update([
@@ -67,6 +69,7 @@ class EditCustomer extends Component
                 'phone' => $this->phone,
                 'deposit' => $this->deposit + ($this->newDeposit ?? 0),
                 'address' => $this->address,
+                'is_reseller' => $this->isReseller ? true : false,
             ]);
         }
 

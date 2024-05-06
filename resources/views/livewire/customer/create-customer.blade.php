@@ -68,6 +68,8 @@
                     <x-inputs.currency type="number" label="Deposit" wire:model='deposit' placeholder="Deposit" />
                 </div>
                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
+                {{-- Checkbox for Is Reseller --}}
+                <x-checkbox label="Is Reseller" wire:model="isReseller" />
 
                 <x-button type="submit" spinner label="Simpan" green />
                 <x-button href="{{ route('customer.index') }}" wire:navigate label="Batal" red />

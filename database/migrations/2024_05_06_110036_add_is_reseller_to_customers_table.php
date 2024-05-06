@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->json('detail_harga_retail')->after('detail_harga');
+        Schema::table('customers', function (Blueprint $table) {
+            $table->boolean('is_reseller')->default(false)->after('address');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('detail_harga_retail');
+        Schema::table('customers', function (Blueprint $table) {
+            $table->dropColumn('is_reseller');
         });
     }
 };

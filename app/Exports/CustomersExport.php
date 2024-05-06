@@ -45,7 +45,7 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
             [$title], // Title with formatted dates or without dates
             [], // Empty row for spacing
             // ['No', 'Jumlah Order', 'Nama', 'Alamat', 'No Tlpn', 'Email'], // Actual column headings
-            ['No', 'Jumlah Order', 'Nama', 'Frekuensi Pembelian'], // Actual column headings
+            ['No', 'Jumlah Order (m)', 'Nama', 'Frekuensi Pembelian'], // Actual column headings
         ];
     }
 

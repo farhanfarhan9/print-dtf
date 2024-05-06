@@ -71,6 +71,9 @@
                             Alamat
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Reseller
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Action
                         </th>
                     </tr>
@@ -122,6 +125,9 @@
                             </td>
                             <td class="px-6 py-4">
                                 {{ $customer->address }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ ($customer->is_reseller) ? 'Reseller' : 'Bukan Reseller' }}
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-5">
