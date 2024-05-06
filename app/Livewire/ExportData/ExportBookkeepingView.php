@@ -66,7 +66,7 @@ class ExportBookkeepingView extends Component
     private function getPurchasesData()
     {
         $purchases = Purchase::with('customer')
-        ->orderBy('created_at')
+        ->orderByDesc('created_at')
             ->get()
             ->map(function ($purchase) {
                 return [

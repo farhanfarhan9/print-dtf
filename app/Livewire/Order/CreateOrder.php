@@ -190,7 +190,7 @@ class CreateOrder extends Component
                 'file' => $this->file,
                 'bank_detail' => $this->bank_detail,
             ]);
-        }elseif($this->status == 'Lunas'){
+        } elseif ($this->status == 'Lunas') {
             Payment::create([
                 'purchase_order_id' => $purchaseOrder->id,
                 'amount' => $this->total_price,
@@ -323,32 +323,42 @@ class CreateOrder extends Component
     {
 
         $this->product = Products::first();
-        $price_range = json_decode($this->product['detail_harga'], true);
         $this->customer = Customer::find($this->customer_id);
-        $this->expedition = Ekspedisi::find($this->expedition_id);
+        if ($this->customer) {
 
-        if ($this->qty <= $this->product->stok) {
-            $this->outOfStock = false;
-            foreach ($price_range as $range) {
-                $this->found = false; // Initialize the found flag to false for each iteration
-                if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
-                    $this->product_price = $range['price'] * $this->qty;
-                    $this->found = true;
-                    break;
-                }
+            if ($this->customer->is_reseller) {
+                $price_range = json_decode($this->product['detail_harga_retail'], true);
+            } else {
+                $price_range = json_decode($this->product['detail_harga'], true);
             }
-        }else{
-            $this->outOfStock = true;
-            $this->found = true;
+
+
+            $this->expedition = Ekspedisi::find($this->expedition_id);
+
+            if ($this->qty <= $this->product->stok) {
+                $this->outOfStock = false;
+                foreach ($price_range as $range) {
+                    $this->found = false; // Initialize the found flag to false for each iteration
+                    if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
+                        $this->product_price = $range['price'] * $this->qty;
+                        $this->found = true;
+                        break;
+                    }
+                }
+            } else {
+                $this->outOfStock = true;
+                $this->found = true;
+            }
+
+            $this->shipped_price = $this->product_price + ($this->expedition ? $this->expedition->ongkir : 0) + $this->additional_price - $this->discount;
+            $this->total_price = $this->shipped_price;
+
+            if ($this->is_deposit && $this->customer) {
+                $this->deposit_cut = min($this->shipped_price, $this->customer->deposit);
+                $this->total_price -= $this->deposit_cut;
+            }
         }
 
-        $this->shipped_price = $this->product_price + ($this->expedition ? $this->expedition->ongkir : 0) + $this->additional_price - $this->discount;
-        $this->total_price = $this->shipped_price;
-
-        if ($this->is_deposit && $this->customer) {
-            $this->deposit_cut = min($this->shipped_price, $this->customer->deposit);
-            $this->total_price -= $this->deposit_cut;
-        }
 
         return view('livewire.order.create-order', [
             'customer' => $this->customer,
