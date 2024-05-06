@@ -23,7 +23,7 @@
                         <span>—</span>
                         <x-input type="number" placeholder="End"
                             wire:model.defer="priceRanges.{{ $index }}.end" />
-                        <x-input placeholder="Harga" wire:model.defer="priceRanges.{{ $index }}.price" />
+                        <x-inputs.currency placeholder="Harga" wire:model.defer="priceRanges.{{ $index }}.price" />
                         <x-button label="-" negative wire:click.prevent="removePriceRange({{ $index }})" />
                     </div>
                 @endforeach
@@ -41,7 +41,7 @@
                         <span>—</span>
                         <x-input type="number" placeholder="End"
                             wire:model.defer="priceRetailRanges.{{ $index }}.end" />
-                        <x-input placeholder="Harga" wire:model.defer="priceRetailRanges.{{ $index }}.price" />
+                        <x-inputs.currency placeholder="Harga" wire:model.defer="priceRetailRanges.{{ $index }}.price" />
                         <x-button label="-" negative wire:click.prevent="removePriceRetailRange({{ $index }})" />
                     </div>
                 @endforeach

@@ -37,10 +37,10 @@
         @endif
         <div class="flex sm:justify-end">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
-            placeholder="Cari Produk" />
+                placeholder="Cari Produk" />
             @if ($products->count() == 0)
-            <x-button label="Tambah Data Produk" href="{{ route('product.add') }}"
-            class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green icon="plus" />
+                <x-button label="Tambah Data Produk" href="{{ route('product.add') }}"
+                    class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green icon="plus" />
             @endif
         </div>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
@@ -70,14 +70,20 @@
                                 @endforeach
                             </td>
                             <td class="px-6 py-4">
-                                @php
-                                    $detailHargaRetail = json_decode($product->detail_harga_retail, true);
-                                @endphp
+                                @if ($product->detail_harga_retail)
+                                    @php
+                                        $detailHargaRetail = json_decode($product->detail_harga_retail, true);
+                                    @endphp
 
-                                @foreach ($detailHargaRetail as $detailRetail)
-                                    Range: {{ $detailRetail['start'] }} m - {{ $detailRetail['end'] }} m, Harga Retail:
-                                    Rp.{{ $detailRetail['price'] }}<br>
-                                @endforeach
+                                    @foreach ($detailHargaRetail as $detailRetail)
+                                        Range: {{ $detailRetail['start'] }} m - {{ $detailRetail['end'] }} m, Harga
+                                        Retail:
+                                        Rp.{{ $detailRetail['price'] }}<br>
+                                    @endforeach
+                                @else
+                                    Belum ada harga reseller
+                                @endif
+
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center space-x-4">
