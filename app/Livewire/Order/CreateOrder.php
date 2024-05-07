@@ -68,6 +68,7 @@ class CreateOrder extends Component
             'qty' => 'required',
             'expedition_id' => 'required',
             'status' => 'required',
+            'bank_detail' => 'required',
             'file' => 'nullable|file|max:2000',
             'additional_price' => 'nullable',
             'discount' => 'nullable',
@@ -140,9 +141,14 @@ class CreateOrder extends Component
             'customer_id' => $this->customer_id,
             'user_id' => Auth::id(),
             'payment_status' => $this->status == 'Lunas' ? 'close' : 'open',
+            'total_payment' => $this->total_price,
         ];
 
         if ($existingOpenOrder) {
+            // dd($existingOpenOrder->total_payment);
+            $existingOpenOrder->update([
+                    'total_payment' => $existingOpenOrder->total_payment + $this->total_price
+                ]);
             $purchase = $existingOpenOrder;
         } else {
             $purchase = Purchase::create($purchaseData);
@@ -184,7 +190,7 @@ class CreateOrder extends Component
 
         if ($this->status == 'Cicil' && (int)$this->amount != 0) {
             Payment::create([
-                'purchase_order_id' => $purchaseOrder->id,
+                'purchase_id' => $purchase->id,
                 'amount' => $paymentAmount == 0 ? 0 : $paymentAmount,
                 'is_dp' => $is_dp,
                 'file' => $this->file,
@@ -192,7 +198,7 @@ class CreateOrder extends Component
             ]);
         } elseif ($this->status == 'Lunas') {
             Payment::create([
-                'purchase_order_id' => $purchaseOrder->id,
+                'purchase_id' => $purchase->id,
                 'amount' => $this->total_price,
                 'is_dp' => 0,
                 'file' => $this->file,
@@ -210,113 +216,8 @@ class CreateOrder extends Component
         $this->product->update([
             'stok' => $this->product->stok - $this->qty
         ]);
-        // if ($existingOpenOrder) {
-        //     $purchaseOrderData = [
-        //         'invoice_code' => $this->invoice_code,
-        //         'purchase_id' => $existingOpenOrder->id,
-        //         'product_id' => $this->product->id,
-        //         'expedition_id' => $this->expedition_id,
-        //         'user_id' => Auth::id(),
-        //         'expedition_price' => $this->expedition->ongkir,
-        //         'deposit_cut' => $this->deposit_cut,
-        //         'product_price' => $this->product_price,
-        //         'qty' => $this->qty,
-        //         'status' => $this->status,
-        //         'po_status' => 'open',
-        //         'total_price' => $this->total_price,
-        //     ];
-
-        //     if ($this->status == 'Lunas') {
-        //         $purchaseOrderData['po_status'] = 'close';
-        //     }
-
-        //     $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
-
-        //     if ($this->status == 'Cicil' && $this->amount != 0) {
-        //         Payment::create([
-        //             'purchase_order_id' => $purchaseOrder->id,
-        //             'amount' => $this->amount,
-        //         ]);
-        //     } elseif ($this->status == 'Lunas') {
-        //         Payment::create([
-        //             'purchase_order_id' => $purchaseOrder->id,
-        //             'amount' => $this->total_price,
-        //         ]);
-        //     }
-
-        //     if ($this->is_deposit) {
-        //         $this->customer->update([
-        //             'deposit' => $this->customer->deposit - $this->deposit_cut
-        //         ]);
-        //     }
-
-        //     $this->product->update([
-        //         'stok' => $this->product->stok - $this->qty
-        //     ]);
-
-        // } else {
-        //     $purchaseData = [
-        //         'customer_id' => $this->customer_id,
-        //         'user_id' => Auth::id(),
-        //         'payment_status' => 'open'
-        //     ];
-        //     if ($this->status == 'Lunas') {
-        //         $purchaseData['payment_status'] = 'close';
-        //     }
-
-        //     $purchase = Purchase::create($purchaseData);
-
-        //     $purchaseOrderData = [
-        //         'invoice_code' => $this->invoice_code,
-        //         'purchase_id' => $purchase->id,
-        //         'product_id' => $this->product->id,
-        //         'expedition_id' => $this->expedition_id,
-        //         'user_id' => Auth::id(),
-        //         'expedition_price' => $this->expedition->ongkir,
-        //         'deposit_cut' => $this->deposit_cut,
-        //         'product_price' => $this->product_price,
-        //         'qty' => $this->qty,
-        //         'status' => $this->status,
-        //         'po_status' => 'open',
-        //         'total_price' => $this->total_price,
-        //     ];
-
-        //     if ($this->status == 'Lunas') {
-        //         $purchaseOrderData['po_status'] = 'close';
-        //     }
-
-        //     $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
-
-        //     if ($this->status == 'Cicil' && $this->amount != 0) {
-        //         Payment::create([
-        //             'purchase_order_id' => $purchaseOrder->id,
-        //             'amount' => $this->amount,
-        //         ]);
-        //     } elseif ($this->status == 'Lunas') {
-        //         Payment::create([
-        //             'purchase_order_id' => $purchaseOrder->id,
-        //             'amount' => $this->total_price,
-        //         ]);
-        //     }
-
-        //     if ($this->is_deposit) {
-        //         $this->customer->update([
-        //             'deposit' => $this->customer->deposit - $this->deposit_cut
-        //         ]);
-        //     }
-
-        //     $this->product->update([
-        //         'stok' => $this->product->stok - $this->qty
-        //     ]);
-        // }
         session()->flash('orderCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('order.index'), navigate: true);
-
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return redirect()->back()->with('error', 'An error occurred while processing your request.');
-
-        // }
     }
 
     public function render()

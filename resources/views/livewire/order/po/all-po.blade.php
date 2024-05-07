@@ -71,10 +71,10 @@
                     </div>
                 </div>
                 <div class="flex justify-between mt-5">
-                    <div>
+                    {{-- <div>
                         <p class="font-medium text-slate-500">Total yang sudah dibayarkan</p>
                         <p class="font-semibold">{{ rupiah_format($item->payments->sum('amount')) }}</p>
-                    </div>
+                    </div> --}}
                     <div>
                         <p class="font-medium text-slate-500">Kurir</p>
                         <p class="font-semibold">{{ $item->expedition->nama_ekspedisi }}
