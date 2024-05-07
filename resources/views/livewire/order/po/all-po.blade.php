@@ -195,9 +195,6 @@
                 </div>
             </div>
         @endif
-
-
-
     </x-modal.card>
 
     {{--  --}}

@@ -133,7 +133,28 @@ class CreateOrder extends Component
 
     public function save()
     {
-        $this->validate();
+        if ($this->status == 'Belum Bayar') {
+            $this->validate([
+                'customer_id' => 'required',
+                'qty' => 'required',
+                'expedition_id' => 'required',
+                'status' => 'required',
+                'file' => 'nullable|file|max:2000',
+                'additional_price' => 'nullable',
+                'discount' => 'nullable',
+            ]);
+        }else{
+            $this->validate([
+                'customer_id' => 'required',
+                'qty' => 'required',
+                'expedition_id' => 'required',
+                'status' => 'required',
+                'bank_detail' => 'required',
+                'file' => 'nullable|file|max:2000',
+                'additional_price' => 'nullable',
+                'discount' => 'nullable',
+            ]);
+        }
         // dd($this->validate());
 
         $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
@@ -142,13 +163,14 @@ class CreateOrder extends Component
             'user_id' => Auth::id(),
             'payment_status' => $this->status == 'Lunas' ? 'close' : 'open',
             'total_payment' => $this->total_price,
+            'invoice_code' => $this->invoice_code,
         ];
 
         if ($existingOpenOrder) {
             // dd($existingOpenOrder->total_payment);
             $existingOpenOrder->update([
-                    'total_payment' => $existingOpenOrder->total_payment + $this->total_price
-                ]);
+                'total_payment' => $existingOpenOrder->total_payment + $this->total_price
+            ]);
             $purchase = $existingOpenOrder;
         } else {
             $purchase = Purchase::create($purchaseData);
