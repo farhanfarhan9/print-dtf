@@ -61,19 +61,19 @@ class CreateOrder extends Component
         $this->invoice_code = Carbon::now()->format('Y.m.d') . '.' . $randomNumber;
     }
 
-    public function rules()
-    {
-        return [
-            'customer_id' => 'required',
-            'qty' => 'required',
-            'expedition_id' => 'required',
-            'status' => 'required',
-            'bank_detail' => 'required',
-            'file' => 'nullable|file|max:2000',
-            'additional_price' => 'nullable',
-            'discount' => 'nullable',
-        ];
-    }
+    // public function rules()
+    // {
+    //     return [
+    //         'customer_id' => 'required',
+    //         'qty' => 'required',
+    //         'expedition_id' => 'required',
+    //         'status' => 'required',
+    //         'bank_detail' => 'required',
+    //         'file' => 'nullable|file|max:2000',
+    //         'additional_price' => 'nullable',
+    //         'discount' => 'nullable',
+    //     ];
+    // }
 
     public function addCustomerModal()
     {
@@ -137,7 +137,6 @@ class CreateOrder extends Component
             $this->validate([
                 'customer_id' => 'required',
                 'qty' => 'required',
-                'expedition_id' => 'required',
                 'status' => 'required',
                 'file' => 'nullable|file|max:2000',
                 'additional_price' => 'nullable',
