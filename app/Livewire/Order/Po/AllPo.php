@@ -92,13 +92,6 @@ class AllPo extends Component
             ]);
         }
 
-
-        // if ($po->po_status == 'close' && $po->purchase->purchase_orders->count() == 1) {
-        //     $po->purchase->update([
-        //         'payment_status' => 'close'
-        //     ]);
-        // }
-
         $this->reset('paymentModal', 'amount', 'file');
         $this->notification([
             'title'       => 'Sukses',
