@@ -60,7 +60,10 @@
                                 wire:click='showPaymentHistory({{ $purchase->id }})'
                                 class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
                         <p class="font-semibold">
+                            <span class="px-2 py-1 text-white bg-red-500 rounded-md">
                             {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
+                        </span>
+
                         </p>
                     </div>
                     <div>

@@ -22,7 +22,7 @@
             })
         </script>
     @endif
-
+    {{-- @dd($purchase) --}}
     <x-slot name="header">
         <div class="flex gap-4">
             <a href="{{ route('order.index') }}" wire:navigate
@@ -37,6 +37,13 @@
             </h2>
         </div>
     </x-slot>
+    <div class="flex gap-10 mb-5">
+        <p class="p-2 text-white bg-red-500 rounded-md">Total Bayar : {{ rupiah_format($purchase->total_payment) }}</p>
+        <p class="p-2 text-white bg-yellow-500 rounded-md">Total Yang Sudah Dibayar :
+            {{ rupiah_format($purchase->payments->sum('amount')) }}</p>
+        <p class="p-2 text-white bg-green-600 rounded-md">Sisa Yang Harus Dibayarkan:
+            {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }} </p>
+    </div>
     @forelse ($purchase_orders as $item)
         <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7 {{ $item->po_status == 'close' ? 'border-green-600' : '' }}"
             wire:key='{{ $item->id }}'>
@@ -55,20 +62,25 @@
                             {{ rupiah_format($item->product_price) }}</p>
                     </div>
                     <div>
-                        <p class="font-medium text-slate-500">Total Bayar <button type="button"
+                        <p class="font-medium text-slate-500">Total Bayar
+                            {{-- <button type="button"
                                 wire:click='showPaymentHistory({{ $item->id }})'
-                                class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
-                        <p class="font-semibold">{{ rupiah_format($item->total_price) }}</p>
+                                class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button> --}}
+                        </p>
+                        <p class="font-semibold">
+                            <span class="px-2 py-1 text-white bg-red-500 rounded-md">
+                                {{ rupiah_format($item->total_price) }}
+                            </span>
+                        </p>
                     </div>
-                    <div>
+                    {{-- <div>
                         <p class="font-medium text-slate-500">Status Pembayaran</p>
                         @if ($item->po_status == 'close')
                             <p class="inline-block px-4 py-1 font-semibold text-white bg-green-400 rounded-lg">Paid</p>
                         @elseif($item->po_status == 'open')
                             <p class="inline-block px-4 py-1 font-semibold text-white bg-red-400 rounded-lg">Unpaid</p>
                         @endif
-                        {{-- <p class="font-semibold">{{ $item->po_status == 'close' ? 'Paid' : 'Unpaid' }}</p> --}}
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="flex justify-between mt-5">
                     {{-- <div>
@@ -77,9 +89,11 @@
                     </div> --}}
                     <div>
                         <p class="font-medium text-slate-500">Kurir</p>
-                        <p class="font-semibold">{{ $item->expedition->nama_ekspedisi }}
-                            ({{ rupiah_format($item->expedition_price) }})
-                        </p>
+                        @if ($item->expedition)
+                            <p class="font-semibold">{{ $item->expedition->nama_ekspedisi }}
+                                ({{ rupiah_format($item->expedition_price) }})
+                            </p>
+                        @endif
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Biaya tambahan</p>
@@ -110,13 +124,13 @@
 
                     </div>
                     <div class="flex gap-5">
-                        @if ($item->po_status == 'open')
+                        {{-- @if ($item->po_status == 'open')
                             <x-button wire:click='updatePaymentModal({{ $item->id }})' label="Update Pembayaran"
                                 class="items-center" primary icon="currency-dollar" />
                         @else
                             <x-button label="Update Pembayaran" disabled class="items-center" secondary
                                 icon="currency-dollar" />
-                        @endif
+                        @endif --}}
                         {{-- <div class="inline-flex rounded-md shadow-sm" role="group"> --}}
                         <button type="button" wire:click='deleteDialog({{ $item->id }})'
                             class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">

@@ -133,15 +133,29 @@ class CreateOrder extends Component
 
     public function save()
     {
+        $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
+        
         if ($this->status == 'Belum Bayar') {
-            $this->validate([
-                'customer_id' => 'required',
-                'qty' => 'required',
-                'status' => 'required',
-                'file' => 'nullable|file|max:2000',
-                'additional_price' => 'nullable',
-                'discount' => 'nullable',
-            ]);
+            if($existingOpenOrder){
+                $this->validate([
+                    'customer_id' => 'required',
+                    'qty' => 'required',
+                    'status' => 'required',
+                    'file' => 'nullable|file|max:2000',
+                    'additional_price' => 'nullable',
+                    'discount' => 'nullable',
+                ]);
+            }else{
+                $this->validate([
+                    'customer_id' => 'required',
+                    'qty' => 'required',
+                    'expedition_id' => 'required',
+                    'status' => 'required',
+                    'file' => 'nullable|file|max:2000',
+                    'additional_price' => 'nullable',
+                    'discount' => 'nullable',
+                ]);
+            }
         }else{
             $this->validate([
                 'customer_id' => 'required',
@@ -156,7 +170,6 @@ class CreateOrder extends Component
         }
         // dd($this->validate());
 
-        $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
         $purchaseData = [
             'customer_id' => $this->customer_id,
             'user_id' => Auth::id(),
@@ -179,9 +192,9 @@ class CreateOrder extends Component
             'invoice_code' => $this->invoice_code,
             'purchase_id' => $purchase->id,
             'product_id' => $this->product->id,
-            'expedition_id' => $this->expedition_id,
+            'expedition_id' => $this->expedition_id ? $this->expedition_id : null ,
             'user_id' => Auth::id(),
-            'expedition_price' => $this->expedition->ongkir,
+            'expedition_price' => $this->expedition ? $this->expedition->ongkir : 0,
             'deposit_cut' => $this->deposit_cut,
             'product_price' => $this->product_price,
             'additional_price' => $this->additional_price,
