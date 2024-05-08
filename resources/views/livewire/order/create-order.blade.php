@@ -18,6 +18,9 @@
 
                     <div class="mt-6 space-y-2">
                         @if ($customer_id)
+                            @if ($customer->is_reseller)
+                                <p class="mb-5 text-lg font-semibold">Reseller</p>
+                            @endif
                             <p class="block text-sm font-medium">Alamat: {{ $customer->address }}</p>
                             <p class="block text-sm font-medium">Kota:
                                 {{ optional($customer->kota)->city_name ?? $customer->city_name }}</p>
@@ -29,6 +32,7 @@
                                     <span class="text-green-400">({{ $customer->deposit - $deposit_cut }})</span>
                                 @endif
                             </p>
+                            
                         @endif
                     </div>
 
@@ -74,6 +78,8 @@
                                         placeholder="Deposit" />
                                 </div>
                                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
+                                <x-checkbox label="Reseller" wire:model="isReseller" />
+
                             </div>
 
                             <x-slot name="footer">
@@ -96,8 +102,13 @@
                         </div>
                         <div>
                             <p class="text-slate-600">Panjang (m)</p>
-                            <x-input shadowless="true" wire:model.live.debounce.300ms='qty' type="number"
-                                step=".01" placeholder="0" />
+                            @if ($customer_id)
+                                <x-input shadowless="true" wire:model.live.debounce.300ms='qty' type="number"
+                                    step=".01" placeholder="0" />
+                            @else
+                                <x-input shadowless="true" disabled type="number" step=".01" placeholder="0" />
+                            @endif
+
                         </div>
                         <div>
                             <p class="text-slate-600">Total</p>

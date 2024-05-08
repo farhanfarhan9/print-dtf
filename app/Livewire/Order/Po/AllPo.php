@@ -18,6 +18,7 @@ class AllPo extends Component
     use WithFileUploads;
 
     public $order;
+    public $purchase;
     public $paymentHistoryModal;
     public $paymentModal;
 
@@ -41,10 +42,11 @@ class AllPo extends Component
         ];
     }
 
-    // public function mount()
-    // {
-    //     $this->purchase_orders = PurchaseOrder::where('purchase_id', $this->order)->orderBy('created_at', 'desc')->paginate(15);
-    // }
+    public function mount()
+    {
+        // $this->purchase_orders = PurchaseOrder::where('purchase_id', $this->order)->orderBy('created_at', 'desc')->paginate(15);
+        $this->purchase = Purchase::find($this->order);
+    }
     public function showPaymentHistory(PurchaseOrder $po)
     {
 
@@ -91,13 +93,6 @@ class AllPo extends Component
                 'payment_status' => 'close'
             ]);
         }
-
-
-        // if ($po->po_status == 'close' && $po->purchase->purchase_orders->count() == 1) {
-        //     $po->purchase->update([
-        //         'payment_status' => 'close'
-        //     ]);
-        // }
 
         $this->reset('paymentModal', 'amount', 'file');
         $this->notification([

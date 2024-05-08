@@ -66,26 +66,16 @@ class ExportBookkeepingView extends Component
 
     private function getPurchasesData()
     {
-        // Start the query
-        $query = Payment::orderBy('created_at', 'asc'); // Added 'asc' to explicitly define the sort order
-
-        // Check if start and end dates are set and add them to the query
-        if ($this->startDate && $this->endDate) {
-            $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
-            $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
-
-            $query->whereBetween('created_at', [$start, $end]);
-        }
-
-        // Retrieve the payments, apply transformations
-        $purchases = $query->get()->map(function ($purchase) {
-            return [
-                'customer_name' => optional($purchase->purchaseOrder->purchase->customer)->name, // Safe access using optional
-                'amount' => optional($purchase)->amount, // Safe access to amount
-                'bank_detail' => optional($purchase)->bank_detail, // Safe access to amount
-                'purchase_date' => $purchase->created_at->format('Y-m-d, H:i:s'), // Format the date as desired
-            ];
-        });
+        $purchases = Purchase::with('customer')
+        ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($purchase) {
+                return [
+                    'customer_name' => optional($purchase->customer)->name, // Menggunakan optional untuk menghindari error jika customer tidak ditemukan
+                    'payment_status' => $this->translatePaymentStatus($purchase->payment_status),
+                    'purchase_date' => $purchase->created_at->format('Y-m-d, H:i:s'), // Format tanggal sesuai yang diinginkan
+                ];
+            });
 
         return $purchases;
     }

@@ -19,7 +19,7 @@ class HistoryInternalProcess extends Component
 
         $internalsQuery = InternalProcess::whereHas('purchase_order', function ($query) {
             $query->where('status', '!=', 'cancel');
-        })->where('execution_date', '!=', $today)
+        })
           ->orderBy('execution_date', 'desc')->get();
         
         // Group the paginated internals by execution date

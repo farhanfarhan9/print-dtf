@@ -56,47 +56,68 @@
                         <p class="font-semibold">{{ $purchase->customer->name }}</p>
                     </div>
                     <div>
-                        <p class="font-medium text-slate-500">Total Bayar</p>
-                        <p class="font-semibold">{{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
+                        <p class="font-medium text-slate-500">Total Bayar <button type="button"
+                                wire:click='showPaymentHistory({{ $purchase->id }})'
+                                class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
+                        <p class="font-semibold">
+                            <span class="px-2 py-1 text-white bg-red-500 rounded-md">
+                            {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
+                        </span>
+
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-slate-500">Total yang sudah dibayarkan</p>
+                        <p class="font-semibold">
+                            <span class="px-2 py-1 text-white bg-yellow-500 rounded-md">
+                                {{ rupiah_format($purchase->payments->sum('amount')) }}
+                            </span>
                         </p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Status pembayaran</p>
                         <p class="font-semibold">
                             @php
-                                $poStatuses = $purchase->purchase_orders->pluck('po_status');
+                                $poStatuses = $purchase->payment_status;
                             @endphp
                             @if ($purchase->purchase_orders->count() == 1 && $purchase->purchase_orders[0]->status == 'cancel')
-                                <p class="inline-block px-4 py-1 font-semibold text-white bg-yellow-400 rounded-lg">Cancel</p>
+                                <p class="inline-block px-4 py-1 font-semibold text-white bg-yellow-400 rounded-lg">
+                                    Cancel</p>
                             @else
-                                @if ($poStatuses->contains('open'))
-                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-red-400 rounded-lg">Unpaid</p>
+                                @if ($poStatuses == 'open')
+                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-red-400 rounded-lg">
+                                        Unpaid</p>
                                 @else
-                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-green-400 rounded-lg">Paid</p>
+                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-green-400 rounded-lg">
+                                        Paid</p>
                                 @endif
                             @endif
                         </p>
                     </div>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex gap-10">
                     <div>
                         <p class="font-medium text-slate-500">Jumlah order</p>
-                        <p class="font-semibold">{{ count($purchase->purchase_orders->where('status', '!=', 'cancel')) }}</p>
+                        <p class="font-semibold">
+                            {{ count($purchase->purchase_orders->where('status', '!=', 'cancel')) }}</p>
                     </div>
                     <div>
-                        <p class="font-medium text-slate-500">Jumlah order yang sudah dibayar</p>
-                        <p class="font-semibold">
-                            {{ $purchase->purchase_orders->where('po_status', 'close')->count() }}
-                        </p>
-                    </div>
-                    <div>
-                        <p class="font-medium text-slate-500">Jumlah order yang belum dibayar</p>
-                        <p class="font-semibold">
-                            {{ $purchase->purchase_orders->where('po_status', 'open')->count() }}
+                        <p class="font-medium text-slate-500">Sisa yang harus dibayarkan</p>
+                        <p class="font-semibold ">
+                            <span class="px-2 py-1 text-white bg-green-600 rounded-md">
+                                {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }}
+                            </span>
                         </p>
                     </div>
                 </div>
-                <div class="flex justify-end">
+                <div class="flex justify-end gap-5">
+                    @if ($purchase->payment_status == 'open')
+                        <x-button wire:click='updatePaymentModal({{ $purchase->id }})' label="Update Pembayaran"
+                            class="items-center" primary icon="currency-dollar" />
+                    @else
+                        <x-button label="Update Pembayaran" disabled class="items-center" secondary
+                            icon="currency-dollar" />
+                    @endif
                     <x-button href="{{ route('po.allPo', $purchase->id) }}" label="Detail order" primary
                         icon="tag" />
                 </div>
@@ -108,4 +129,132 @@
     <div class="mt-2">
         {{ $purchases->links() }}
     </div>
+
+    <x-modal.card title="History Pembayaran INV " blur wire:model="paymentHistoryModal">
+        {{-- <x-input type="number" class="!pl-[2.5rem]" label="Jumlah deposit" prefix="Rp." wire:model="newDeposit" />
+
+        <x-slot name="footer">
+            <div class="flex justify-end gap-x-4">
+                <div class="flex">
+                    <x-button flat label="Cancel" x-on:click="close" />
+                    <x-button primary label="Simpan" wire:click="addDeposit" />
+                </div>
+            </div>
+        </x-slot> --}}
+        @if ($paymentHistories)
+            @forelse ($paymentHistories as $key=>$payment)
+                <div class="px-4 py-2 mt-2 border rounded-md" wire:key='{{ $payment->id }}'>
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-lg font-semibold">Pembayaran ke-{{ $key + 1 }}</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-semibold">{{ $payment->bank_detail }}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Nominal yang dibayarkan</p>
+                            <p class="text-lg font-medium text-green-500">{{ rupiah_format($payment->amount) }}
+                                {{ $payment->is_dp ? '(DP)' : '' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Tanggal pembayaran</p>
+                            <p class="text-lg font-medium ">
+                                {{ \Carbon\Carbon::parse($payment->created_at)->format('d F Y') }}</p>
+                        </div>
+                    </div>
+                    @if ($payment->file)
+                        <div>
+                            {{-- {{$payment}} --}}
+                            <p class="text-sm text-gray-500">Bukti Pembayaran</p>
+                            <a href="{{ asset('storage/' . $payment->file) }}" target="_blank">
+                                <img src="{{ asset('storage/' . $payment->file) }}" class="object-scale-down w-1/2"
+                                    alt="">
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            @empty
+                <div class="text-center text">
+                    Belum ada History Pembayaran
+                </div>
+            @endforelse
+            <div class="flex justify-end mt-2 text-right">
+                <div>
+                    <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
+                    <p class="text-sm text-gray-500">
+                        {{ rupiah_format($selectedHistory->total_payment - $paymentHistories->sum('amount')) }}
+                    </p>
+                </div>
+            </div>
+        @endif
+    </x-modal.card>
+
+    <x-modal.card title="Pembayaran INV {{ $selectedPurchase ? $selectedPurchase->invoice_code : '' }}" blur
+        wire:model="paymentModal">
+        @if ($selectedPurchase)
+            @php
+                $remainingPayment = $selectedPurchase->total_payment - $selectedPurchase->payments->sum('amount');
+            @endphp
+            <div>
+                <x-inputs.currency label="Nominal pembayaran *" max="{{ $remainingPayment }}"
+                    placeholder="Nominal pembayaran" wire:model="amount" />
+
+                <div class="flex justify-between gap-5 mt-5">
+                    <div class="w-1/2">
+                        <x-input-label>Bukti pembayaran</x-input-label>
+                        <x-input-file wire:model='file'></x-input-file>
+                        <x-input-error :messages="$errors->get('file')" class="mt-2" />
+                    </div>
+                    <div class="w-1/2">
+                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                            wire:model.live="bank_detail" />
+                    </div>
+                </div>
+                @if ($file)
+                    <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2" alt="">
+                @endif
+            </div>
+
+            <div class="flex justify-end mt-2 text-right">
+                <div>
+                    <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
+                    <p class="text-sm text-gray-500">
+                        {{ rupiah_format($remainingPayment) }}
+                    </p>
+                </div>
+            </div>
+
+            <x-slot name="footer">
+                <div class="flex justify-end">
+                    <button type="button" wire:loading wire:target="file"
+                        class="px-4 py-2 text-sm font-semibold text-center text-white align-middle bg-gray-500 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 mx-auto" viewBox="0 0 200 200">
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="40"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4">
+                                </animate>
+                            </circle>
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="100"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2">
+                                </animate>
+                            </circle>
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="160"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0">
+                                </animate>
+                            </circle>
+                        </svg>
+                    </button>
+                    <x-button primary wire:target="file" wire:loading.remove label="Simpan"
+                        wire:click="updatePayment({{ $selectedPurchase->id }})" />
+                </div>
+            </x-slot>
+        @endif
+    </x-modal.card>
 </div>
