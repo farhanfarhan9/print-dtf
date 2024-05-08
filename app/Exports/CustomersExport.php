@@ -30,7 +30,22 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
     public function collection()
     {
         // We don't need to set 'no' here anymore, we will handle it in map method
-        return collect($this->customerOrders);
+        $data = collect($this->customerOrders);
+        $totalOrder = $data->sum('jumlah_order'); // Assuming 'jumlah_order' is a key in your array
+        $totalFrekuensi = $data->sum('frekuensi'); // Assuming 'frekuensi' is a key in your array
+
+        $data->push([
+            'jumlah_order' => $totalOrder,
+            'nama_customer' => '.',
+            'frekuensi' => $totalFrekuensi,
+            // 'alamat' => '',
+            // 'phone' => '',
+            // 'email' => ''
+        ]);
+
+        return $data;
+
+
     }
 
     public function headings(): array
@@ -51,6 +66,22 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
 
     public function map($order): array
     {
+        if($order['nama_customer'] == '.') {
+            // Format the jumlah_order with thousands separator and add (m)
+            $formattedJumlahOrder = number_format($order['jumlah_order'], 0, ',', '.') . ' (m)';
+
+            return [
+                '',
+                $formattedJumlahOrder,
+                $order['nama_customer'],
+                $order['frekuensi'],
+                // Additional fields can be formatted and added here similarly
+                // $order['alamat'],
+                // $order['phone'],
+                // $order['email']
+            ];
+        }
+
         $this->currentRow++; // Increment the current row count for each item
         return [
             $this->currentRow,

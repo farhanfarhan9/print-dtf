@@ -38,6 +38,7 @@
             </div>
             <x-button wire:click="exportExcel" label="Export" blue icon="download" class="w-full sm:w-auto" />
         </div>
+        {{--  --}}
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -63,12 +64,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                @forelse ($customerOrders as $index => $order)
+                    {{-- Edited 09 05 2024 --}}
+                @forelse ($newCustomerOrders as $customerId  => $data)
                     <tr class="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700">
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $index + 1 }}</td>
-                        <td class="px-6 py-4">{{ $order['jumlah_order'] }}</td>
-                        <td class="px-6 py-4">{{ $order['nama_customer'] }}</td>
-                        <td class="px-6 py-4">{{ $order['frekuensi'] }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $loop->index + 1 }}</td>
+                        <td class="px-6 py-4">{{ $data['jumlah_order'] }}</td>
+                        <td class="px-6 py-4">{{ $data['nama_customer'] }}</td>
+                        <td class="px-6 py-4">{{ $data['frekuensi'] }}</td>
+                        {{-- <td class="px-6 py-4">{{ $new_order['frekuensi'] }}</td> --}}
                     </tr>
                 @empty
                     <tr>
