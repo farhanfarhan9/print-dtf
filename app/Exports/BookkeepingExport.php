@@ -29,7 +29,18 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function collection()
     {
-        return collect($this->purchasesData);
+        $data = collect($this->purchasesData);
+        $total = $data->sum('amount'); // Assuming 'amount' is a key in your array
+
+        // Add a row for the total at the end
+        $data->push([
+            'customer_name' => 'Total',
+            'amount' => $total,
+            'bank_detail' => '',
+            'purchase_date' => ''
+        ]);
+
+        return $data;
     }
 
     public function headings(): array
@@ -52,12 +63,23 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function map($bookkeeping): array
     {
+        // Check if it's the total row
+        if ($bookkeeping['customer_name'] == 'Total') {
+            return [
+                '', // No number for total
+                $bookkeeping['customer_name'],
+                rupiah_format($bookkeeping['amount']),
+                '',
+                ''
+            ];
+        }
+
         return [
-            ++$this->currentRow, // No
-            isset($bookkeeping['customer_name']) ? $bookkeeping['customer_name'] : 'N/A', // Check for 'customer_name'
-            isset($bookkeeping['amount']) ? rupiah_format($bookkeeping['amount']) : 'N/A', // Check for 'payment_status'
-            isset($bookkeeping['bank_detail']) ? $bookkeeping['bank_detail'] : 'N/A', // Check for 'payment_status'
-            isset($bookkeeping['purchase_date']) ? $bookkeeping['purchase_date'] : 'N/A', // Check for 'purchase_date'
+            ++$this->currentRow,
+            $bookkeeping['customer_name'],
+            rupiah_format($bookkeeping['amount']),
+            $bookkeeping['bank_detail'],
+            $bookkeeping['purchase_date']
         ];
     }
 

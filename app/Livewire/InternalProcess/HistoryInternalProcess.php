@@ -21,12 +21,12 @@ class HistoryInternalProcess extends Component
             $query->where('status', '!=', 'cancel');
         })
           ->orderBy('execution_date', 'desc')->get();
-        
+
         // Group the paginated internals by execution date
         $groupedInternals = $internalsQuery->groupBy(function($internal) {
             return $internal->execution_date; // Grouping by execution date
         });
-        
+
         return view('livewire.internal-process.history-internal-process',[
             'internals'=>$groupedInternals
         ]);

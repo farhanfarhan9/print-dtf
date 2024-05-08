@@ -131,7 +131,7 @@
                                                             <x-button positive label="Selesai"
                                                                 wire:click='doneProcess({{ $internal->id }})' />
                                                         @elseif($internal->machine_no && $internal->print_no && $internal->is_done)
-                                                            
+
                                                         @else
                                                             Tidak Tersedia
                                                         @endif
@@ -142,7 +142,7 @@
                                                             <x-button positive label="Selesai"
                                                                 wire:click='packingProcess({{ $internal->id }})' />
                                                         @elseif($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_packing)
-                                                            
+
                                                         @else
                                                             Tidak Tersedia
                                                         @endif

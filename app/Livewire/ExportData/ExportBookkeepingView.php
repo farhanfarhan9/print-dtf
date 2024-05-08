@@ -16,6 +16,21 @@ class ExportBookkeepingView extends Component
     public $search;
     public $startDate;
     public $endDate;
+    public $viewMode = 'daily';  // Default to daily
+
+    public function switchToDaily()
+    {
+        $this->viewMode = 'daily';
+        $this->startDate = null;
+        $this->endDate = null;
+    }
+
+    public function switchToMonthly()
+    {
+        $this->viewMode = 'monthly';
+        $this->startDate = null;
+        $this->endDate = null;
+    }
 
     public function exportExcel()
     {
@@ -23,9 +38,13 @@ class ExportBookkeepingView extends Component
             // Set Carbon's locale to Indonesian
             Carbon::setLocale('id');
 
-            $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
-            $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
-
+            if($this->viewMode == 'monthly'){
+                $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m', $this->startDate)->format('m-Y') : '';
+                $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m', $this->endDate)->format('m-Y') : '';
+            }else{
+                $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
+                $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
+            }
             $filename = 'data_pembukuan';
             $filename .= $formattedStartDate ? "_{$formattedStartDate}" : '';
             $filename .= $formattedEndDate ? "_-_$formattedEndDate" : '';
@@ -34,9 +53,13 @@ class ExportBookkeepingView extends Component
             $bookkeepingDaily = $this->getPurchasesData();
 
             // Convert the original date format to a display format only if dates are set
-            $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
-            $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->isoFormat('dddd, D MMMM YYYY') : null;
-
+            if($this->viewMode == 'monthly'){
+                $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m', $this->startDate)->isoFormat('MMMM YYYY') : null;
+                $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m', $this->endDate)->isoFormat('MMMM YYYY') : null;
+            }else{
+                $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
+                $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->isoFormat('dddd, D MMMM YYYY') : null;
+            }
             return Excel::download(new BookkeepingExport($bookkeepingDaily, $displayStartDate, $displayEndDate), $filename);
         }else if ($this->startDate == null || $this->endDate == null){
             session()->flash('exportFailed');
@@ -51,8 +74,17 @@ class ExportBookkeepingView extends Component
             ->select('product_id', DB::raw('SUM(qty) as total_sold'), DB::raw('SUM(product_price) as total_omzet'))
             ->where('po_status', 'close');
 
+        // Check if start and end dates are set and add them to the query
         if ($this->startDate && $this->endDate) {
-            $query->whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate]);
+            if($this->viewMode == 'monthly'){
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
+            }else{
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
+            }
+
+            $query->whereBetween('created_at', [$start, $end]);
         }
 
         return $query->groupBy('product_id')->get()->map(function ($order) {
@@ -64,18 +96,115 @@ class ExportBookkeepingView extends Component
         });
     }
 
-    private function getPurchasesData()
+    private function getGroupDailyPurchasesData()
     {
-        $purchases = Purchase::with('customer')
-        ->orderByDesc('created_at')
-            ->get()
-            ->map(function ($purchase) {
+        $query = Payment::orderBy('created_at', 'asc');
+
+        // Check if start and end dates are set and add them to the query
+        if ($this->startDate && $this->endDate) {
+            if($this->viewMode == 'monthly'){
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
+            }else{
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
+            }
+
+            $query->whereBetween('created_at', [$start, $end]);
+        }
+
+        // Retrieve the payments, apply transformations
+        $purchases = $query->get()->map(function ($purchase) {
+            return [
+                'customer_name' => optional($purchase->purchase->customer)->name, // Safe access using optional
+                'amount' => optional($purchase)->amount, // Safe access to amount
+                'bank_detail' => optional($purchase)->bank_detail, // Safe access to bank detail
+                'purchase_date' => $purchase->created_at->format('Y-m-d'), // Format the date as Y-m-d
+            ];
+        });
+
+        // Group the data by purchase_date
+        // This will group all purchase details under each date
+        $groupedPurchases = $purchases->groupBy('purchase_date')->map(function ($datePurchases) {
+            return $datePurchases->map(function ($purchase) {
                 return [
-                    'customer_name' => optional($purchase->customer)->name, // Menggunakan optional untuk menghindari error jika customer tidak ditemukan
-                    'payment_status' => $this->translatePaymentStatus($purchase->payment_status),
-                    'purchase_date' => $purchase->created_at->format('Y-m-d, H:i:s'), // Format tanggal sesuai yang diinginkan
+                    'customer_name' => $purchase['customer_name'],
+                    'amount' => $purchase['amount'],
+                    'bank_detail' => $purchase['bank_detail'],
                 ];
             });
+        });
+
+        return $groupedPurchases;
+    }
+
+    private function getGroupMonthlyPurchasesData()
+    {
+        $query = Payment::orderBy('created_at', 'asc');
+
+        // Check if start and end dates are set and add them to the query
+        if ($this->startDate && $this->endDate) {
+            if($this->viewMode == 'monthly'){
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+            }else{
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+            }
+
+
+            $query->whereBetween('created_at', [$start, $end]);
+        }
+
+        // Retrieve the payments, apply transformations
+        $purchases = $query->get()->map(function ($purchase) {
+            return [
+                'customer_name' => optional($purchase->purchase->customer)->name, // Safe access using optional
+                'amount' => optional($purchase)->amount, // Safe access to amount
+                'bank_detail' => optional($purchase)->bank_detail, // Safe access to bank detail
+                'purchase_month' => $purchase->created_at->format('Y-m'), // Format the date as Year-Month
+            ];
+        });
+
+        // Group the data by purchase_month
+        $groupedPurchases = $purchases->groupBy('purchase_month')->map(function ($monthPurchases) {
+            return $monthPurchases->map(function ($purchase) {
+                return [
+                    'customer_name' => $purchase['customer_name'],
+                    'amount' => $purchase['amount'],
+                    'bank_detail' => $purchase['bank_detail'],
+                ];
+            });
+        });
+
+        return $groupedPurchases;
+    }
+
+    private function getPurchasesData()
+    {
+        $query = Payment::orderBy('created_at', 'asc');
+
+        // Check if start and end dates are set and add them to the query
+        if ($this->startDate && $this->endDate) {
+            if($this->viewMode == 'monthly'){
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+            }else{
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
+            }
+            $query->whereBetween('created_at', [$start, $end]);
+        }
+
+        // Retrieve the payments, apply transformations
+        $purchases = $query->get()->map(function ($purchase) {
+            return [
+                'customer_name' => optional($purchase->purchase->customer)->name, // Safe access using optional
+                'amount' => optional($purchase)->amount, // Safe access to amount
+                'bank_detail' => optional($purchase)->bank_detail, // Safe access to amount
+                'purchase_date' => $purchase->created_at->format('Y-m-d, H:i:s'), // Format the date as desired
+            ];
+        });
 
         return $purchases;
     }
@@ -95,10 +224,15 @@ class ExportBookkeepingView extends Component
     {
         $productsSold = $this->getProductsSold();
         $dailyPurchases = $this->getPurchasesData();
+        $dailyGroupPurchases = $this->getGroupDailyPurchasesData();
+        $monthlyGroupPurchases = $this->getGroupMonthlyPurchasesData();
 
         return view('livewire.export-data.export-bookkeeping-view', [
             'productsSold' => $productsSold,
-            'dailyPurchases' => $dailyPurchases
+            'dailyPurchases' => $dailyPurchases,
+            'dailyGroupPurchases' => $dailyGroupPurchases,
+            'monthlyGroupPurchases' => $monthlyGroupPurchases,
+            'viewMode' => $this->viewMode,
         ]);
     }
 }
