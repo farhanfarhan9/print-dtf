@@ -45,7 +45,7 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
             [$title],
             [$title2],
             [], // Empty row for spacing
-            ['No', 'Nama Customer', 'Tanggal Pembelian'], // Actual column headings for customer
+            ['No', 'Nama Customer', 'Harga', 'Bank', 'Tanggal Pembelian'], // Actual column headings for customer
             // ['No', 'Nama Customer', 'Status Pembelian', 'Tanggal Pembelian'], // Actual column headings for customer
         ];
     }
@@ -55,7 +55,8 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
         return [
             ++$this->currentRow, // No
             isset($bookkeeping['customer_name']) ? $bookkeeping['customer_name'] : 'N/A', // Check for 'customer_name'
-            // isset($bookkeeping['payment_status']) ? $bookkeeping['payment_status'] : 'N/A', // Check for 'payment_status'
+            isset($bookkeeping['amount']) ? rupiah_format($bookkeeping['amount']) : 'N/A', // Check for 'payment_status'
+            isset($bookkeeping['bank_detail']) ? $bookkeeping['bank_detail'] : 'N/A', // Check for 'payment_status'
             isset($bookkeeping['purchase_date']) ? $bookkeeping['purchase_date'] : 'N/A', // Check for 'purchase_date'
         ];
     }
@@ -68,7 +69,7 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
         $sheet->mergeCells('A2:F2');
         $sheet->getStyle('A2:F2')->getAlignment()->setHorizontal('left');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A4:C4')->getFont()->setBold(true);
+        $sheet->getStyle('A4:E4')->getFont()->setBold(true);
 
         // Define the style array for borders
         $styleArray = [
@@ -81,10 +82,10 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
 
         // Apply the style from the third row to the end of the data
-        $sheet->getStyle('A4:C' . (4 + count($this->purchasesData)))->applyFromArray($styleArray);
+        $sheet->getStyle('A4:E' . (4 + count($this->purchasesData)))->applyFromArray($styleArray);
 
         // Set auto-sizing for the columns
-        foreach (range('A', 'C') as $columnID) {
+        foreach (range('A', 'E') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 

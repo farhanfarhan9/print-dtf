@@ -60,6 +60,8 @@ class ExportCustomerView extends Component
 
         // Apply date range filtering if both start and end dates are set
         if ($this->startDate && $this->endDate) {
+            $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
+            $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
             $query->whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate]);
         }
 

@@ -48,9 +48,12 @@
                         <th scope="col" class="px-6 py-3">
                             Nama Customer
                         </th>
-                        {{-- <th scope="col" class="px-6 py-3">
-                            Status Pembelian
-                        </th> --}}
+                        <th scope="col" class="px-6 py-3">
+                            Harga
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Bank
+                        </th>
                         <th scope="col" class="px-6 py-3">
                             Tanggal Pembelian
                         </th>
@@ -64,7 +67,8 @@
                     <tr class="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700">
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $index + 1 }}</td>
                         <td class="px-6 py-4">{{ $purchase['customer_name'] }}</td>
-                        {{-- <td class="px-6 py-4">{{ $purchase['payment_status'] }}</td> --}}
+                        <td class="px-6 py-4">{{ rupiah_format($purchase['amount']) }}</td>
+                        <td class="px-6 py-4">{{ $purchase['bank_detail'] }}</td>
                         <td class="px-6 py-4">{{ \Carbon\Carbon::parse($purchase['purchase_date'])->isoFormat('dddd, DD-MM-YYYY, H:mm:s') }}</td>
                     </tr>
                 @empty
