@@ -25,7 +25,7 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
-                Export Pembukuan - Berdasarkan Penjualan Harian
+                Export Pembukuan - Berdasarkan Penjualan Harian/Bulanan
             </h2>
         </div>
     </x-slot>
@@ -35,8 +35,8 @@
 
             <div class="flex space-x-2">
                 <!-- Toggle Buttons for Daily and Monthly View -->
-                <x-button wire:click="switchToDaily" class="{{ $viewMode == 'daily' ? 'bg-blue-500 text-white hover:bg-gray-300 hover:text-black' : 'bg-gray-300 text-black hover:bg-blue-500 hover:text-white' }} w-full sm:w-auto">Daily</x-button>
-                <x-button wire:click="switchToMonthly" class="{{ $viewMode == 'monthly' ? 'bg-blue-500 text-white hover:bg-gray-300 hover:text-black' : 'bg-gray-300 text-black hover:bg-blue-500 hover:text-white' }} w-full sm:w-auto">Monthly</x-button>
+                <x-button wire:click="switchToDaily" class="{{ $viewMode == 'daily' ? 'bg-blue-500 text-white hover:bg-gray-300 hover:text-black' : 'bg-gray-300 text-black hover:bg-blue-500 hover:text-white' }} w-full sm:w-auto">Harian</x-button>
+                <x-button wire:click="switchToMonthly" class="{{ $viewMode == 'monthly' ? 'bg-blue-500 text-white hover:bg-gray-300 hover:text-black' : 'bg-gray-300 text-black hover:bg-blue-500 hover:text-white' }} w-full sm:w-auto">Bulanan</x-button>
             </div>
 
             <div class="flex space-x-4">
