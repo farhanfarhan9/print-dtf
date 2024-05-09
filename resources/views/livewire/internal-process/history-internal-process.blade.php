@@ -113,7 +113,7 @@
                                     $totalQtyPerDay += $totalQtyPerShift;
                                     $totalPricePerDay += $totalPricePerShift;
                                 @endphp
-                                <p class="mb-2 text-xl font-semibold">Total Keseluruhan shift 2</p>
+                                <p class="mb-2 text-xl font-semibold">Total Keseluruhan Shift {{ $shift }}</p>
                                 <p class="text-lg font-semibold">Total Panjang = {{ $totalQtyPerShift }}</p>
                                 <p class="text-lg font-semibold">Total Harga = {{ rupiah_format($totalPricePerShift) }}
                                 </p>
