@@ -98,7 +98,7 @@ class ExportBookkeepingView extends Component
 
     private function getGroupDailyPurchasesData()
     {
-        $query = Payment::orderBy('created_at', 'asc');
+        $query = Payment::orderBy('created_at', 'desc');
 
         // Check if start and end dates are set and add them to the query
         if ($this->startDate && $this->endDate) {
@@ -140,7 +140,7 @@ class ExportBookkeepingView extends Component
 
     private function getGroupMonthlyPurchasesData()
     {
-        $query = Payment::orderBy('created_at', 'asc');
+        $query = Payment::orderBy('created_at', 'desc');
 
         // Check if start and end dates are set and add them to the query
         if ($this->startDate && $this->endDate) {
@@ -182,7 +182,7 @@ class ExportBookkeepingView extends Component
 
     private function getPurchasesData()
     {
-        $query = Payment::orderBy('created_at', 'asc');
+        $query = Payment::orderBy('created_at', 'desc');
 
         // Check if start and end dates are set and add them to the query
         if ($this->startDate && $this->endDate) {

@@ -23,6 +23,8 @@ class ExportCustomerView extends Component
     public $startDate;
     public $endDate;
     public $viewMode = 'daily';  // Default to daily
+    public $sortField = 'newest_date';  // Default sort field
+    public $sortDirection = 'desc';    // Default sort direction
 
     public function switchToDaily()
     {
@@ -55,7 +57,7 @@ class ExportCustomerView extends Component
             $filename .= '.xlsx';
 
             // Fetch the data for export
-            $customerOrders = $this->getCustomerOrdersNew(); // Ensure this method exists and returns the correct data
+            $customerOrders = $this->getCustomerOrderData(); // Ensure this method exists and returns the correct data
 
             // Convert the original date format to a display format only if dates are set
             $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
@@ -216,6 +218,51 @@ class ExportCustomerView extends Component
     // Old Function Above
 
     // New Function Below
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function getCustomerOrderData()
+    {
+        $query = PurchaseOrder::query()
+            ->select('purchase_orders.*', 'purchases.customer_id', 'customers.name as customer_name')
+            ->join('purchases', 'purchases.id', '=', 'purchase_orders.purchase_id')
+            ->join('customers', 'customers.id', '=', 'purchases.customer_id')
+            ->with(['purchase.customer']);
+
+        if ($this->startDate && $this->endDate) {
+            $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+            $query->whereBetween('purchase_orders.created_at', [$start, $end]);
+        }
+
+        $purchaseOrders = $query->get();
+
+        $customerData = $purchaseOrders->groupBy('purchase.customer_id')->map(function ($orders, $customerId) {
+            return [
+                'jumlah_order' => $orders->sum('qty'),  // 'total_qty' is now 'jumlah_order'
+                'frekuensi' => $orders->count(),  // 'frequency' is now 'frekuensi'
+                'nama_customer' => $orders->first()->purchase->customer->name,  // 'customer_name' is now 'nama_customer'
+                'newest_date' => $orders->max('created_at'),  // Keeping 'newest_date' for clarity
+            ];
+        });
+
+        // Sorting logic
+        if (in_array($this->sortField, ['jumlah_order', 'frekuensi', 'nama_customer'])) {
+            $customerData = $customerData->sortBy($this->sortField, SORT_REGULAR, $this->sortDirection === 'desc');
+        } else {
+            $customerData = $customerData->sortByDesc('newest_date');
+        }
+
+        return $customerData;
+    }
+
 
     private function getCustomerOrdersNew()
     {
@@ -262,11 +309,12 @@ class ExportCustomerView extends Component
     public function render()
     {
         // Get the sorted customer orders for display in the view
-        // $customerOrders = $this->getCustomerOrders();
+        $customerOrders = $this->getCustomerOrderData();
         $newCustomerOrders = $this->getCustomerOrdersNew();
 
         return view('livewire.export-data.export-customer-view', [
             'newCustomerOrders' => $newCustomerOrders,
+            'customerOrders' => $customerOrders,
         ]);
     }
 }

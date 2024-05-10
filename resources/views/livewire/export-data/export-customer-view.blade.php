@@ -38,8 +38,88 @@
             </div>
             <x-button wire:click="exportExcel" label="Export" blue icon="download" class="w-full sm:w-auto" />
         </div>
+                {{--  --}}
+                <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <style>
+                                th {
+                                    position: relative;
+                                    padding-right: 20px; /* Ensure space for the icon */
+                                }
+                                th:after {
+                                    position: absolute;
+                                    right: 8px;
+                                    top: 50%;
+                                    transform: translateY(-50%);
+                                }
+
+                            </style>
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    No
+                                </th>
+                                <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('jumlah_order')">
+                                    Jumlah Order
+                                    @if($sortField === 'jumlah_order')
+                                        @if($sortDirection === 'asc')
+                                            &#x25B2; <!-- Unicode for upward-pointing triangle -->
+                                        @else
+                                            &#x25BC; <!-- Unicode for downward-pointing triangle -->
+                                        @endif
+                                    @endif
+                                </th>
+                                <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('nama_customer')">
+                                    Customer Name
+                                    @if($sortField === 'nama_customer')
+                                        @if($sortDirection === 'asc')
+                                            &#x25B2;
+                                        @else
+                                            &#x25BC;
+                                        @endif
+                                    @endif
+                                </th>
+                                <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('frekuensi')">
+                                    Frekuensi
+                                    @if($sortField === 'frekuensi')
+                                        @if($sortDirection === 'asc')
+                                            &#x25B2;
+                                        @else
+                                            &#x25BC;
+                                        @endif
+                                    @endif
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- Edited 09 05 2024 --}}
+                            {{-- {{ dd($customerOrders) }} --}}
+                        @forelse ($customerOrders as $key  => $order)
+                            <tr class="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700">
+                                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $loop->index + 1 }}</td>
+                                <td class="px-6 py-4">{{ $order['jumlah_order'] }}</td>
+                                <td class="px-6 py-4">{{ $order['nama_customer'] }}</td>
+                                <td class="px-6 py-4">{{ $order['frekuensi'] }}</td>
+                                {{-- <td>{{ $order['newest_date']->format('d-m-Y H:i') }}</td> --}}
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="py-4 text-center">Data Kosong</td>
+                            </tr>
+                        @endforelse
+
+                        </tbody>
+                    </table>
+                </div>
+                {{-- <div class="mt-2">
+                    {{ $PurchaseOrders->links() }}
+                </div> --}}
+    </div>
+</div>
+
+{{-- OLD CODE --}}
         {{--  --}}
-        <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
+        {{-- <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -64,14 +144,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Edited 09 05 2024 --}}
                 @forelse ($newCustomerOrders as $customerId  => $data)
                     <tr class="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700">
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $loop->index + 1 }}</td>
                         <td class="px-6 py-4">{{ $data['jumlah_order'] }}</td>
                         <td class="px-6 py-4">{{ $data['nama_customer'] }}</td>
                         <td class="px-6 py-4">{{ $data['frekuensi'] }}</td>
-                        {{-- <td class="px-6 py-4">{{ $new_order['frekuensi'] }}</td> --}}
+                        <td class="px-6 py-4">{{ $new_order['frekuensi'] }}</td>
                     </tr>
                 @empty
                     <tr>
@@ -81,9 +160,8 @@
 
                 </tbody>
             </table>
-        </div>
+        </div> --}}
         {{-- <div class="mt-2">
             {{ $PurchaseOrders->links() }}
         </div> --}}
-    </div>
-</div>
+{{-- OLD CODE --}}
