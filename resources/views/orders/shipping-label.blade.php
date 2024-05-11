@@ -73,7 +73,7 @@
         display: none; /* Hide the image when printing */
       }
     }
-  </style>
+</style>
 </head>
 <body>
 

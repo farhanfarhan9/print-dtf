@@ -8,25 +8,38 @@
 <body>
 
 <div class="label">
-    <style type="text/css">
-    @font-face {
-        font-family: 'DotMatrix';
-        src: url('DotMatrix-Regular.ttf') format('truetype'); /* Local path to dot matrix font file */
-        font-weight: normal;
-        font-style: normal;
-    }
-    .tg  {border-collapse: collapse;border-spacing: 0;width: 100%;}
-    .tg td, .tg th {
-        border-style: none; /* Remove borders */
-        font-family: 'DotMatrix', monospace; /* Use Dot Matrix font */
-        font-size: 14px; /* Adjusted for Dot Matrix font visibility */
-        overflow: hidden;
-        padding: 10px 5px;
-        word-break: normal;
-    }
-    .tg .tg-baqh{text-align: center;vertical-align: top}
-    .tg .tg-0lax{text-align: left;vertical-align: top}
-        </style>
+    <style>
+        @font-face {
+            font-family: 'DotMatrix';
+            src: url('DotMatrix-Regular.ttf') format('truetype'); /* Path to dot matrix font file */
+        }
+        body {
+            margin: 0;
+            font-family: 'DotMatrix', monospace; /* Apply Dot Matrix for the thermal print look */
+            font-size: 10px; /* Smaller font size to fit content within the width */
+        }
+        .label {
+            width: 148mm; /* Set the width to match thermal paper */
+            padding: 2mm; /* Minimal padding to maximize space */
+            box-sizing: border-box;
+        }
+        .tg {
+            width: 100%;
+            table-layout: fixed; /* Helps with consistent column width */
+        }
+        .tg td, .tg th {
+            overflow: hidden;
+            word-break: break-word; /* Break words to prevent overflow */
+            padding: 1mm; /* Reduce padding */
+        }
+        .tg .tg-0lax, .tg .tg-baqh {
+            text-align: center; /* Center text for better readability */
+            vertical-align: top;
+        }
+        .tg .tg-0lax {
+            border-bottom: 1px dashed black; /* Use dashed lines for separation */
+        }
+    </style>
         <table class="tg">
         <thead>
           <tr>
@@ -58,12 +71,12 @@
             <td class="tg-0lax">Harga</td>
             <td class="tg-0lax">Subtotal</td>
           </tr>
-          <tr>
+        <tr>
             <td class="tg-0lax">{{ $order->product->nama_produk }}</td>
             <td class="tg-0lax">{{ number_format($order->qty, 0, ',', '.') }}</td>
             <td class="tg-0lax">Rp. {{ number_format($order->product_price, 0, ',', '.') }}</td>
             <td class="tg-0lax">Rp. {{ number_format($order->product_price, 0, ',', '.') }}</td>
-          </tr>
+        </tr>
           <tr>
             <td class="tg-0lax">Jasa Kirim</td>
             <td class="tg-0lax"></td>
@@ -71,30 +84,34 @@
             <td class="tg-0lax">Rp. {{ number_format($order->expedition->ongkir, 0, ',', '.') }}</td>
           </tr>
           <tr>
-            <td class="tg-0lax" colspan="4">___________________________________________________________________________ +</td>
+            <td class="tg-0lax" colspan="4">______________________________________________________________________________________________ +</td>
           </tr>
           <tr>
             <td class="tg-0lax">Deposit</td>
             <td class="tg-0lax"></td>
             <td class="tg-0lax"></td>
-            <td class="tg-0lax" colspan="4">Rp. {{ number_format($order->deposit_cut, 0, ',', '.') }}</td>
+            <td class="tg-0lax">Rp. {{ number_format($order->deposit_cut, 0, ',', '.') }}</td>
           </tr>
           @php
               $cicilan = 0;
           @endphp
-          @foreach($order->payments as $key => $pembayaran)
+        @php
+            $invoice = $order->get();
+        @endphp
+          @foreach($invoice as $key => $pembayaran)
           <tr>
-            <td class="tg-0lax">Pembayaran {{ $key+1 }}</td>
+            <td class="tg-0lax">Pembayaran {{ $loop->index + 1 }}</td>
             <td class="tg-0lax"></td>
             <td class="tg-0lax"></td>
-            <td class="tg-0lax">Rp. {{ number_format($pembayaran['amount'], 0, ',', '.') }}</td>
+            <td class="tg-0lax">Rp. {{ $pembayaran->paymentsid }}</td>
+            {{-- <td class="tg-0lax">Rp. {{ number_format($pembayaran->paymentsid, 0, ',', '.') }}</td> --}}
           </tr>
           @php
-              $cicilan += $pembayaran['amount'];
+              $cicilan += $pembayaran->amount;
           @endphp
           @endforeach
           <tr>
-            <td class="tg-0lax" colspan="4">___________________________________________________________________________ -</td>
+            <td class="tg-0lax" colspan="4">______________________________________________________________________________________________ -</td>
           </tr>
           <tr>
             <td class="tg-0lax">Total</td>

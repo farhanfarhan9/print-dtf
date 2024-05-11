@@ -128,21 +128,33 @@
                         </p>
                     </div>
                 </div>
-                <div class="flex justify-end gap-5">
-                    @if ($purchase->payment_status == 'open')
-                        <x-button wire:click='updatePaymentModal({{ $purchase->id }})' label="Update Pembayaran"
-                            class="items-center" primary icon="currency-dollar" />
-                    @else
-                        <x-button label="Update Pembayaran" disabled class="items-center" secondary
-                            icon="currency-dollar" />
-                    @endif
-                    @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
-                        <x-button href="{{ route('po.allPo', $purchase->id) }}" label="Detail order" primary
-                            icon="tag" />
-                    @else
-                        <x-button label="Detail order" disabled secondary icon="tag" />
-                    @endif
+                <div class="flex justify-between w-full">
+                    <!-- Left-aligned buttons -->
+                    <div class="flex gap-5">
+                        <x-button wire:click="printInvoice({{ $purchase->id }})" label="Print Invoice"
+                            class="rounded-xl" primary icon="receipt-tax" />
+                        <x-button wire:click="printLabel({{ $purchase->id }})" label="Print Label Pengiriman"
+                            class="rounded-xl" primary icon="truck" />
+                        {{-- <x-button label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
+                        <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" /> --}}
+                    </div>
 
+                    <!-- Right-aligned buttons -->
+                    <div class="flex gap-5">
+                        @if ($purchase->payment_status == 'open')
+                            <x-button wire:click='updatePaymentModal({{ $purchase->id }})' label="Update Pembayaran"
+                                class="items-center" primary icon="currency-dollar" />
+                        @else
+                            <x-button label="Update Pembayaran" disabled class="items-center" secondary
+                                icon="currency-dollar" />
+                        @endif
+                        @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
+                            <x-button href="{{ route('po.allPo', $purchase->id) }}" label="Detail order" primary
+                                icon="tag" />
+                        @else
+                            <x-button label="Detail order" disabled secondary icon="tag" />
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
