@@ -27,6 +27,11 @@ class PurchaseOrder extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function paymentsid()
+    {
+        return $this->hasMany(Payment::class, 'purchase_id', 'purchase_id');
+    }
+
     public function product()
     {
         return $this->belongsTo(Products::class);

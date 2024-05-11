@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PurchaseOrder;
+use App\Models\Purchase;
 use PDF;
 
 class OrderController extends Controller
@@ -30,20 +31,22 @@ class OrderController extends Controller
                     ->setPaper('a4', 'landscape');
         return $pdf->stream('shipping-label-' . $orderId . '.pdf');
     }
-    
-    public function printInvoiceLabel($orderId)
+
+    public function printInvoiceLabel($purchaseId)
     {
-        $order = PurchaseOrder::findOrFail($orderId);
+        // Find the PurchaseOrder by purchase_id instead of primary key id
+        $order = PurchaseOrder::where('purchase_id', $purchaseId)->firstOrFail();
         $pdf = PDF::loadView('orders.invoice-label', compact('order'));
-        return $pdf->stream('invoice-label-' . $orderId . '.pdf');
+        return $pdf->stream('invoice-label-' . $purchaseId . '.pdf');
     }
 
-    public function viewInvoiceLabel($orderId)
+    public function viewInvoiceLabel($purchaseId)
     {
-        $order = PurchaseOrder::findOrFail($orderId);
-        // Return a view directly for the browser display.
+        // Similarly, find by purchase_id when displaying in the browser
+        $order = PurchaseOrder::where('purchase_id', $purchaseId)->firstOrFail();
         return view('orders.invoice-label', compact('order'));
     }
+
     public function viewShippingLabel($orderId)
     {
         $order = PurchaseOrder::findOrFail($orderId);
