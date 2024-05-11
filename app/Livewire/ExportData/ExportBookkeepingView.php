@@ -120,6 +120,7 @@ class ExportBookkeepingView extends Component
                 'amount' => optional($purchase)->amount, // Safe access to amount
                 'bank_detail' => optional($purchase)->bank_detail, // Safe access to bank detail
                 'purchase_date' => $purchase->created_at->format('Y-m-d'), // Format the date as Y-m-d
+                'purchase_time' => $purchase->created_at->format('Y-m-d H:i'), // Format the date as Y-m-d
             ];
         });
 
@@ -131,6 +132,7 @@ class ExportBookkeepingView extends Component
                     'customer_name' => $purchase['customer_name'],
                     'amount' => $purchase['amount'],
                     'bank_detail' => $purchase['bank_detail'],
+                    'purchase_time' => $purchase['purchase_time'],
                 ];
             });
         });
@@ -163,6 +165,7 @@ class ExportBookkeepingView extends Component
                 'amount' => optional($purchase)->amount, // Safe access to amount
                 'bank_detail' => optional($purchase)->bank_detail, // Safe access to bank detail
                 'purchase_month' => $purchase->created_at->format('Y-m'), // Format the date as Year-Month
+                'purchase_time' => $purchase->created_at->format('Y-m-d H:i'), // Format the date as Year-Month
             ];
         });
 
@@ -173,6 +176,7 @@ class ExportBookkeepingView extends Component
                     'customer_name' => $purchase['customer_name'],
                     'amount' => $purchase['amount'],
                     'bank_detail' => $purchase['bank_detail'],
+                    'purchase_time' => $purchase['purchase_time'],
                 ];
             });
         });
