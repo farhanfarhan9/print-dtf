@@ -93,7 +93,7 @@ class AllPo extends Component
             ]);
         }
 
-        $this->reset('paymentModal', 'amount', 'file');
+        $this->reset('paymentModal', 'amount', 'file', 'bank_detail');
         $this->notification([
             'title'       => 'Sukses',
             'description' => "'Berhasil menambahkan pembayaran pada INV' .$po->invoice_code",
@@ -137,12 +137,18 @@ class AllPo extends Component
         $po->product->update([
             'stok' => $po->product->stok + $po->qty,
         ]);
-        $this->notification([
-            'title'       => 'Sukses',
-            'description' => "'Berhasil membatalkan pesanan pada INV' .$po->invoice_code",
-            'icon'        => 'success',
-            'timeout'     => 3000
-        ]);
+
+        if ($po->purchase->purchase_orders->count() == 1) {
+            session()->flash('orderCanceled', ['Sukses', "'Berhasil membatalkan pesanan pada INV' .$po->invoice_code", 'success']);
+            return redirect('/orders');
+        }else{
+            $this->notification([
+                'title'       => 'Sukses',
+                'description' => "'Berhasil membatalkan pesanan pada INV' .$po->invoice_code",
+                'icon'        => 'success',
+                'timeout'     => 3000
+            ]);
+        }
     }
 
 
