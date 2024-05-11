@@ -135,27 +135,25 @@ class CreateOrder extends Component
     {
         $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
         
-        if ($this->status == 'Belum Bayar') {
-            if($existingOpenOrder){
-                $this->validate([
-                    'customer_id' => 'required',
-                    'qty' => 'required',
-                    'status' => 'required',
-                    'file' => 'nullable|file|max:2000',
-                    'additional_price' => 'nullable',
-                    'discount' => 'nullable',
-                ]);
-            }else{
-                $this->validate([
-                    'customer_id' => 'required',
-                    'qty' => 'required',
-                    'expedition_id' => 'required',
-                    'status' => 'required',
-                    'file' => 'nullable|file|max:2000',
-                    'additional_price' => 'nullable',
-                    'discount' => 'nullable',
-                ]);
-            }
+        if($existingOpenOrder){
+            $this->validate([
+                'customer_id' => 'required',
+                'qty' => 'required',
+                'status' => 'required',
+                'file' => 'nullable|file|max:2000',
+                'additional_price' => 'nullable',
+                'discount' => 'nullable',
+            ]);
+        }elseif ($this->status == 'Belum Bayar') {
+            $this->validate([
+                'customer_id' => 'required',
+                'qty' => 'required',
+                'expedition_id' => 'required',
+                'status' => 'required',
+                'file' => 'nullable|file|max:2000',
+                'additional_price' => 'nullable',
+                'discount' => 'nullable',
+            ]);
         }else{
             $this->validate([
                 'customer_id' => 'required',
