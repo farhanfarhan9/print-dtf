@@ -18,7 +18,7 @@ class AllPo extends Component
     use WithFileUploads;
 
     public $order;
-    public $purchase;
+    // public $purchase;
     public $paymentHistoryModal;
     public $paymentModal;
 
@@ -45,7 +45,6 @@ class AllPo extends Component
     public function mount()
     {
         // $this->purchase_orders = PurchaseOrder::where('purchase_id', $this->order)->orderBy('created_at', 'desc')->paginate(15);
-        $this->purchase = Purchase::find($this->order);
     }
     public function showPaymentHistory(PurchaseOrder $po)
     {
@@ -128,6 +127,10 @@ class AllPo extends Component
             $po->purchase->update([
                 'payment_status' => 'close'
             ]);
+        }else{
+            $po->purchase->update([
+                'total_payment' => $po->purchase->total_payment - $po->total_price
+            ]);
         }
 
         $po->internal_process->delete();
@@ -171,6 +174,7 @@ class AllPo extends Component
     {
         return view('livewire.order.po.all-po', [
             'purchase_orders' => PurchaseOrder::where('purchase_id', $this->order)->where('status', '!=', 'cancel')->orderBy('created_at', 'desc')->paginate(10),
+            'purchase' => Purchase::find($this->order),
         ]);
     }
 }
