@@ -25,7 +25,7 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
-                Export Penjualan - Berdasarkan Order Customer
+                Export Analyzer - Berdasarkan Order Customer
             </h2>
         </div>
     </x-slot>

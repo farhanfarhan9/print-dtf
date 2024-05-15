@@ -30,12 +30,29 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
     public function collection()
     {
         $data = collect($this->purchasesData);
-        $total = $data->sum('amount'); // Assuming 'amount' is a key in your array
+        $total = $data->sum('amount');
 
-        // Add a row for the total at the end
+        // Calculate the total for cash purchases
+        $totalCash = $data->where('bank_detail', 'CASH')->sum('amount');
+
+        // Add rows for the total and total cash at the end
         $data->push([
             'customer_name' => 'Total',
             'amount' => $total,
+            'bank_detail' => '',
+            'purchase_date' => ''
+        ]);
+
+        $data->push([
+            'customer_name' => 'Total Cash',
+            'amount' => $totalCash,
+            'bank_detail' => '',
+            'purchase_date' => ''
+        ]);
+
+        $data->push([
+            'customer_name' => 'Total Tanpa Cash',
+            'amount' => $total-$totalCash,
             'bank_detail' => '',
             'purchase_date' => ''
         ]);
@@ -64,7 +81,7 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
     public function map($bookkeeping): array
     {
         // Check if it's the total row
-        if ($bookkeeping['customer_name'] == 'Total') {
+        if ($bookkeeping['customer_name'] == 'Total' || $bookkeeping['customer_name'] == 'Total Cash' || $bookkeeping['customer_name'] == 'Total Tanpa Cash') {
             return [
                 '', // No number for total
                 $bookkeeping['customer_name'],
