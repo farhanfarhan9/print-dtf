@@ -114,15 +114,13 @@
                         <p class="font-semibold">{{ $item->user->name }}</p>
                     </div>
                 </div>
-                <div class="flex justify-between">
-                    <div>
+                <div class="flex justify-end">
+                    {{-- <div>
                         <x-button wire:click="printInvoice({{ $item->id }})" label="Print Invoice"
                             class="rounded-xl" primary icon="receipt-tax" />
-                        {{-- <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" /> --}}
                         <x-button wire:click="printLabel({{ $item->id }})" label="Print Label Pengiriman"
                             class="rounded-xl" primary icon="truck" />
-
-                    </div>
+                    </div> --}}
                     <div class="flex gap-5">
                         {{-- @if ($item->po_status == 'open')
                             <x-button wire:click='updatePaymentModal({{ $item->id }})' label="Update Pembayaran"

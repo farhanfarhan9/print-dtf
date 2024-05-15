@@ -21,6 +21,17 @@
                 })
             })
         </script>
+    @elseif (session('orderCanceled'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{ session('orderCanceled')[0] }}',
+                    description: '{{ session('orderCanceled')[1] }}',
+                    icon: '{{ session('orderCanceled')[2] }}',
+                    timeout: 3000
+                })
+            })
+        </script>
     @endif
 
     <x-slot name="header">
@@ -61,8 +72,8 @@
                                 class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
                         <p class="font-semibold">
                             <span class="px-2 py-1 text-white bg-red-500 rounded-md">
-                            {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
-                        </span>
+                                {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
+                            </span>
 
                         </p>
                     </div>
@@ -105,7 +116,14 @@
                         <p class="font-medium text-slate-500">Sisa yang harus dibayarkan</p>
                         <p class="font-semibold ">
                             <span class="px-2 py-1 text-white bg-green-600 rounded-md">
-                                {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }}
+                                {{-- @dump($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0) --}}
+                                @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
+                                    {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }}
+                                @else
+                                    0
+                                @endif
+                                {{-- {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }} --}}
+
                             </span>
                         </p>
                     </div>
@@ -113,8 +131,10 @@
                 <div class="flex justify-between w-full">
                     <!-- Left-aligned buttons -->
                     <div class="flex gap-5">
-                        <x-button wire:click="printInvoice({{ $purchase->id }})" label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
-                        <x-button wire:click="printLabel({{ $purchase->id }})" label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" />
+                        <x-button wire:click="printInvoice({{ $purchase->id }})" label="Print Invoice"
+                            class="rounded-xl" primary icon="receipt-tax" />
+                        <x-button wire:click="printLabel({{ $purchase->id }})" label="Print Label Pengiriman"
+                            class="rounded-xl" primary icon="truck" />
                         {{-- <x-button label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
                         <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" /> --}}
                     </div>
@@ -128,8 +148,12 @@
                             <x-button label="Update Pembayaran" disabled class="items-center" secondary
                                 icon="currency-dollar" />
                         @endif
-                        <x-button href="{{ route('po.allPo', $purchase->id) }}" label="Detail order" primary
-                            icon="tag" />
+                        @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
+                            <x-button href="{{ route('po.allPo', $purchase->id) }}" label="Detail order" primary
+                                icon="tag" />
+                        @else
+                            <x-button label="Detail order" disabled secondary icon="tag" />
+                        @endif
                     </div>
                 </div>
             </div>
@@ -219,8 +243,8 @@
                         <x-input-error :messages="$errors->get('file')" class="mt-2" />
                     </div>
                     <div class="w-1/2">
-                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
-                            wire:model.live="bank_detail" />
+                        <x-select label="Detail bank *" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                            wire:model="bank_detail" />
                     </div>
                 </div>
                 @if ($file)
