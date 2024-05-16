@@ -68,6 +68,7 @@ class AllOrder extends Component
     {
         // dd($this->maxAmount);
         // dd($remainingDebt);
+        // dd( $purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price'));
         $this->validate();
 
         if ($this->file) {
@@ -89,8 +90,8 @@ class AllOrder extends Component
         // }
 
         $remainingDebt = $purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price') - $purchase->payments->sum('amount');
-
-        if ($this->amount >= $remainingDebt) {
+        
+        if ($remainingDebt == 0) {
             $purchase->update([
                 'payment_status' => 'close'
             ]);

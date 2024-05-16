@@ -26,7 +26,7 @@
                             @endif
                             @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                 @if ($machine != null)
-                                    <p class="mb-2 font-medium">Mesin {{ $machine }}</p>
+                                    <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Ino' : 'Magna' }}</p>
                                 @else
                                     <p class="mb-2 font-medium">Belum ada Mesin</p>
                                 @endif
@@ -131,7 +131,6 @@
                                                             <x-button positive label="Selesai"
                                                                 wire:click='doneProcess({{ $internal->id }})' />
                                                         @elseif($internal->machine_no && $internal->print_no && $internal->is_done)
-
                                                         @else
                                                             Tidak Tersedia
                                                         @endif
@@ -142,21 +141,30 @@
                                                             <x-button positive label="Selesai"
                                                                 wire:click='packingProcess({{ $internal->id }})' />
                                                         @elseif($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_packing)
-
                                                         @else
                                                             Tidak Tersedia
                                                         @endif
                                                     </th>
                                                     <th scope="row"
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        @if ($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_packing && $internal->is_confirm == null)
+                                                        @if (
+                                                            $internal->machine_no &&
+                                                                $internal->print_no &&
+                                                                $internal->is_done &&
+                                                                $internal->is_packing &&
+                                                                $internal->is_confirm == null)
                                                             @if (Auth::user()->roles == 'admin')
                                                                 <x-button positive label="Selesai"
                                                                     wire:click='confirmProcess({{ $internal->id }})' />
                                                             @else
                                                                 Menunggu konfirmasi admin
                                                             @endif
-                                                        @elseif($internal->machine_no && $internal->print_no && $internal->is_done && $internal->is_packing && $internal->is_confirm)
+                                                        @elseif(
+                                                            $internal->machine_no &&
+                                                                $internal->print_no &&
+                                                                $internal->is_done &&
+                                                                $internal->is_packing &&
+                                                                $internal->is_confirm)
                                                             <x-button icon="check" secondary label="Done"
                                                                 disabled />
                                                         @else
@@ -186,8 +194,8 @@
         <x-modal.card
             title="RIP invoice: {{ isset($selectedData) ? $selectedData->purchase_order->invoice_code : '' }}" blur
             wire:model.defer="ripModal">
-            <x-native-select label="Nomor Mesin" placeholder="Pilih Nomor Mesin" :options="[1, 2]"
-                wire:model="machineNo" />
+            <x-native-select label="Nomor Mesin" placeholder="Pilih Nomor Mesin" :options="[['name' => 'Ino', 'id' => 1], ['name' => 'Magna', 'id' => 2]]" option-label="name"
+                option-value="id" wire:model="machineNo" />
 
             <x-slot name="footer">
                 <div class="flex justify-end gap-x-4">

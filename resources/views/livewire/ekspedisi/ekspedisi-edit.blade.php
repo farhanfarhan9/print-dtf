@@ -20,7 +20,7 @@
 
                     <!-- Ongkir -->
                     <div class="flex-1">
-                        <x-input label="Ongkir" prefix="Rp." placeholder="Ongkir" wire:model.defer="ongkir" />
+                        <x-inputs.currency label="Ongkir" prefix="Rp." placeholder="Ongkir" wire:model.defer="ongkir" />
                     </div>
                 </div>
 

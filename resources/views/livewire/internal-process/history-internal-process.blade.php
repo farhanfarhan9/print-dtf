@@ -33,7 +33,7 @@
                                 @endphp
                                 @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                     @if ($machine != null)
-                                        <p class="mb-4 font-medium">Mesin {{ $machine }}</p>
+                                        <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Ino' : 'Magna' }}</p>
                                         <table
                                             class="w-full mb-8 text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                                             <thead
