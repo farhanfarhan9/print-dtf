@@ -33,34 +33,34 @@
             padding: 1mm; /* Reduce padding */
         }
         .tg .tg-0lax, .tg .tg-baqh {
-            text-align: center; /* Center text for better readability */
+            text-align: left; /* Center text for better readability */
             vertical-align: top;
         }
-        .tg .tg-0lax {
+        /* .tg .tg-0lax {
             border-bottom: 1px dashed black; /* Use dashed lines for separation */
-        }
+        } */
     </style>
         <table class="tg">
         <thead>
           <tr>
-            <th class="tg-0lax" colspan="4">MANSYUR DTF</th>
+            <th class="tg-0lax" colspan="4" style="text-align: center;">MANSYUR DTF</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="tg-baqh" colspan="4">DTF Premium #rasakangsablon</td>
+            <td class="tg-baqh" colspan="4" style="text-align: center;">DTF Premium #rasakangsablon</td>
           </tr>
           <tr>
-            <td class="tg-baqh" colspan="4">Jalan Setia Budi, Komplek Ruko<br>Milala Mas Blok B no 24</td>
+            <td class="tg-baqh" colspan="4" style="text-align: center;">Jalan Setia Budi, Komplek Ruko<br>Milala Mas Blok B no 24</td>
           </tr>
           <tr>
-            <td class="tg-baqh" colspan="4">Invoice Code : {{ $order->invoice_code }}</td>
+            <td class="tg-baqh" colspan="4" style="text-align: center;">Invoice Code : {{ $order->invoice_code }}</td>
           </tr>
           <tr>
-            <td class="tg-0lax" colspan="4">Date : {{ Carbon\Carbon::parse($order->purchase->updated_at)->format('d-m-Y') }}</td>
+            <td class="tg-0lax" colspan="4" style="text-align: center;">Date : {{ Carbon\Carbon::parse($order->updated_at)->format('d-m-Y') }}</td>
           </tr>
           <tr>
-            <td class="tg-0lax" colspan="4">To : {{ $order->purchase->customer->name }} </td>
+            <td class="tg-0lax" colspan="4" style="text-align: center;">To : {{ $order->customer->name }} </td>
           </tr>
           <tr>
             <td class="tg-0lax" colspan="4"></td>
@@ -69,64 +69,82 @@
             <td class="tg-0lax">Produk</td>
             <td class="tg-0lax">Qty</td>
             <td class="tg-0lax">Harga</td>
-            <td class="tg-0lax">Subtotal</td>
-          </tr>
-        <tr>
-            <td class="tg-0lax">{{ $order->product->nama_produk }}</td>
-            <td class="tg-0lax">{{ number_format($order->qty, 0, ',', '.') }}</td>
-            <td class="tg-0lax">Rp. {{ number_format($order->product_price, 0, ',', '.') }}</td>
-            <td class="tg-0lax">Rp. {{ number_format($order->product_price, 0, ',', '.') }}</td>
-        </tr>
-          <tr>
-            <td class="tg-0lax">Jasa Kirim</td>
-            <td class="tg-0lax"></td>
-            <td class="tg-0lax">Rp. {{ number_format($order->expedition->ongkir, 0, ',', '.') }}</td>
-            <td class="tg-0lax">Rp. {{ number_format($order->expedition->ongkir, 0, ',', '.') }}</td>
-          </tr>
-          <tr>
-            <td class="tg-0lax" colspan="4">______________________________________________________________________________________________ +</td>
-          </tr>
-          <tr>
-            <td class="tg-0lax">Deposit</td>
-            <td class="tg-0lax"></td>
-            <td class="tg-0lax"></td>
-            <td class="tg-0lax">Rp. {{ number_format($order->deposit_cut, 0, ',', '.') }}</td>
+            <td class="tg-0lax" style="text-align: center;">Subtotal</td>
           </tr>
           @php
-              $cicilan = 0;
+              $tempTotal = 0;
           @endphp
-        @php
-            $invoice = $order->get();
-        @endphp
-          @foreach($invoice as $key => $pembayaran)
+            @foreach ($order->purchase_orders as $pembayaran)
+                <tr>
+                    <td class="tg-0lax">{{ $pembayaran->product->nama_produk }}</td>
+                    <td class="tg-0lax">{{ number_format($pembayaran->qty, 0, ',', '.') }}</td>
+                    <td class="tg-0lax">{{ rupiah_format($pembayaran->product_price) }}</td>
+                    <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->product_price) }}</td>
+                </tr>
+                <tr>
+                <td class="tg-0lax">Jasa Kirim</td>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax">{{ rupiah_format($pembayaran->expedition->ongkir) }}</td>
+                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->expedition->ongkir) }}</td>
+                </tr>
+                @php
+                    $tempTotal += $pembayaran->product_price + $pembayaran->expedition->ongkir;
+                @endphp
+            @endforeach
+            <tr>
+                <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ +</td>
+            </tr>
+            <tr>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($tempTotal) }}</td>
+            </tr>
+          @foreach ($order->purchase_orders as $pembayaran)
+            <tr>
+                <td class="tg-0lax">Deposit</td>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->deposit_cut) }}</td>
+            </tr>
+          @endforeach
+            <tr>
+                <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ -</td>
+            </tr>
+            <tr>
+                <td class="tg-0lax">Yang Harus Dibayar</td>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($tempTotal-$pembayaran->deposit_cut) }}</td>
+            </tr>
+          @php
+              $cicilan = $tempTotal;
+          @endphp
+          @foreach($order->payments as $key => $pembayaran)
           <tr>
             <td class="tg-0lax">Pembayaran {{ $loop->index + 1 }}</td>
             <td class="tg-0lax"></td>
             <td class="tg-0lax"></td>
-            <td class="tg-0lax">Rp. {{ $pembayaran->paymentsid }}</td>
-            {{-- <td class="tg-0lax">Rp. {{ number_format($pembayaran->paymentsid, 0, ',', '.') }}</td> --}}
+            <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->amount) }}</td>
           </tr>
-          @php
-              $cicilan += $pembayaran->amount;
-          @endphp
+          <tr>
+            <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ -</td>
+          </tr>
+          <tr>
+            <td class="tg-0lax">Sisa Bayar</td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($tempTotal-=$pembayaran->amount) }}</td>
+          </tr>
           @endforeach
           <tr>
-            <td class="tg-0lax" colspan="4">______________________________________________________________________________________________ -</td>
+            <td class="tg-0lax" colspan="4" style="text-align: center">Kurir : {{ $order->purchase_orders[0]->expedition->nama_ekspedisi }}</td>
           </tr>
           <tr>
-            <td class="tg-0lax">Total</td>
-            <td class="tg-0lax"></td>
-            <td class="tg-0lax"></td>
-            <td class="tg-0lax">Rp. {{ number_format((($order->product_price + $order->expedition->ongkir)-$order->deposit_cut)-$cicilan, 0, ',', '.') }}</td>
+            <td class="tg-0lax" colspan="4" style="text-align: center">Admin : {{ Auth::user()->name }}</td>
           </tr>
           <tr>
-            <td class="tg-0lax" colspan="4">Kurir : {{ $order->expedition->nama_ekspedisi }}</td>
-          </tr>
-          <tr>
-            <td class="tg-0lax" colspan="4">Admin : {{ Auth::user()->name }}</td>
-          </tr>
-          <tr>
-            <td class="tg-baqh" colspan="4">Terima Kasih<br>Telah Bertransaksi Disini</td>
+            <td class="tg-baqh" colspan="4" style="text-align: center">Terima Kasih<br>Telah Bertransaksi Disini</td>
           </tr>
         </tbody>
         </table>
