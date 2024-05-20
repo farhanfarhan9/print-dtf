@@ -194,7 +194,7 @@
         <x-modal.card
             title="RIP invoice: {{ isset($selectedData) ? $selectedData->purchase_order->invoice_code : '' }}" blur
             wire:model.defer="ripModal">
-            <x-native-select label="Nomor Mesin" placeholder="Pilih Nomor Mesin" :options="[['name' => 'Ino', 'id' => 1], ['name' => 'Magna', 'id' => 2]]" option-label="name"
+            <x-native-select label="Mesin" placeholder="Pilih Mesin" :options="[['name' => 'Ino', 'id' => 1], ['name' => 'Magna', 'id' => 2]]" option-label="name"
                 option-value="id" wire:model="machineNo" />
 
             <x-slot name="footer">
