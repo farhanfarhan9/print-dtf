@@ -57,7 +57,7 @@
             <td class="tg-baqh" colspan="4" style="text-align: center;">Invoice Code : {{ $order->invoice_code }}</td>
           </tr>
           <tr>
-            <td class="tg-0lax" colspan="4" style="text-align: center;">Date : {{ Carbon\Carbon::parse($order->updated_at)->format('d-m-Y') }}</td>
+            <td class="tg-0lax" colspan="4" style="text-align: center;">Date : {{ \Carbon\Carbon::now()->format('d-m-Y') }}</td>
           </tr>
           <tr>
             <td class="tg-0lax" colspan="4" style="text-align: center;">To : {{ $order->customer->name }} </td>
@@ -65,16 +65,20 @@
           <tr>
             <td class="tg-0lax" colspan="4"></td>
           </tr>
-          <tr>
-            <td class="tg-0lax">Produk</td>
-            <td class="tg-0lax">Qty</td>
-            <td class="tg-0lax">Harga</td>
-            <td class="tg-0lax" style="text-align: center;">Subtotal</td>
-          </tr>
           @php
               $tempTotal = 0;
           @endphp
             @foreach ($order->purchase_orders as $pembayaran)
+                <tr>
+                    <td class="tg-0lax" colspan="3">Date : {{ Carbon\Carbon::parse($pembayaran->updated_at)->format('d-m-Y') }} (Invoice Code {{ $pembayaran->invoice_code }})</td>
+                    <td class="tg-0lax"></td>
+                </tr>
+                <tr>
+                    <td class="tg-0lax">Produk</td>
+                    <td class="tg-0lax">Qty</td>
+                    <td class="tg-0lax">Harga</td>
+                    <td class="tg-0lax" style="text-align: center;">Subtotal</td>
+                </tr>
                 <tr>
                     <td class="tg-0lax">{{ $pembayaran->product->nama_produk }}</td>
                     <td class="tg-0lax">{{ number_format($pembayaran->qty, 0, ',', '.') }}</td>
@@ -84,25 +88,26 @@
                 <tr>
                 <td class="tg-0lax">Jasa Kirim</td>
                 <td class="tg-0lax"></td>
-                <td class="tg-0lax">{{ rupiah_format($pembayaran->expedition->ongkir) }}</td>
-                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->expedition->ongkir) }}</td>
+                <td class="tg-0lax">{{ rupiah_format($pembayaran->expedition_price) }}</td>
+                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->expedition_price) }}</td>
                 </tr>
+                <p></p>
                 @php
-                    $tempTotal += $pembayaran->product_price + $pembayaran->expedition->ongkir;
+                    $tempTotal += $pembayaran->product_price + $pembayaran->expedition_price;
                 @endphp
             @endforeach
             <tr>
                 <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ +</td>
             </tr>
             <tr>
-                <td class="tg-0lax"></td>
+                <td class="tg-0lax">Grand Total</td>
                 <td class="tg-0lax"></td>
                 <td class="tg-0lax"></td>
                 <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($tempTotal) }}</td>
             </tr>
           @foreach ($order->purchase_orders as $pembayaran)
             <tr>
-                <td class="tg-0lax">Deposit</td>
+                <td class="tg-0lax">Deposit {{ $loop->index + 1 }}</td>
                 <td class="tg-0lax"></td>
                 <td class="tg-0lax"></td>
                 <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->deposit_cut) }}</td>
@@ -127,6 +132,10 @@
             <td class="tg-0lax"></td>
             <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->amount) }}</td>
           </tr>
+          @php
+              $cicilan-=$pembayaran->amount;
+          @endphp
+          @endforeach
           <tr>
             <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ -</td>
           </tr>
@@ -134,9 +143,8 @@
             <td class="tg-0lax">Sisa Bayar</td>
             <td class="tg-0lax"></td>
             <td class="tg-0lax"></td>
-            <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($tempTotal-=$pembayaran->amount) }}</td>
+            <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($cicilan) }}</td>
           </tr>
-          @endforeach
           <tr>
             <td class="tg-0lax" colspan="4" style="text-align: center">Kurir : {{ $order->purchase_orders[0]->expedition->nama_ekspedisi }}</td>
           </tr>
