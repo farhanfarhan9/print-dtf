@@ -86,14 +86,26 @@
                     <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->product_price) }}</td>
                 </tr>
                 <tr>
-                <td class="tg-0lax">Jasa Kirim</td>
-                <td class="tg-0lax"></td>
-                <td class="tg-0lax">{{ rupiah_format($pembayaran->expedition_price) }}</td>
-                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->expedition_price) }}</td>
+                    <td class="tg-0lax">Jasa Kirim</td>
+                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax">{{ rupiah_format($pembayaran->expedition_price) }}</td>
+                    <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->expedition_price) }}</td>
+                </tr>
+                <tr>
+                    <td class="tg-0lax">Biaya Tambahan</td>
+                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax">{{ rupiah_format($pembayaran->additional_price) }}</td>
+                    <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->additional_price) }}</td>
+                </tr>
+                <tr>
+                    <td class="tg-0lax">Diskon</td>
+                    <td class="tg-0lax"></td>
+                    <td class="tg-0lax">{{ rupiah_format($pembayaran->discount) }}</td>
+                    <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->discount) }}</td>
                 </tr>
                 <p></p>
                 @php
-                    $tempTotal += $pembayaran->product_price + $pembayaran->expedition_price;
+                    $tempTotal += $pembayaran->product_price + $pembayaran->expedition_price + $pembayaran->additional_price - $pembayaran->discount;
                 @endphp
             @endforeach
             <tr>
@@ -105,6 +117,9 @@
                 <td class="tg-0lax"></td>
                 <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($tempTotal) }}</td>
             </tr>
+            @php
+                $depo_cut = 0;
+            @endphp
           @foreach ($order->purchase_orders as $pembayaran)
             <tr>
                 <td class="tg-0lax">Deposit {{ $loop->index + 1 }}</td>
@@ -112,6 +127,9 @@
                 <td class="tg-0lax"></td>
                 <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($pembayaran->deposit_cut) }}</td>
             </tr>
+            @php
+                $depo_cut += $pembayaran->deposit_cut;
+            @endphp
           @endforeach
             <tr>
                 <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ -</td>
@@ -120,10 +138,10 @@
                 <td class="tg-0lax">Yang Harus Dibayar</td>
                 <td class="tg-0lax"></td>
                 <td class="tg-0lax"></td>
-                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($tempTotal-$pembayaran->deposit_cut) }}</td>
+                <td class="tg-0lax" style="text-align: right; padding-right:20px">{{ rupiah_format($tempTotal-$depo_cut) }}</td>
             </tr>
           @php
-              $cicilan = $tempTotal;
+              $cicilan = $tempTotal-$depo_cut;
           @endphp
           @foreach($order->payments as $key => $pembayaran)
           <tr>
