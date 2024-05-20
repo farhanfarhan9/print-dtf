@@ -125,7 +125,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="tg-lboi">0813-8888-8888</td>
+                        <td class="tg-lboi">(+62) 858-3130-2223</td>
                     </tr>
                     <tr>
                         <td class="tg-0pky"></td>
