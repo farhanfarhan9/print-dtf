@@ -58,7 +58,7 @@ class AllInternalProcess extends Component
         
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil Menambahkan Nomor Mesin Untuk Invoice'.$this->selectedData->purchase_order->invoice_code,
+            'description' => 'Berhasil Menambahkan Mesin Untuk Invoice'.$this->selectedData->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
