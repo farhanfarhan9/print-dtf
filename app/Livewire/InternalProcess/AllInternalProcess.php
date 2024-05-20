@@ -9,6 +9,7 @@ use Livewire\WithPagination;
 use App\Models\InternalProcess;
 use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 
 class AllInternalProcess extends Component
 {
@@ -26,7 +27,7 @@ class AllInternalProcess extends Component
     public $selectedData;
     public $ripModal;
 
-    #[Validate('required')] 
+    #[Validate('required')]
     public $machineNo;
 
     public $printNos = [];
@@ -40,14 +41,14 @@ class AllInternalProcess extends Component
     public function addMachineNo()
     {
         $currentTime = Carbon::now();
-    
+
         $startWorkingTime = Carbon::today()->hour(9)->minute(0)->second(0);
         $endWorkingTime = Carbon::today()->hour(17)->minute(0)->second(0);
 
         if ($currentTime->between($startWorkingTime, $endWorkingTime)) {
-            $shift = 1; 
+            $shift = 1;
         } else {
-            $shift = 2; 
+            $shift = 2;
         }
         $this->validate();
         // $existingDeposit = $this->editedUser->deposit;
@@ -55,10 +56,10 @@ class AllInternalProcess extends Component
             'machine_no' => $this->machineNo,
             'shift_no' => $shift,
         ]);
-        
+
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil Menambahkan Mesin Untuk Invoice'.$this->selectedData->purchase_order->invoice_code,
+            'description' => 'Berhasil Menambahkan Mesin Untuk Invoice' . $this->selectedData->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -69,14 +70,23 @@ class AllInternalProcess extends Component
     public function addPrintNo(InternalProcess $internal)
     {
         $printNo = $this->printNos[$internal->id] ?? null;
-        
+
+        // Manually validate $printNo
+        $validator = Validator::make(['printNo' => $printNo], [
+            'printNo' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $internal->update([
             'print_no' => $printNo
         ]);
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil Menambahkan Nomor Urut Print Untuk Invoice'.$internal->purchase_order->invoice_code,
+            'description' => 'Berhasil Menambahkan Nomor Urut Print Untuk Invoice' . $internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -92,7 +102,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Proses Print Selesai Untuk Invoice'.$internal->purchase_order->invoice_code,
+            'description' => 'Proses Print Selesai Untuk Invoice' . $internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -105,7 +115,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Proses Packing Selesai Untuk Invoice'.$internal->purchase_order->invoice_code,
+            'description' => 'Proses Packing Selesai Untuk Invoice' . $internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -119,7 +129,7 @@ class AllInternalProcess extends Component
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Proses Terkonfirmasi Untuk Invoice'.$internal->purchase_order->invoice_code,
+            'description' => 'Proses Terkonfirmasi Untuk Invoice' . $internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
@@ -129,13 +139,13 @@ class AllInternalProcess extends Component
     {
         $today = Carbon::today();
         // dd($today);
-        return view('livewire.internal-process.all-internal-process',[
+        return view('livewire.internal-process.all-internal-process', [
             // 'internals' => InternalProcess::whereHas('purchase_order', function ($query) {
             //     $query->where('status', '!=', 'cancel');
             // })->paginate(10)
-            'internals'=>InternalProcess::whereHas('purchase_order', function ($query) {
+            'internals' => InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel');
-            })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function($internal) {
+            })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
                 return $internal->execution_date; // Grouping by creation date
             })
         ]);
