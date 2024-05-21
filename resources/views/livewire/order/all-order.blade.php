@@ -131,12 +131,16 @@
                 <div class="flex justify-between w-full">
                     <!-- Left-aligned buttons -->
                     <div class="flex gap-5">
-                        <a href="{{ route('print.invoice.label', ['orderId' => $purchase->id]) }}" target="_blank">
-                            <x-button label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
-                        </a>
-                        <a href="{{ route('print.shipping.label', ['orderId' => $purchase->id]) }}" target="_blank">
-                            <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" />
-                        </a>
+                        @if (count($purchase->purchase_orders->where('status', '!=', 'cancel')) != 0)
+                            <a href="{{ route('print.invoice.label', ['orderId' => $purchase->id]) }}" target="_blank">
+                                <x-button label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
+                            </a>
+                            <a href="{{ route('print.shipping.label', ['orderId' => $purchase->id]) }}"
+                                target="_blank">
+                                <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" />
+                            </a>
+                        @endif
+
                     </div>
                     {{-- <div class="flex gap-5">
                         <x-button wire:click="printInvoice({{ $purchase->id }})" label="Print Invoice"
