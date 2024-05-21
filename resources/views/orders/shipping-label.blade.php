@@ -18,7 +18,8 @@
             font-size: 9px;
             padding: 3px 10px;
             word-break: normal;
-            border: none; /* Remove all borders */
+            border: none;
+            /* Remove all borders */
         }
 
         .tg th {
@@ -86,9 +87,14 @@
                             <p>{{ ucwords(strtolower($order->customer->name)) }}</p>
                             Alamat :<br>
                             {{ ucwords(strtolower($order->customer->address)) }}<br>
-                            Kec. {{ $order->customer->district ? ucwords(strtolower($order->customer->kecamatans->dis_name)) : ucwords(strtolower($order->customer->district_name)) }},
-                            Kota {{ $order->customer->city ? ucwords(strtolower($order->customer->kota->city_name)) : ucwords(strtolower($order->customer->city_name)) }},
-                            Provinsi {{ $order->customer->provinsi ? ucwords(strtolower($order->customer->province->prov_name)) : ucwords(strtolower($order->customer->provinsi_name)) }}
+                            @if ($order->customer->district && $order->customer->city && $order->customer->provinsi)
+                                Kec.
+                                {{ $order->customer->district ? ucwords(strtolower($order->customer->kecamatans->dis_name)) : ucwords(strtolower($order->customer->district_name)) }},
+                                Kota
+                                {{ $order->customer->city ? ucwords(strtolower($order->customer->kota->city_name)) : ucwords(strtolower($order->customer->city_name)) }},
+                                Provinsi
+                                {{ $order->customer->provinsi ? ucwords(strtolower($order->customer->province->prov_name)) : ucwords(strtolower($order->customer->provinsi_name)) }}
+                            @endif
                             <p>Telp: (+62){{ $order->customer->phone }}</p>
                         </td>
                         <td class="tg-0pky"></td>
