@@ -18,10 +18,10 @@
 
                 @foreach ($priceRanges as $index => $range)
                     <div class="flex items-center mt-2 space-x-2">
-                        <x-input type="number" placeholder="Start"
+                        <x-input type="number" step="any" placeholder="Start"
                             wire:model.defer="priceRanges.{{ $index }}.start" />
                         <span>—</span>
-                        <x-input type="number" placeholder="End"
+                        <x-input type="number" step="any" placeholder="End"
                             wire:model.defer="priceRanges.{{ $index }}.end" />
                         <x-inputs.currency placeholder="Harga" wire:model.defer="priceRanges.{{ $index }}.price" />
                         <x-button label="-" negative wire:click.prevent="removePriceRange({{ $index }})" />
@@ -36,10 +36,10 @@
 
                 @foreach ($priceRetailRanges as $index => $rangeRetail)
                     <div class="flex items-center mt-2 space-x-2">
-                        <x-input type="number" placeholder="Start"
+                        <x-input type="number" step="any" placeholder="Start"
                             wire:model.defer="priceRetailRanges.{{ $index }}.start" />
                         <span>—</span>
-                        <x-input type="number" placeholder="End"
+                        <x-input type="number" step="any" placeholder="End"
                             wire:model.defer="priceRetailRanges.{{ $index }}.end" />
                         <x-inputs.currency placeholder="Harga" wire:model.defer="priceRetailRanges.{{ $index }}.price" />
                         <x-button label="-" negative wire:click.prevent="removePriceRetailRange({{ $index }})" />
