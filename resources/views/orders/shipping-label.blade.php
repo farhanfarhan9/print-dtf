@@ -10,15 +10,17 @@
             border-collapse: collapse;
             border-spacing: 0;
             width: 100%;
+            height: 5cm !important;
         }
 
         .tg td,
         .tg th {
             font-family: Arial, sans-serif;
-            font-size: 9px;
+            font-size: 17px;
             padding: 3px 10px;
             word-break: normal;
-            border: none; /* Remove all borders */
+            border: none;
+            /* border: 1px solid black; */
         }
 
         .tg th {
@@ -70,18 +72,19 @@
             <table class="tg">
                 <thead>
                     <tr>
-                        <th class="tg-0pky"></th>
-                        <th class="tg-0pky" colspan="3"></th>
-                        <th class="tg-0pky"></th>
+                        <th class="tg-0pky" colspan="8"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="tg-0pky" rowspan="8"></td>
-                        <td class="tg-pb0m" rowspan="2">
-                            <img src="{{ asset('img/dtf.jpg') }}" alt="Logo DTF Medan" width="100">
+                        <td class="tg-pb0m" rowspan="5">
+                            <img src="{{ asset('img/dtf.jpg') }}" alt="Logo DTF Medan" width="100" style="margin-bottom: 7px">
+                            <div style="margin-bottom: 5px;font-weight:bold">MANSYUR DTF</div>
+                            <div style="margin-bottom: 5px;font-size:12px">DTF PREMIUM</div>
+                            <div style="font-size:16.3px">#rasakangsablon</div>
                         </td>
-                        <td class="tg-0pky">
+                        <td class="tg-0pky" rowspan="5" colspan="3">
                             Kepada :
                             <p>{{ ucwords(strtolower($order->customer->name)) }}</p>
                             Alamat :<br>
@@ -91,46 +94,43 @@
                             Provinsi {{ $order->customer->provinsi ? ucwords(strtolower($order->customer->province->prov_name)) : ucwords(strtolower($order->customer->provinsi_name)) }}
                             <p>Telp: (+62){{ $order->customer->phone }}</p>
                         </td>
-                        <td class="tg-0pky"></td>
+                        <td class="tg-0pky" rowspan="5"></td>
+                        <td class="tg-0pky" rowspan="5"></td>
                         <td class="tg-0pky" rowspan="8"></td>
                     </tr>
                     <tr>
-                        <td class="tg-0pky"></td>
-                        <td class="tg-0pky"></td>
+                        {{-- Must Empty Ignore This --}}
                     </tr>
                     <tr>
-                        <td class="tg-pb0m">MANSYUR DTF</td>
-                        <td class="tg-0pky"></td>
-                        <td class="tg-0pky"></td>
+                        {{-- Must Empty Ignore This --}}
                     </tr>
                     <tr>
-                        <td class="tg-pb0m">DTF PREMIUM</td>
-                        <td class="tg-0pky"></td>
-                        <td class="tg-0pky"></td>
+                        {{-- Must Empty Ignore This --}}
                     </tr>
                     <tr>
-                        <td class="tg-pb0m">#rasakangsablon</td>
-                        <td class="tg-0pky"></td>
-                        <td class="tg-0pky"></td>
+                        {{-- Must Empty Ignore This --}}
                     </tr>
                     <tr>
                         <td class="tg-0pky" rowspan="3"></td>
-                        <td class="tg-lboi">Pengirim</td>
+                        <td class="tg-lboi" style="font-weight:bold">Pengirim</td>
+                        <td class="tg-0pky"></td>
+                        <td class="tg-0pky"></td>
+                        <td class="tg-0pky"></td>
                         <td class="tg-0pky"></td>
                     </tr>
                     <tr>
-                        <td class="tg-lboi">Mansyur DTF</td>
-                        <td class="tg-9wq8" rowspan="2">
+                        <td class="tg-lboi" style="font-size:14px">Mansyur DTF</td>
+                        <td class="tg-lboi"></td>
+                        <td class="tg-9wq8" rowspan="2" colspan="3" style="font-size:15px;font-weight:bold">
                             Jasa Ekspedisi <br> {{ $order->purchase_orders[0]->expedition->nama_ekspedisi }}
                         </td>
                     </tr>
                     <tr>
-                        <td class="tg-lboi">(+62) 858-3130-2223</td>
+                        <td class="tg-lboi" style="font-size:14px">(+62) 858-3130-2223</td>
+                        <td class="tg-lboi"></td>
                     </tr>
                     <tr>
-                        <td class="tg-0pky"></td>
-                        <td class="tg-0pky" colspan="3"></td>
-                        <td class="tg-0pky"></td>
+                        <td class="tg-0pky" colspan="8"></td>
                     </tr>
                 </tbody>
             </table>
