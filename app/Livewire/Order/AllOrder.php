@@ -90,7 +90,7 @@ class AllOrder extends Component
         // }
 
         $remainingDebt = $purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price') - $purchase->payments->sum('amount');
-        
+
         if ($remainingDebt == 0) {
             $purchase->update([
                 'payment_status' => 'close'
@@ -101,6 +101,29 @@ class AllOrder extends Component
         $this->notification([
             'title'       => 'Sukses',
             'description' => "'Berhasil menambahkan pembayaran pada INV' .$purchase->invoice_code",
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
+    }
+
+    public function deleteDialog(Purchase $purchase)
+    {
+        $this->dialog()->confirm([
+            'title'       => 'Menghapus Order',
+            'description' => 'Yakin Ingin Menghapus Order?',
+            'acceptLabel' => 'Ya',
+            'method'      => 'deletePurchase',
+            'params'      => $purchase,
+            'timeout'     => 3000
+        ]);
+    }
+
+    public function deletePurchase(Purchase $purchase)
+    {
+        $purchase->delete();
+        $this->notification([
+            'title'       => 'Sukses',
+            'description' => "Berhasil Menghapus Order",
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
