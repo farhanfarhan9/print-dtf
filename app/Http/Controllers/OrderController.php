@@ -24,7 +24,7 @@ class OrderController extends Controller
         // Find the PurchaseOrder by purchase_id instead of primary key id
         $order = Purchase::where('id', $purchaseId)->firstOrFail();
         $pdf = PDF::loadView('orders.invoice-label', compact('order'));
-        $pdf->setPaper([0, 0, 490, 800]);
+        $pdf->setPaper([0, 0, 419.3, 800]);
         return $pdf->stream('invoice-label-' . $purchaseId . '.pdf');
     }
 

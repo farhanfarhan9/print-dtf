@@ -24,7 +24,7 @@
             box-sizing: border-box;
         }
         .tg {
-            width: 100%;
+            width: 84%;
             table-layout: fixed; /* Helps with consistent column width */
         }
         .tg td, .tg th {
@@ -109,7 +109,7 @@
                 @endphp
             @endforeach
             <tr>
-                <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ +</td>
+                <td class="tg-0lax" colspan="4">__________________________________________________________________________ +</td>
             </tr>
             <tr>
                 <td class="tg-0lax">Grand Total</td>
@@ -132,7 +132,7 @@
             @endphp
           @endforeach
             <tr>
-                <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ -</td>
+                <td class="tg-0lax" colspan="4">__________________________________________________________________________ -</td>
             </tr>
             <tr>
                 <td class="tg-0lax">Yang Harus Dibayar</td>
@@ -155,7 +155,7 @@
           @endphp
           @endforeach
           <tr>
-            <td class="tg-0lax" colspan="4">_________________________________________________________________________________________ -</td>
+            <td class="tg-0lax" colspan="4">__________________________________________________________________________ -</td>
           </tr>
           <tr>
             <td class="tg-0lax">Sisa Bayar</td>
