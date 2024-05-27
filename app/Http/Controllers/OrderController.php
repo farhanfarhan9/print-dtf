@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\PurchaseOrder;
 use App\Models\Purchase;
 use PDF;
+use Mpdf\Mpdf;
 
 class OrderController extends Controller
 {
@@ -21,12 +22,45 @@ class OrderController extends Controller
 
     public function printInvoiceLabel($purchaseId)
     {
-        // Find the PurchaseOrder by purchase_id instead of primary key id
+        // Cari PurchaseOrder dengan purchase_id
         $order = Purchase::where('id', $purchaseId)->firstOrFail();
-        $pdf = PDF::loadView('orders.invoice-label', compact('order'));
-        $pdf->setPaper([0, 0, 419.3, 800]);
-        return $pdf->stream('invoice-label-' . $purchaseId . '.pdf');
+
+        // Render Blade view menjadi HTML string
+        $html = view('orders.invoice-label', compact('order'))->render();
+
+        // Buat instance mPDF
+        $mpdf = new Mpdf([
+            'format' => [80, 140],
+            // 'dpi' => 1200
+        ]);
+
+        // Tambahkan HTML ke mPDF
+        $mpdf->WriteHTML($html);
+
+        // Tampilkan PDF
+        return $mpdf->Output('invoice-label-' . $purchaseId . '.pdf', 'I');
     }
+
+    // public function printInvoiceLabel($purchaseId)
+    // {
+    //     // Cari PurchaseOrder dengan purchase_id
+    //     $order = Purchase::where('id', $purchaseId)->firstOrFail();
+
+    //     // Render Blade view menjadi HTML string
+    //     $html = view('orders.invoice-label', compact('order'))->render();
+
+    //     // Render HTML menjadi PDF
+    //     $pdf = PDF::loadHTML($html);
+
+    //     // Atur ukuran kertas untuk PDF
+    //     $pdf->setPaper([0, 0, 226.77, 800]);
+
+    //     // Atur DPI menjadi 1200
+    //     $pdf->setOption('dpi', 110);
+
+    //     // Tampilkan PDF
+    //     return $pdf->stream('invoice-label-' . $purchaseId . '.pdf');
+    // }
 
     public function viewInvoiceLabel($purchaseId)
     {
