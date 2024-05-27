@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Products;
 use Illuminate\Http\Request;
 use App\Models\PurchaseOrder;
 use App\Models\Purchase;
@@ -24,14 +25,22 @@ class OrderController extends Controller
     {
         // Cari PurchaseOrder dengan purchase_id
         $order = Purchase::where('id', $purchaseId)->firstOrFail();
-
+        $product = Products::first();
+        // dd($order->payments);
         // Render Blade view menjadi HTML string
-        $html = view('orders.invoice-label', compact('order'))->render();
+        $html = view('orders.invoice-label', compact('order','product'))->render();
 
         // Buat instance mPDF
-        $mpdf = new Mpdf([
-            'format' => [80, 140],
-            // 'dpi' => 1200
+        $mpdf = new \Mpdf\Mpdf([
+            'format' => [48, 800], // POS58 paper width
+            // 'mode' => 'utf-8', 
+            'default_font' => 'monospace',
+            'margin_left' => 0, 
+            'margin_right' => 0, 
+            'margin_top' => 0, 
+            'margin_bottom' => 0,
+            'margin_header' => 0, 
+            'margin_footer' => 0,
         ]);
 
         // Tambahkan HTML ke mPDF
