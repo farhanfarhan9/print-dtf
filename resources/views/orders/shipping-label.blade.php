@@ -1,94 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Label Design</title>
+    <title>Contoh Tabel</title>
     <style type="text/css">
+        body, html {
+            margin: 5 15 10 15;
+            padding: 0;
+        }
         .tg {
-            border-collapse: collapse;
-            border-spacing: 0;
-            width: 100%;
-            height: 5cm !important;
+        border-collapse: collapse;
+        border-spacing: 0;
+        max-height: 5cm;
         }
 
         .tg td,
         .tg th {
-            font-family: Arial, sans-serif;
-            font-size: 17px;
-            padding: 3px 10px;
-            word-break: normal;
             border: none;
             /* border: 1px solid black; */
         }
-
-        .tg th {
-            font-weight: normal;
-        }
-
-        .tg .tg-pb0m {
-            text-align: center;
-            vertical-align: bottom;
-        }
-
-        .tg .tg-lboi {
-            text-align: left;
-            vertical-align: middle;
-        }
-
-        .tg .tg-9wq8 {
-            text-align: center;
-            vertical-align: middle;
-            border: 1px solid black;
-        }
-
-        .tg .tg-0pky {
-            text-align: left;
-            vertical-align: top;
-        }
-
         .table-container {
             width: 100%;
             margin: 0 auto;
+            padding: 10 auto;
             border: 2px solid black;
         }
-
-        .borda {
-            margin: 0 auto;
-            border: 2px solid black;
+        .tg td {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        overflow: hidden;
+        padding: 2px 5px;
+        word-break: normal;
+        }
+        .tg th {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+        overflow: hidden;
+        padding: 2px 5px;
+        word-break: normal;
+        }
+        .tg .tg-n65g {
+        border-color: inherit;
+        font-family: Arial, sans-serif, Monaco, monospace !important;
+        text-align: center;
+        vertical-align: bottom;
+        }
+        .tg .tg-7rv2 {
+        border-color: inherit;
+        font-family: Arial, sans-serif, Monaco, monospace !important;
+        text-align: left;
+        vertical-align: middle;
+        }
+        .tg .tg-sej6 {
+        border-color: inherit;
+        font-family: Arial, sans-serif, Monaco, monospace !important;
+        text-align: left;
+        vertical-align: top;
+        }
+        .tg .tg-0pky {
+        border-color: inherit;
+        text-align: left;
+        vertical-align: top;
+        }
+        .tg .tg-54m6 {
+        border-color: inherit;
+        font-family: Arial, sans-serif, Monaco, monospace !important;
+        font-size: 15px;
+        text-align: left;
+        vertical-align: top;
+        }
+        .tg .tg-kwn7 {
+        border-color: inherit;
+        font-family: Arial, sans-serif, Monaco, monospace !important;
+        font-weight: bold;
+        text-align: left;
+        vertical-align: middle;
         }
 
-        .label {
-            width: 100%;
-            height: auto;
-        }
     </style>
 </head>
-
 <body>
-    <div class="label">
-        <div class="table-container">
-            <table class="tg">
-                <thead>
-                    <tr>
-                        <th class="tg-0pky" colspan="8"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="tg-0pky" rowspan="8"></td>
-                        <td class="tg-pb0m" rowspan="5">
-                            <img src="{{ asset('img/dtf.jpg') }}" alt="Logo DTF Medan" width="100" style="margin-bottom: 7px">
-                            <div style="margin-bottom: 5px;font-weight:bold">MANSYUR DTF</div>
-                            <div style="margin-bottom: 5px;font-size:12px">DTF PREMIUM</div>
-                            <div style="font-size:16.3px">#rasakangsablon</div>
-                        </td>
-                        <td class="tg-0pky" rowspan="5" colspan="3">
-                            Kepada :
-                            <p>{{ ucwords(strtolower($order->customer->name)) }}</p>
-                            Alamat :<br>
-                            {{ ucwords(strtolower($order->customer->address)) }}<br>
+    <div class="table-container">
+        <table class="tg">
+            <thead>
+                <tr>
+                    <th class="tg-sej6"></th>
+                    <th class="tg-sej6"></th>
+                    <th class="tg-0pky"></th>
+                    <th class="tg-sej6"></th>
+                    <th class="tg-sej6"></th>
+                    <th class="tg-sej6"></th>
+                    <th class="tg-sej6"></th>
+                    <th class="tg-sej6"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-n65g" rowspan="2">
+                        <p></p>
+                        <img src="https://print-dtf.dev/img/dtf.jpg" alt="Logo DTF Medan" width="120" height="65">
+
+                        <div style="padding-top:5px;font-weight:bold;font-size:16px">MANSYUR DTF</div>
+                        <div style="padding-top:5px;">DTF PREMIUM</div>
+                        <div style="padding-top:5px;">#rasakangsablon</div>
+
+                            </td>
+                    <td class="tg-0pky" rowspan="6"></td>
+                    <td class="tg-54m6" style="line-height: 1.5;" rowspan="2"><b>Kepada :</b><br>{{ ucwords(strtolower($order->customer->name)) }}<br>
+                        {{ ucwords(strtolower($order->customer->address)) }}<br>
                             @if ($order->customer->district && $order->customer->city && $order->customer->provinsi)
                                 Kec.
                                 {{ $order->customer->district ? ucwords(strtolower($order->customer->kecamatans->dis_name)) : ucwords(strtolower($order->customer->district_name)) }},
@@ -97,50 +119,50 @@
                                 Provinsi
                                 {{ $order->customer->provinsi ? ucwords(strtolower($order->customer->province->prov_name)) : ucwords(strtolower($order->customer->provinsi_name)) }}
                             @endif
-                            <p>Telp: (+62){{ $order->customer->phone }}</p>
-                        </td>
-                        <td class="tg-0pky" rowspan="5"></td>
-                        <td class="tg-0pky" rowspan="5"></td>
-                        <td class="tg-0pky" rowspan="8"></td>
-                    </tr>
-                    <tr>
-                        {{-- Must Empty Ignore This --}}
-                    </tr>
-                    <tr>
-                        {{-- Must Empty Ignore This --}}
-                    </tr>
-                    <tr>
-                        {{-- Must Empty Ignore This --}}
-                    </tr>
-                    <tr>
-                        {{-- Must Empty Ignore This --}}
-                    </tr>
-                    <tr>
-                        <td class="tg-0pky" rowspan="3"></td>
-                        <td class="tg-lboi" style="font-weight:bold">Pengirim</td>
-                        <td class="tg-0pky"></td>
-                        <td class="tg-0pky"></td>
-                        <td class="tg-0pky"></td>
-                        <td class="tg-0pky"></td>
-                    </tr>
-                    <tr>
-                        <td class="tg-lboi" style="font-size:14px">Mansyur DTF</td>
-                        <td class="tg-lboi"></td>
-                        <td class="tg-9wq8" rowspan="2" colspan="3" style="font-size:15px;font-weight:bold">
-                            Jasa Ekspedisi <br> {{ $order->purchase_orders[0]->expedition->nama_ekspedisi }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tg-lboi" style="font-size:14px">(+62) 858-3130-2223</td>
-                        <td class="tg-lboi"></td>
-                    </tr>
-                    <tr>
-                        <td class="tg-0pky" colspan="8"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                            <br>
+                            Telp: 0{{ $order->customer->phone }}</td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                </tr>
+                <tr>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                </tr>
+                <tr>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6" rowspan="4"></td>
+                    <td class="tg-kwn7">Pengirim :</td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                </tr>
+                <tr>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-7rv2">Mansyur DTF</td>
+                    <td class="tg-kwn7" colspan="3" rowspan="2" style="padding-left: 40px;padding-right: 40px">Jasa Ekspedisi JNE</td>
+                    <td class="tg-sej6"></td>
+                </tr>
+                <tr>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-7rv2">085831302223</td>
+                    <td class="tg-sej6"></td>
+                </tr>
+                <tr>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-sej6"></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
-
 </html>
