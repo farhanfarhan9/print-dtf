@@ -29,9 +29,16 @@ class OrderController extends Controller
         $html = view('orders.invoice-label', compact('order'))->render();
 
         // Buat instance mPDF
-        $mpdf = new Mpdf([
-            'format' => [80, 140],
-            // 'dpi' => 1200
+        $mpdf = new \Mpdf\Mpdf([
+            'format' => [48, 800], // POS58 paper width
+            // 'mode' => 'utf-8', 
+            'default_font' => 'monospace',
+            'margin_left' => 0, 
+            'margin_right' => 0, 
+            'margin_top' => 0, 
+            'margin_bottom' => 0,
+            'margin_header' => 0, 
+            'margin_footer' => 0,
         ]);
 
         // Tambahkan HTML ke mPDF
