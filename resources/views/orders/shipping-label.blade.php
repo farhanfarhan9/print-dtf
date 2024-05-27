@@ -10,6 +10,7 @@
             padding: 0;
         }
         .tg {
+        width: 100%;
         border-collapse: collapse;
         border-spacing: 0;
         max-height: 5cm;
@@ -19,6 +20,10 @@
         .tg th {
             border: none;
             /* border: 1px solid black; */
+        }
+        .borda{
+            /* border: none; */
+            border: 1px solid black !important;
         }
         .table-container {
             width: 100%;
@@ -109,7 +114,7 @@
 
                             </td>
                     <td class="tg-0pky" rowspan="6"></td>
-                    <td class="tg-54m6" style="line-height: 1.5;" rowspan="2"><b>Kepada :</b><br>{{ ucwords(strtolower($order->customer->name)) }}<br>
+                    <td class="tg-54m6" style="line-height: 1.5;" rowspan="2" colspan="4"><b>Kepada :</b><br>{{ ucwords(strtolower($order->customer->name)) }}<br>
                         {{ ucwords(strtolower($order->customer->address)) }}<br>
                             @if ($order->customer->district && $order->customer->city && $order->customer->provinsi)
                                 Kec.
@@ -121,16 +126,16 @@
                             @endif
                             <br>
                             Telp: 0{{ $order->customer->phone }}</td>
-                    <td class="tg-sej6"></td>
-                    <td class="tg-sej6"></td>
-                    <td class="tg-sej6"></td>
+                    {{-- <td class="tg-sej6">1</td>
+                    <td class="tg-sej6">1</td>
+                    <td class="tg-sej6">1</td> --}}
                     <td class="tg-sej6"></td>
                 </tr>
                 <tr>
                     <td class="tg-sej6"></td>
-                    <td class="tg-sej6"></td>
-                    <td class="tg-sej6"></td>
-                    <td class="tg-sej6"></td>
+                    {{-- <td class="tg-sej6">1</td>
+                    <td class="tg-sej6">1</td>
+                    <td class="tg-sej6">1</td> --}}
                     <td class="tg-sej6"></td>
                 </tr>
                 <tr>
@@ -145,12 +150,14 @@
                 <tr>
                     <td class="tg-sej6"></td>
                     <td class="tg-7rv2">Mansyur DTF</td>
-                    <td class="tg-kwn7" colspan="3" rowspan="2" style="padding-left: 40px;padding-right: 40px">Jasa Ekspedisi JNE</td>
+                    <td class="tg-sej6"></td>
+                    <td class="tg-kwn7 borda" colspan="2" rowspan="2" style="width:100%;text-align:center">Jasa Ekspedisi JNE</td>
                     <td class="tg-sej6"></td>
                 </tr>
                 <tr>
                     <td class="tg-sej6"></td>
                     <td class="tg-7rv2">085831302223</td>
+                    <td class="tg-sej6"></td>
                     <td class="tg-sej6"></td>
                 </tr>
                 <tr>
