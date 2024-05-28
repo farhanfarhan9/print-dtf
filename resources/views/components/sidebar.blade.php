@@ -3,7 +3,7 @@
     :class="{ '!w-24': !sidebarOpen }" aria-label="Sidebar">
     <div class="flex flex-col h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
         <div class="flex items-center gap-2 pb-5" :class="{ 'justify-center': !sidebarOpen }">
-            <a href="/dashboard" :class="{ 'hidden': !sidebarOpen }">
+            <a href="/" :class="{ 'hidden': !sidebarOpen }">
                 <img src="{{ asset('img/dtf.jpg') }}" class="object-scale-down" />
             </a>
             {{-- <p @click="sidebarOpen = !sidebarOpen"> <svg xmlns="http://www.w3.org/2000/svg" fill="none"
