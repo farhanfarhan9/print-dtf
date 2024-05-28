@@ -49,131 +49,136 @@
                 icon="plus" />
         </div>
     </div>
+    {{-- {{ $purchase->purchase_orders->count() }}
+    $purchase->purchase_orders[0]->status == 'cancel' --}}
     @forelse ($purchases as $purchase)
-        <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key="{{ $purchase->id }}">
-            <div class="flex justify-between pb-2 border-b">
-                <p class="my-auto text-sm text-slate-500">Dibuat Pada
-                    {{ \Carbon\Carbon::parse($purchase->created_at)->format('d F Y') }}</p>
-                @if ($purchase->payment_status == 'close' && $purchase->purchase_orders->count() == 0 || $purchase->payment_status == 'open' && $purchase->purchase_orders->count() == 0)
-                    <button type="button" wire:click='deleteDialog({{ $purchase->id }})'
-                        class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                        Cancel Order
-                    </button>
-                @endif
-                {{-- <div>
-                    <p>
-                        INV 2024.01.15.1230943
-                    </p>
-                </div> --}}
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between mt-5">
-                    <div>
-                        <p class="font-medium text-slate-500">Pemesan</p>
-                        <p class="font-semibold">{{ $purchase->customer->name }}</p>
-                    </div>
-                    <div>
-                        <p class="font-medium text-slate-500">Total Bayar <button type="button"
-                                wire:click='showPaymentHistory({{ $purchase->id }})'
-                                class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
-                        <p class="font-semibold">
-                            <span class="px-2 py-1 text-white bg-red-500 rounded-md">
-                                {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
-                            </span>
+        @if ($purchase->purchase_orders->count() != 1 ||  $purchase->purchase_orders[0]->status != 'cancel')
+            <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key="{{ $purchase->id }}">
+                <div class="flex justify-between pb-2 border-b">
+                    <p class="my-auto text-sm text-slate-500">Dibuat Pada
+                        {{ \Carbon\Carbon::parse($purchase->created_at)->format('d F Y') }}</p>
+                    @if (
+                        ($purchase->payment_status == 'close' && $purchase->purchase_orders->count() == 0) ||
+                            ($purchase->payment_status == 'open' && $purchase->purchase_orders->count() == 0))
+                        <button type="button" wire:click='deleteDialog({{ $purchase->id }})'
+                            class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                            Cancel Order
+                        </button>
+                    @endif
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between mt-5">
+                        <div>
+                            <p class="font-medium text-slate-500">Pemesan</p>
+                            <p class="font-semibold">{{ $purchase->customer->name }}</p>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-500">Total Bayar <button type="button"
+                                    wire:click='showPaymentHistory({{ $purchase->id }})'
+                                    class="text-sm font-semibold text-blue-600">Lihat history pembayaran</button></p>
+                            <p class="font-semibold">
+                                <span class="px-2 py-1 text-white bg-red-500 rounded-md">
+                                    {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }}
+                                </span>
 
-                        </p>
-                    </div>
-                    <div>
-                        <p class="font-medium text-slate-500">Total yang sudah dibayarkan</p>
-                        <p class="font-semibold">
-                            <span class="px-2 py-1 text-white bg-yellow-500 rounded-md">
-                                {{ rupiah_format($purchase->payments->sum('amount')) }}
-                            </span>
-                        </p>
-                    </div>
-                    <div>
-                        <p class="font-medium text-slate-500">Status pembayaran</p>
-                        <p class="font-semibold">
-                            @php
-                                $poStatuses = $purchase->payment_status;
-                            @endphp
-                            @if ($purchase->purchase_orders->count() == 1 && $purchase->purchase_orders[0]->status == 'cancel')
-                                <p class="inline-block px-4 py-1 font-semibold text-white bg-yellow-400 rounded-lg">
-                                    Cancel</p>
-                            @else
-                                @if ($poStatuses == 'open')
-                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-red-400 rounded-lg">
-                                        Unpaid</p>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-500">Total yang sudah dibayarkan</p>
+                            <p class="font-semibold">
+                                <span class="px-2 py-1 text-white bg-yellow-500 rounded-md">
+                                    {{ rupiah_format($purchase->payments->sum('amount')) }}
+                                </span>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-500">Status pembayaran </p>
+                            <p class="font-semibold">
+                                @php
+                                    $poStatuses = $purchase->payment_status;
+                                @endphp
+                                @if ($purchase->purchase_orders->count() == 1 && $purchase->purchase_orders[0]->status == 'cancel')
+                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-yellow-400 rounded-lg">
+                                        Cancel</p>
                                 @else
-                                    <p class="inline-block px-4 py-1 font-semibold text-white bg-green-400 rounded-lg">
-                                        Paid</p>
+                                    @if ($poStatuses == 'open')
+                                        <p
+                                            class="inline-block px-4 py-1 font-semibold text-white bg-red-400 rounded-lg">
+                                            Unpaid</p>
+                                    @else
+                                        <p
+                                            class="inline-block px-4 py-1 font-semibold text-white bg-green-400 rounded-lg">
+                                            Paid</p>
+                                    @endif
                                 @endif
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex gap-10">
+                        <div>
+                            <p class="font-medium text-slate-500">Jumlah order</p>
+                            <p class="font-semibold">
+                                {{ count($purchase->purchase_orders->where('status', '!=', 'cancel')) }}</p>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-500">Sisa yang harus dibayarkan</p>
+                            <p class="font-semibold ">
+                                <span class="px-2 py-1 text-white bg-green-600 rounded-md">
+                                    {{-- @dump($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0) --}}
+                                    @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
+                                        {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }}
+                                    @else
+                                        0
+                                    @endif
+                                    {{-- {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }} --}}
+
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between w-full">
+                        <!-- Left-aligned buttons -->
+                        <div class="flex gap-5">
+                            @if (count($purchase->purchase_orders->where('status', '!=', 'cancel')) != 0)
+                                <a href="{{ route('print.invoice.label', ['orderId' => $purchase->id]) }}"
+                                    target="_blank">
+                                    <x-button label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
+                                </a>
+                                <a href="{{ route('print.shipping.label', ['orderId' => $purchase->id]) }}"
+                                    target="_blank">
+                                    <x-button label="Print Label Pengiriman" class="rounded-xl" primary
+                                        icon="truck" />
+                                </a>
                             @endif
-                        </p>
-                    </div>
-                </div>
-                <div class="flex gap-10">
-                    <div>
-                        <p class="font-medium text-slate-500">Jumlah order</p>
-                        <p class="font-semibold">
-                            {{ count($purchase->purchase_orders->where('status', '!=', 'cancel')) }}</p>
-                    </div>
-                    <div>
-                        <p class="font-medium text-slate-500">Sisa yang harus dibayarkan</p>
-                        <p class="font-semibold ">
-                            <span class="px-2 py-1 text-white bg-green-600 rounded-md">
-                                {{-- @dump($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0) --}}
-                                @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
-                                    {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }}
-                                @else
-                                    0
-                                @endif
-                                {{-- {{ rupiah_format($purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price')) }} --}}
 
-                            </span>
-                        </p>
-                    </div>
-                </div>
-                <div class="flex justify-between w-full">
-                    <!-- Left-aligned buttons -->
-                    <div class="flex gap-5">
-                        @if (count($purchase->purchase_orders->where('status', '!=', 'cancel')) != 0)
-                            <a href="{{ route('print.invoice.label', ['orderId' => $purchase->id]) }}" target="_blank">
-                                <x-button label="Print Invoice" class="rounded-xl" primary icon="receipt-tax" />
-                            </a>
-                            <a href="{{ route('print.shipping.label', ['orderId' => $purchase->id]) }}"
-                                target="_blank">
-                                <x-button label="Print Label Pengiriman" class="rounded-xl" primary icon="truck" />
-                            </a>
-                        @endif
-
-                    </div>
-                    {{-- <div class="flex gap-5">
+                        </div>
+                        {{-- <div class="flex gap-5">
                         <x-button wire:click="printInvoice({{ $purchase->id }})" label="Print Invoice"
                             class="rounded-xl" primary icon="receipt-tax" />
                         <x-button wire:click="printLabel({{ $purchase->id }})" label="Print Label Pengiriman"
                             class="rounded-xl" primary icon="truck" />
                     </div> --}}
 
-                    <!-- Right-aligned buttons -->
-                    <div class="flex gap-5">
-                        @if ($purchase->payment_status == 'open')
-                            <x-button wire:click='updatePaymentModal({{ $purchase->id }})' label="Update Pembayaran"
-                                class="items-center" primary icon="currency-dollar" />
-                        @else
-                            <x-button label="Update Pembayaran" disabled class="items-center" secondary
-                                icon="currency-dollar" />
-                        @endif
-                        @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
-                            <x-button href="{{ route('po.allPo', $purchase->id) }}" label="Detail order" primary
-                                icon="tag" />
-                        @else
-                            <x-button label="Detail order" disabled secondary icon="tag" />
-                        @endif
+                        <!-- Right-aligned buttons -->
+                        <div class="flex gap-5">
+                            @if ($purchase->payment_status == 'open')
+                                <x-button wire:click='updatePaymentModal({{ $purchase->id }})'
+                                    label="Update Pembayaran" class="items-center" primary icon="currency-dollar" />
+                            @else
+                                <x-button label="Update Pembayaran" disabled class="items-center" secondary
+                                    icon="currency-dollar" />
+                            @endif
+                            @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
+                                <x-button href="{{ route('po.allPo', $purchase->id) }}" label="Detail order" primary
+                                    icon="tag" />
+                            @else
+                                <x-button label="Detail order" disabled secondary icon="tag" />
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     @empty
         No Data
     @endforelse
