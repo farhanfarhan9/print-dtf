@@ -151,7 +151,7 @@
                     <td class="tg-sej6"></td>
                     <td class="tg-7rv2">Mansyur DTF</td>
                     <td class="tg-sej6"></td>
-                    <td class="tg-kwn7 borda" colspan="2" rowspan="2" style="width:100%;text-align:center">Jasa Ekspedisi JNE</td>
+                    <td class="tg-kwn7 borda" colspan="2" rowspan="2" style="width:100%;text-align:center">Jasa Ekspedisi {{ $order->purchase_orders[0]->expedition->nama_ekspedisi }}</td>
                     <td class="tg-sej6"></td>
                 </tr>
                 <tr>
