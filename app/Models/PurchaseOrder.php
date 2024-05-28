@@ -22,6 +22,11 @@ class PurchaseOrder extends Model
         return $this->belongsTo(Ekspedisi::class, 'expedition_id', 'id')->withTrashed();
     }
 
+    public function expedi()
+    {
+        return $this->belongsTo(Ekspedisi::class, 'expedition_id', 'id')->withTrashed();
+    }
+
     public function payments()
     {
         return $this->hasMany(Payment::class);
