@@ -17,8 +17,8 @@ class CreateCustomer extends Component
             'name' => 'required',
             'selectedProvinsi' => 'required',
             'selectedKota' => 'required',
-            'selectedKecamatan' => 'required',
-            'selectedPostal' => 'required|min:3|numeric',
+            'selectedKecamatan' => 'nullable',
+            'selectedPostal' => 'nullable|min:3|numeric',
             'phone' => 'required',
             'deposit' => 'nullable|numeric',
             'address' => 'required',
@@ -27,9 +27,10 @@ class CreateCustomer extends Component
 
     public function save()
     {
+        $this->validate();
+
         try {
             logger('Save method triggered');
-            $this->validate();
             logger('Validation passed');
 
             $customer = Customer::create([

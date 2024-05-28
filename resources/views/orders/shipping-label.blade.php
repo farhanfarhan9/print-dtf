@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contoh Tabel</title>
+    <title>Label Pengiriman</title>
     <style type="text/css">
         body, html {
             margin: 5 15 10 15;
