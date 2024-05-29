@@ -106,7 +106,7 @@
                     <td class="tg-sej6"></td>
                     <td class="tg-n65g" rowspan="2">
                         <p></p>
-                        <img src="{{ asset('img/dtf.jpg') }}" alt="Logo DTF Medan" width="120" height="65">
+                        <img src="{{ asset('img/dtf.png') }}" alt="Logo DTF Medan" width="120" height="65">
 
                         <div style="padding-top:5px;font-weight:bold;font-size:16px">MANSYUR DTF</div>
                         <div style="padding-top:5px;">DTF PREMIUM</div>

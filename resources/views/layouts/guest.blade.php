@@ -19,7 +19,7 @@
             <div>
                 <a href="/" wire:navigate>
                     {{-- <x-application-logo class="w-20 h-20 text-gray-500 fill-current" /> --}}
-                    <img src="{{ asset('img/dtf.jpg') }}" class="object-scale-down h-20 w-30" />
+                    <img src="{{ asset('img/dtf.png') }}" class="object-scale-down h-20 w-30" />
 
                 </a>
             </div>
