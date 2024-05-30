@@ -54,6 +54,9 @@
                                                     <th scope="col" class="px-6 py-3">
                                                         Harga
                                                     </th>
+                                                    <th scope="col" class="px-6 py-3">
+                                                        Pengiriman
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -89,6 +92,10 @@
                                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                                 {{ rupiah_format($internal->purchase_order->total_price) }}
                                                             </th>
+                                                            <th scope="row"
+                                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                                {{ $internal->purchase_order->expedition ? $internal->purchase_order->expedition->nama_ekspedisi : '-' }}
+                                                            </th>
                                                         </tr>
                                                     @endif
                                                 @endforeach
@@ -98,7 +105,7 @@
                                                     <td class="text-xl font-bold">
                                                         <span class="">{{ $totalQty }}</span>
                                                     </td>
-                                                    <td class="text-xl font-bold rounded-e-lg">
+                                                    <td class="text-xl font-bold rounded-e-lg" colspan="2">
                                                         {{ rupiah_format($totalPrice) }}</td>
                                                 </tr>
                                             </tbody>
