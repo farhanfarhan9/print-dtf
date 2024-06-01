@@ -10,7 +10,7 @@
         @forelse ($internals as $execution_date => $internalProcesses)
             <div class="mb-10" wire:key='key-{{ $execution_date }}'>
                 <x-card>
-                    <div class="mb-2 text-xl font-semibold">Batch
+                    <div class="mb-2 text-xl font-semibold">Tanggal
                         {{ \Carbon\Carbon::parse($execution_date)->format('d F Y') }}</div>
                     @php
                         $byShift = $internalProcesses->groupBy('shift_no')->sortBy(function ($value, $key) {
@@ -26,7 +26,7 @@
                             @endif
                             @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                 @if ($machine != null)
-                                    <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Ino' : 'Magna' }}</p>
+                                    <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Inno Lite' : 'Magna' }}</p>
                                 @else
                                     <p class="mb-2 font-medium">Belum ada Mesin</p>
                                 @endif
@@ -44,7 +44,7 @@
                                                 Pemesan
                                             </th>
                                             <th scope="col" class="px-6 py-3">
-                                                Panjang
+                                                Panjang / M
                                             </th>
                                             <th scope="col" class="px-6 py-3">
                                                 Harga
@@ -194,7 +194,7 @@
         <x-modal.card
             title="RIP invoice: {{ isset($selectedData) ? $selectedData->purchase_order->invoice_code : '' }}" blur
             wire:model.defer="ripModal">
-            <x-native-select label="Mesin" placeholder="Pilih Mesin" :options="[['name' => 'Ino', 'id' => 1], ['name' => 'Magna', 'id' => 2]]" option-label="name"
+            <x-native-select label="Mesin" placeholder="Pilih Mesin" :options="[['name' => ' Inno Lite', 'id' => 1], ['name' => 'Magna', 'id' => 2]]" option-label="name"
                 option-value="id" wire:model="machineNo" />
 
             <x-slot name="footer">

@@ -14,7 +14,7 @@
                         $totalQtyPerDay = 0;
                         $totalPricePerDay = 0;
                     @endphp
-                    <div class="mb-2 text-xl font-semibold">Batch
+                    <div class="mb-2 text-xl font-semibold">Tanggal
                         {{ \Carbon\Carbon::parse($execution_date)->format('d F Y') }}</div>
                     @php
                         $byShift = $internalProcesses->groupBy('shift_no')->sortBy(function ($value, $key) {
@@ -33,7 +33,7 @@
                                 @endphp
                                 @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                     @if ($machine != null)
-                                        <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Ino' : 'Magna' }}</p>
+                                        <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Inno Lite' : 'Magna' }}</p>
                                         <table
                                             class="w-full mb-8 text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                                             <thead
@@ -49,12 +49,12 @@
                                                         Pemesan
                                                     </th>
                                                     <th scope="col" class="px-6 py-3">
-                                                        Panjang (m)
+                                                        Panjang / M
                                                     </th>
                                                     <th scope="col" class="px-6 py-3">
                                                         Harga
                                                     </th>
-                                                    <th scope="col" class="px-6 py-3">
+                                                    <th scope="col" class="px-6 py-3 rounded-e-lg">
                                                         Pengiriman
                                                     </th>
                                                 </tr>
