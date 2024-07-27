@@ -79,6 +79,14 @@
                         <p>Deposit saat ini {{rupiah_format($deposit)}}</p>
                     </div>
                 </div>
+                <x-select
+                    wire:model.live="expedition_id"
+                    label="Ekspedisi"
+                    placeholder="Pilih ekspedisi"
+                    :async-data="route('api.expeditions.data.index',['expedition' => $expedition_id])"
+                    option-label="nama_ekspedisi"
+                    option-value="id"
+                />
                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
                 {{-- Checkbox for Is Reseller --}}
                 <x-checkbox label="Reseller" wire:model="isReseller" />

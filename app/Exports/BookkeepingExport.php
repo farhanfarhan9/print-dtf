@@ -63,8 +63,8 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
         ]);
 
         $data->push([
-            'customer_name' => 'Total Cash',
-            'amount' => $totalCash,
+            'customer_name' => 'Transfer',
+            'amount' => $total - $totalCash,
             'bank_detail' => '',
             'purchase_date' => '',
             'shift' => '',
@@ -72,8 +72,8 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
         ]);
 
         $data->push([
-            'customer_name' => 'Total Tanpa Cash',
-            'amount' => $total - $totalCash,
+            'customer_name' => 'Cash',
+            'amount' => $totalCash,
             'bank_detail' => '',
             'purchase_date' => '',
             'shift' => '',
@@ -114,7 +114,7 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
         }
 
         // Check if it's the total row
-        if ($bookkeeping['customer_name'] == 'Total' || $bookkeeping['customer_name'] == 'Total Cash' || $bookkeeping['customer_name'] == 'Total Tanpa Cash') {
+        if ($bookkeeping['customer_name'] == 'Total' || $bookkeeping['customer_name'] == 'Transfer' || $bookkeeping['customer_name'] == 'Cash') {
             return [
                 '', // No number for total
                 $bookkeeping['customer_name'],

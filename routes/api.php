@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('bank/index', [BankController::class, 'index'])->name('api.bank.index');
 Route::get('customer/allCustomer', [CustomerController::class, 'index'])->name('api.customers.index');
 Route::get('expedition/allExpeditions', [ExpeditionController::class, 'index'])->name('api.expeditions.index');
+Route::get('expedition/{expedition?}', [ExpeditionController::class, 'getExpeditionsData'])->name('api.expeditions.data.index');
 
 Route::get('/provinsi', [ViewKodePosController::class, 'getProvinces'])->name('api.provinsi.index');
 Route::get('/provinsi/{province?}', [ViewKodePosController::class, 'getProvincesData'])->name('api.provinsi.data.index');

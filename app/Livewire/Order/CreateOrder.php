@@ -134,7 +134,7 @@ class CreateOrder extends Component
     public function save()
     {
         $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
-        
+
         if($existingOpenOrder){
             $this->validate([
                 'customer_id' => 'required',

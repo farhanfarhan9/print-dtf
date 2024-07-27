@@ -67,6 +67,9 @@
                     <x-input type="number" label="No. Telp" wire:model='phone' placeholder="No. Telp" />
                     <x-inputs.currency type="number" label="Deposit" wire:model='deposit' placeholder="Deposit" />
                 </div>
+                <x-select wire:model.live="expedition_id" label='Ekspedisi' placeholder="Pilih ekspedisi"
+                            :async-data="route('api.expeditions.index')" option-label="nama_ekspedisi" option-value="id" />
+
                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
                 {{-- Checkbox for Is Reseller --}}
                 <x-checkbox label="Reseller" wire:model="isReseller" />

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Gate;
 
 class CreateCustomer extends Component
 {
-    public $name, $city, $postal, $phone, $deposit, $address, $isReseller;
+    public $name, $city, $postal, $phone, $deposit, $address, $isReseller, $expedition_id;
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
 
     public function rules()
@@ -22,6 +22,7 @@ class CreateCustomer extends Component
             'phone' => 'required',
             'deposit' => 'nullable|numeric',
             'address' => 'required',
+            'expedition_id' => 'nullable',
         ];
     }
 
@@ -41,6 +42,7 @@ class CreateCustomer extends Component
                 'postal' => $this->selectedPostal,
                 'phone' => $this->phone,
                 'deposit' => $this->deposit ?: 0,
+                'id_ekspedisi' => $this->expedition_id,
                 'address' => $this->address,
                 'is_reseller' => $this->isReseller ? true : false,
             ]);

@@ -68,6 +68,9 @@
                             Deposit
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Ekspedisi
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Alamat
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -122,6 +125,9 @@
                             </td>
                             <td class="px-6 py-4">
                                 {{ rupiah_format($customer->deposit) }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ optional($customer->ekspedisis)->nama_ekspedisi }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $customer->address }}

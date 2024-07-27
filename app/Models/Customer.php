@@ -18,6 +18,11 @@ class Customer extends Model
         return $this->hasMany(Purchase::class);
     }
 
+    public function ekspedisis()
+    {
+        return $this->belongsTo(Ekspedisi::class, 'id_ekspedisi');
+    }
+
     public function province()
     {
         return $this->belongsTo(EcProvinsi::class, 'provinsi', 'prov_id');

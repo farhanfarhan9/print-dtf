@@ -90,14 +90,30 @@
                                         <th scope="col" class="px-6 py-3">
                                             Bank
                                         </th>
+                                        <th colspan="4" scope="col" class="px-6 py-3 text-center">
+                                            Shift
+                                        </th>
                                         <th scope="col" class="px-6 py-3">
                                             Tanggal dan Waktu
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $totalPricePerDayShift1 = 0;
+                                        $totalPricePerDayShift2 = 0;
+                                    @endphp
                                     @forelse ($dailyPurchase as $key => $purchaseData)
                                         @php
+
+                                            $date = \Carbon\Carbon::parse($purchaseData['purchase_time'])->format('Y-m-d');
+                                            $time = \Carbon\Carbon::parse($purchaseData['purchase_time'])->format('H:i');
+                                            $shift = (strtotime($time) >= strtotime('09:00') && strtotime($time) <= strtotime('16:59')) ? 'Shift 1' : 'Shift 2';
+                                            if(strtotime($time) >= strtotime('09:00') && strtotime($time) <= strtotime('16:59')){
+                                                $totalPricePerDayShift1 += $purchaseData['amount'];
+                                            }else{
+                                                $totalPricePerDayShift2 += $purchaseData['amount'];;
+                                            }
                                             $totalPricePerDay += $purchaseData['amount'];
                                         @endphp
                                         <tr wire:key="key-{{ $key }}"
@@ -118,6 +134,10 @@
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{ $purchaseData['bank_detail'] }}
                                             </th>
+                                            <th scope="row" colspan="4"
+                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+                                                {{ $shift }}
+                                            </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{ $purchaseData['purchase_time'] }}
@@ -125,7 +145,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="py-4 text-center">Data Kosong</td>
+                                            <td colspan="6" class="py-4 text-center">Data Kosong</td>
                                         </tr>
                                     @endforelse
                                     <tr wire:key="key-{{ $key }}"" class="text-white bg-green-600">
@@ -136,9 +156,20 @@
                                         <th class="px-6 py-2 font-bold text-medium whitespace-nowrap">
                                             {{ count($dailyPurchase) }} Customer
                                         </th>
-                                        <th colspan="3"
-                                            class="px-6 py-2 font-bold text-medium rounded-e-lg whitespace-nowrap">
+                                        <th colspan="2"
+                                            class="px-6 py-2 font-bold text-medium whitespace-nowrap">
                                             {{ rupiah_format($totalPricePerDay) }}
+                                        </th>
+                                        <th colspan="2"
+                                            class="px-6 py-2 font-bold text-medium whitespace-nowrap text-center">
+                                            Shift 1 : {{ rupiah_format($totalPricePerDayShift1) }}
+                                        </th>
+                                        <th colspan="2"
+                                            class="px-6 py-2 font-bold text-medium whitespace-nowrap text-center">
+                                            Shift 2 : {{ rupiah_format($totalPricePerDayShift2) }}
+                                        </th>
+                                        <th
+                                            class="px-6 py-2 font-bold text-medium rounded-e-lg whitespace-nowrap">
                                         </th>
                                     </tr>
                                 </tbody>

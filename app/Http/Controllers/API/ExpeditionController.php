@@ -34,6 +34,19 @@ class ExpeditionController extends Controller
             });
     }
 
+    public function getExpeditionsData($expedition = null)
+    {
+        $query = Ekspedisi::query();
+
+        if (!is_null($expedition)) {
+            $query->where('id', $expedition);
+        }
+
+        return $query->select('id', 'nama_ekspedisi')
+            ->orderBy('nama_ekspedisi')
+            ->get();
+    }
+
     /**
      * Store a newly created resource in storage.
      */

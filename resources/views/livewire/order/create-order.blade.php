@@ -32,7 +32,7 @@
                                     <span class="text-green-400">({{ $customer->deposit - $deposit_cut }})</span>
                                 @endif
                             </p>
-                            
+
                         @endif
                     </div>
 

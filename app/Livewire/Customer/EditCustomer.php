@@ -14,6 +14,7 @@ class EditCustomer extends Component
     public $selectedProvinsi, $selectedKota, $selectedPostal, $selectedKecamatan;
     public $customer;
     public $change;
+    public $expedition_id;
 
     public function mount(Customer $customer)
     {
@@ -32,6 +33,7 @@ class EditCustomer extends Component
         $this->address = $customer->address;
         $this->isReseller = (bool) $customer->is_reseller;
         $this->change = false;
+        $this->expedition_id = $customer->id_ekspedisi;
     }
 
     public function rules()
@@ -56,6 +58,7 @@ class EditCustomer extends Component
                 'postal' => $this->selectedPostal,
                 'phone' => $this->phone,
                 'deposit' => $this->deposit + ($this->newDeposit ?? 0),
+                'id_ekspedisi' => $this->expedition_id,
                 'address' => $this->address,
                 'is_reseller' => $this->isReseller ? true : false,
             ]);
@@ -68,6 +71,7 @@ class EditCustomer extends Component
                 'postal' => $this->selectedDataPostal,
                 'phone' => $this->phone,
                 'deposit' => $this->deposit + ($this->newDeposit ?? 0),
+                'id_ekspedisi' => $this->expedition_id,
                 'address' => $this->address,
                 'is_reseller' => $this->isReseller ? true : false,
             ]);
