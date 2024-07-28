@@ -45,10 +45,12 @@ class CreateOrder extends Component
     public $outOfStock;
 
     public $selectedProvinsi = null, $selectedKota = null, $selectedKecamatan = null, $selectedPostal = null;
-    public $name, $city, $postal, $phone, $deposit, $address, $isReseller;
+    public $name, $city, $postal, $phone, $deposit, $address, $isReseller, $expedition_customer;
 
     public $additional_price = 0;
     public $discount = 0;
+
+    public $isExpeditionManuallySet = false;
 
 
     public function mount()
@@ -112,6 +114,7 @@ class CreateOrder extends Component
             'phone' => 'required',
             'deposit' => 'nullable|numeric',
             'address' => 'required',
+            'expedition_customer' => 'nullable',
         ]);
 
         Customer::create([
@@ -123,6 +126,7 @@ class CreateOrder extends Component
             'phone' => $this->phone,
             'deposit' => $this->deposit ?: 0,
             'address' => $this->address,
+            'id_ekspedisi' => $this->expedition_customer,
             'is_reseller' => $this->isReseller ? true : false,
         ]);
 
@@ -135,7 +139,7 @@ class CreateOrder extends Component
     {
         $existingOpenOrder = Purchase::where('customer_id', $this->customer_id)->where('payment_status', 'open')->latest()->first();
 
-        if($existingOpenOrder){
+        if ($existingOpenOrder) {
             $this->validate([
                 'customer_id' => 'required',
                 'qty' => 'required',
@@ -144,7 +148,7 @@ class CreateOrder extends Component
                 'additional_price' => 'nullable',
                 'discount' => 'nullable',
             ]);
-        }elseif ($this->status == 'Belum Bayar') {
+        } elseif ($this->status == 'Belum Bayar') {
             $this->validate([
                 'customer_id' => 'required',
                 'qty' => 'required',
@@ -154,7 +158,7 @@ class CreateOrder extends Component
                 'additional_price' => 'nullable',
                 'discount' => 'nullable',
             ]);
-        }else{
+        } else {
             $this->validate([
                 'customer_id' => 'required',
                 'qty' => 'required',
@@ -190,7 +194,7 @@ class CreateOrder extends Component
             'invoice_code' => $this->invoice_code,
             'purchase_id' => $purchase->id,
             'product_id' => $this->product->id,
-            'expedition_id' => $this->expedition_id ? $this->expedition_id : null ,
+            'expedition_id' => $this->expedition_id ? $this->expedition_id : null,
             'user_id' => Auth::id(),
             'expedition_price' => $this->expedition ? $this->expedition->ongkir : 0,
             'deposit_cut' => $this->deposit_cut,
@@ -252,6 +256,11 @@ class CreateOrder extends Component
         $this->redirect(route('order.index'), navigate: true);
     }
 
+    public function updatedExpeditionId($value)
+    {
+        $this->isExpeditionManuallySet = true;
+    }
+
     public function render()
     {
 
@@ -264,7 +273,13 @@ class CreateOrder extends Component
             } else {
                 $price_range = json_decode($this->product['detail_harga'], true);
             }
-
+            
+            if (!$this->isExpeditionManuallySet){
+                if ($this->customer->ekspedisis) {
+                    $this->expedition_id = $this->customer->ekspedisis->id;
+                };
+            }
+            
 
             $this->expedition = Ekspedisi::find($this->expedition_id);
 

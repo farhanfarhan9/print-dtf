@@ -1,4 +1,16 @@
 <div>
+    @if (session('customerCreated'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{ session('customerCreated')[0] }}',
+                    description: '{{ session('customerCreated')[1] }}',
+                    icon: '{{ session('customerCreated')[2] }}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @endif
     <x-slot name="header">
         <a href="{{ route('order.index') }}" wire:navigate
             class="flex items-center w-1/12 gap-1 p-2 mb-5 text-lg rounded-lg hover:bg-gray-100">
@@ -77,6 +89,9 @@
                                     <x-inputs.currency type="number" label="Deposit" wire:model='deposit'
                                         placeholder="Deposit" />
                                 </div>
+                                <x-select wire:model.live="expedition_customer" label='Ekspedisi'
+                                    placeholder="Pilih ekspedisi" :async-data="route('api.expeditions.index')" option-label="nama_ekspedisi"
+                                    option-value="id" />
                                 <x-textarea label="Alamat" wire:model='address' placeholder="Alamat" />
                                 <x-checkbox label="Reseller" wire:model="isReseller" />
 
