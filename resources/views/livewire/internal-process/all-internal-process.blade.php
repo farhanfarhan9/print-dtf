@@ -85,7 +85,8 @@
                                                     </th>
                                                     <th scope="row"
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        {{ $internal->purchase_order->expedition->nama_ekspedisi }}
+                                                        {{-- {{ $internal->purchase_order->expedition->nama_ekspedisi }} --}}
+                                                        {{ $internal->purchase_order->expedition ? $internal->purchase_order->expedition->nama_ekspedisi : $internal->purchase_order->invoice_code }}
                                                     </th>
                                                     <th scope="row"
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
