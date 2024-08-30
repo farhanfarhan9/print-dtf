@@ -213,7 +213,7 @@
                                 <x-input-error :messages="$errors->get('file')" class="mt-2" />
                             </div>
                             <div class="w-1/2">
-                                <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                                <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI','Bank Aceh', 'CASH']"
                                     wire:model.live="bank_detail" />
                             </div>
                         </div>
@@ -222,7 +222,7 @@
                             <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2" alt="">
                         @endif
                     @elseif($status == 'Lunas')
-                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI','Bank Aceh', 'CASH']"
                             wire:model.live="bank_detail" />
                     @endif
                 </x-card>
