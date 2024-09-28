@@ -109,6 +109,12 @@
                     </div>
                 </div>
                 <div>
+                    @if ($item->to_deposit)
+                    <div>
+                        <p class="font-medium text-slate-500">Masuk deposit</p>
+                        <p class="font-semibold">Rp. {{ number_format($item->to_deposit) }}</p>
+                    </div>
+                    @endif
                     <div>
                         <p class="font-medium text-slate-500">Dibuat oleh</p>
                         <p class="font-semibold">{{ $item->user->name }}</p>

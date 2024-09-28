@@ -33,6 +33,7 @@ class CreateOrder extends Component
     public $status;
     public $bank_detail;
     public $is_deposit;
+    public $to_deposit;
     public $invoice_code;
 
     public $customer;
@@ -49,6 +50,8 @@ class CreateOrder extends Component
 
     public $additional_price = 0;
     public $discount = 0;
+
+    public $paid_amount = 0;
 
     public $isExpeditionManuallySet = false;
 
@@ -190,6 +193,7 @@ class CreateOrder extends Component
             $purchase = Purchase::create($purchaseData);
         }
 
+        
         $purchaseOrderData = [
             'invoice_code' => $this->invoice_code,
             'purchase_id' => $purchase->id,
@@ -207,8 +211,19 @@ class CreateOrder extends Component
             'total_price' => $this->total_price,
         ];
 
-        if ($this->status == 'Lunas') {
+        if ($this->status == 'Lunas' && $this->to_deposit) {
+            $purchaseOrderData['total_price'] = $this->paid_amount;
+            $purchaseOrderData['to_deposit'] = $this->paid_amount - $this->total_price;
             $purchaseOrderData['po_status'] = 'close';
+        }elseif($this->status == 'Lunas'){
+            $purchaseOrderData['po_status'] = 'close';
+        }
+
+        if($this->to_deposit){
+            $selectedDeposit = $this->customer->deposit;
+            $this->customer->update([
+                'deposit' => $selectedDeposit + $purchaseOrderData['to_deposit']
+            ]);
         }
 
         $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
