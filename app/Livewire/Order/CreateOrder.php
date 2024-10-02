@@ -193,7 +193,7 @@ class CreateOrder extends Component
             $purchase = Purchase::create($purchaseData);
         }
 
-        
+
         $purchaseOrderData = [
             'invoice_code' => $this->invoice_code,
             'purchase_id' => $purchase->id,
@@ -215,11 +215,11 @@ class CreateOrder extends Component
             $purchaseOrderData['total_price'] = $this->paid_amount;
             $purchaseOrderData['to_deposit'] = $this->paid_amount - $this->total_price;
             $purchaseOrderData['po_status'] = 'close';
-        }elseif($this->status == 'Lunas'){
+        } elseif ($this->status == 'Lunas') {
             $purchaseOrderData['po_status'] = 'close';
         }
 
-        if($this->to_deposit){
+        if ($this->to_deposit) {
             $selectedDeposit = $this->customer->deposit;
             $this->customer->update([
                 'deposit' => $selectedDeposit + $purchaseOrderData['to_deposit']
@@ -244,6 +244,14 @@ class CreateOrder extends Component
                 'purchase_id' => $purchase->id,
                 'amount' => $paymentAmount == 0 ? 0 : $paymentAmount,
                 'is_dp' => $is_dp,
+                'file' => $this->file,
+                'bank_detail' => $this->bank_detail,
+            ]);
+        } elseif ($this->status == 'Lunas' && $this->to_deposit) {
+            Payment::create([
+                'purchase_id' => $purchase->id,
+                'amount' => $this->paid_amount,
+                'is_dp' => 0,
                 'file' => $this->file,
                 'bank_detail' => $this->bank_detail,
             ]);
@@ -288,13 +296,13 @@ class CreateOrder extends Component
             } else {
                 $price_range = json_decode($this->product['detail_harga'], true);
             }
-            
-            if (!$this->isExpeditionManuallySet){
+
+            if (!$this->isExpeditionManuallySet) {
                 if ($this->customer->ekspedisis) {
                     $this->expedition_id = $this->customer->ekspedisis->id;
                 };
             }
-            
+
 
             $this->expedition = Ekspedisi::find($this->expedition_id);
 
