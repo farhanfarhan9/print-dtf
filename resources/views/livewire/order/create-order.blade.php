@@ -213,7 +213,7 @@
                                 <x-input-error :messages="$errors->get('file')" class="mt-2" />
                             </div>
                             <div class="w-1/2">
-                                <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                                <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'Bank Aceh', 'CASH']"
                                     wire:model.live="bank_detail" />
                             </div>
                         </div>
@@ -222,8 +222,24 @@
                             <img src="{{ $file->temporaryUrl() }}" class="object-scale-down w-1/2" alt="">
                         @endif
                     @elseif($status == 'Lunas')
-                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
-                            wire:model.live="bank_detail" />
+                        <div class="mt-5">
+                            <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'Bank Aceh', 'CASH']"
+                                wire:model.live="bank_detail" />
+                        </div>
+                        <div class="mt-5">
+                            <x-checkbox id="right-label" label="Masuk deposit" wire:model.live="to_deposit" />
+                        </div>
+                        <div class="mt-5">
+                            @if ($to_deposit)
+                                <x-inputs.currency type="number" label="Jumlah yang dibayarkan"
+                                    wire:model="paid_amount" placeholder="Jumlah biaya tambahan" />
+                            @else
+                                <x-inputs.currency type="number" label="Jumlah yang dibayarkan" disabled
+                                    placeholder="Jumlah biaya tambahan" />
+                            @endif
+                        </div>
+
+
                     @endif
                 </x-card>
                 <div class="flex justify-end">

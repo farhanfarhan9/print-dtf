@@ -38,30 +38,38 @@ class ExportBookkeepingView extends Component
             // Set Carbon's locale to Indonesian
             Carbon::setLocale('id');
 
-            if($this->viewMode == 'monthly'){
+            // Format the dates for the filename
+            if ($this->viewMode == 'monthly') {
                 $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m', $this->startDate)->format('m-Y') : '';
                 $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m', $this->endDate)->format('m-Y') : '';
-            }else{
+            } else {
                 $formattedStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->format('d-m-Y') : '';
                 $formattedEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->format('d-m-Y') : '';
             }
+
             $filename = 'data_pembukuan';
             $filename .= $formattedStartDate ? "_{$formattedStartDate}" : '';
             $filename .= $formattedEndDate ? "_-_$formattedEndDate" : '';
             $filename .= '.xlsx';
 
+            // Get the purchase data
             $bookkeepingDaily = $this->getPurchasesData();
 
+            // Get the sum of additional prices
+            $totalAdditionalPrices = $this->getAdditionalPrices();
+
             // Convert the original date format to a display format only if dates are set
-            if($this->viewMode == 'monthly'){
+            if ($this->viewMode == 'monthly') {
                 $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m', $this->startDate)->isoFormat('MMMM YYYY') : null;
                 $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m', $this->endDate)->isoFormat('MMMM YYYY') : null;
-            }else{
+            } else {
                 $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
                 $displayEndDate = $this->endDate ? Carbon::createFromFormat('Y-m-d', $this->endDate)->isoFormat('dddd, D MMMM YYYY') : null;
             }
-            return Excel::download(new BookkeepingExport($bookkeepingDaily, $displayStartDate, $displayEndDate), $filename);
-        }else if ($this->startDate == null || $this->endDate == null){
+
+            // Export the Excel file, passing both purchase data and additional prices
+            return Excel::download(new BookkeepingExport($bookkeepingDaily, $displayStartDate, $displayEndDate, $totalAdditionalPrices), $filename);
+        } else if ($this->startDate == null || $this->endDate == null) {
             session()->flash('exportFailed');
             $this->redirect(route('export-bookkeeping.index'), navigate: true);
         }
@@ -211,6 +219,28 @@ class ExportBookkeepingView extends Component
         });
 
         return $purchases;
+    }
+
+    private function getAdditionalPrices()
+    {
+        $query = PurchaseOrder::orderBy('created_at', 'desc');
+
+        // Check if start and end dates are set and add them to the query
+        if ($this->startDate && $this->endDate) {
+            if ($this->viewMode == 'monthly') {
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+            } else {
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
+            }
+            $query->whereBetween('created_at', [$start, $end]);
+        }
+
+        // Sum the additional_price column
+        $totalAdditionalPrices = $query->sum('additional_price');
+
+        return $totalAdditionalPrices;
     }
 
     /**

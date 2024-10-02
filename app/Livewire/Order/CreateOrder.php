@@ -33,6 +33,7 @@ class CreateOrder extends Component
     public $status;
     public $bank_detail;
     public $is_deposit;
+    public $to_deposit;
     public $invoice_code;
 
     public $customer;
@@ -49,6 +50,8 @@ class CreateOrder extends Component
 
     public $additional_price = 0;
     public $discount = 0;
+
+    public $paid_amount = 0;
 
     public $isExpeditionManuallySet = false;
 
@@ -179,16 +182,26 @@ class CreateOrder extends Component
             'total_payment' => $this->total_price,
             'invoice_code' => $this->invoice_code,
         ];
+        if ($this->status == 'Lunas' && $this->to_deposit) {
+            $purchaseData['total_payment'] = $this->paid_amount;
+        }
 
         if ($existingOpenOrder) {
             // dd($existingOpenOrder->total_payment);
-            $existingOpenOrder->update([
-                'total_payment' => $existingOpenOrder->total_payment + $this->total_price
-            ]);
+            if ($this->status == 'Lunas' && $this->to_deposit) {
+                $existingOpenOrder->update([
+                    'total_payment' => $existingOpenOrder->total_payment + $this->paid_amount
+                ]);
+            }else{
+                $existingOpenOrder->update([
+                    'total_payment' => $existingOpenOrder->total_payment + $this->total_price
+                ]);
+            }
             $purchase = $existingOpenOrder;
         } else {
             $purchase = Purchase::create($purchaseData);
         }
+
 
         $purchaseOrderData = [
             'invoice_code' => $this->invoice_code,
@@ -207,8 +220,19 @@ class CreateOrder extends Component
             'total_price' => $this->total_price,
         ];
 
-        if ($this->status == 'Lunas') {
+        if ($this->status == 'Lunas' && $this->to_deposit) {
+            $purchaseOrderData['total_price'] = $this->paid_amount;
+            $purchaseOrderData['to_deposit'] = $this->paid_amount - $this->total_price;
             $purchaseOrderData['po_status'] = 'close';
+        } elseif ($this->status == 'Lunas') {
+            $purchaseOrderData['po_status'] = 'close';
+        }
+
+        if ($this->to_deposit) {
+            $selectedDeposit = $this->customer->deposit;
+            $this->customer->update([
+                'deposit' => $selectedDeposit + $purchaseOrderData['to_deposit']
+            ]);
         }
 
         $purchaseOrder = PurchaseOrder::create($purchaseOrderData);
@@ -229,6 +253,14 @@ class CreateOrder extends Component
                 'purchase_id' => $purchase->id,
                 'amount' => $paymentAmount == 0 ? 0 : $paymentAmount,
                 'is_dp' => $is_dp,
+                'file' => $this->file,
+                'bank_detail' => $this->bank_detail,
+            ]);
+        } elseif ($this->status == 'Lunas' && $this->to_deposit) {
+            Payment::create([
+                'purchase_id' => $purchase->id,
+                'amount' => $this->paid_amount,
+                'is_dp' => 0,
                 'file' => $this->file,
                 'bank_detail' => $this->bank_detail,
             ]);
@@ -273,13 +305,13 @@ class CreateOrder extends Component
             } else {
                 $price_range = json_decode($this->product['detail_harga'], true);
             }
-            
-            if (!$this->isExpeditionManuallySet){
+
+            if (!$this->isExpeditionManuallySet) {
                 if ($this->customer->ekspedisis) {
                     $this->expedition_id = $this->customer->ekspedisis->id;
                 };
             }
-            
+
 
             $this->expedition = Ekspedisi::find($this->expedition_id);
 

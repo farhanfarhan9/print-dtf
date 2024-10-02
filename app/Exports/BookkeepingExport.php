@@ -21,11 +21,12 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
     private $currentRow = 0;
     private $totals = [];
 
-    public function __construct($purchasesData, $startDate = null, $endDate = null)
+    public function __construct($purchasesData, $startDate = null, $endDate = null, $totalAdditionalPrices)
     {
         $this->purchasesData = $purchasesData;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->totalAdditionalPrices = $totalAdditionalPrices;
         $this->calculateTotals();
     }
 
@@ -74,6 +75,24 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
         $data->push([
             'customer_name' => 'Cash',
             'amount' => $totalCash,
+            'bank_detail' => '',
+            'purchase_date' => '',
+            'shift' => '',
+            'total_per_shift_per_day' => ''
+        ]);
+
+        $data->push([
+            'customer_name' => 'Total dtf',
+            'amount' => $total - $this->totalAdditionalPrices,
+            'bank_detail' => '',
+            'purchase_date' => '',
+            'shift' => '',
+            'total_per_shift_per_day' => ''
+        ]);
+
+        $data->push([
+            'customer_name' => 'Biaya Lain-Lain',
+            'amount' => $this->totalAdditionalPrices,
             'bank_detail' => '',
             'purchase_date' => '',
             'shift' => '',
