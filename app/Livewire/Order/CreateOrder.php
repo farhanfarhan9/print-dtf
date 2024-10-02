@@ -182,12 +182,21 @@ class CreateOrder extends Component
             'total_payment' => $this->total_price,
             'invoice_code' => $this->invoice_code,
         ];
+        if ($this->status == 'Lunas' && $this->to_deposit) {
+            $purchaseData['total_payment'] = $this->paid_amount;
+        }
 
         if ($existingOpenOrder) {
             // dd($existingOpenOrder->total_payment);
-            $existingOpenOrder->update([
-                'total_payment' => $existingOpenOrder->total_payment + $this->total_price
-            ]);
+            if ($this->status == 'Lunas' && $this->to_deposit) {
+                $existingOpenOrder->update([
+                    'total_payment' => $existingOpenOrder->total_payment + $this->paid_amount
+                ]);
+            }else{
+                $existingOpenOrder->update([
+                    'total_payment' => $existingOpenOrder->total_payment + $this->total_price
+                ]);
+            }
             $purchase = $existingOpenOrder;
         } else {
             $purchase = Purchase::create($purchaseData);
