@@ -213,6 +213,86 @@ class ExportBookkeepingView extends Component
         return $purchases;
     }
 
+    private function getGroupMonthlyPurchasesData_nope()
+    {
+        // Payment query
+        $query = Payment::orderBy('created_at', 'desc');
+
+        // Check if start and end dates are set and add them to the query
+        if ($this->startDate && $this->endDate) {
+            if ($this->viewMode == 'monthly') {
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+            } else {
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+            }
+
+            $query->whereBetween('created_at', [$start, $end]);
+        }
+
+        // Purchase Order query
+        $queryPO = PurchaseOrder::orderBy('created_at', 'desc');
+
+        // Check if start and end dates are set and add them to the query
+        if ($this->startDate && $this->endDate) {
+            if ($this->viewMode == 'monthly') {
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+            } else {
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+            }
+
+            $queryPO->whereBetween('created_at', [$start, $end]);
+        }
+
+        // Retrieve the payments
+        $payments = $query->get()->map(function ($purchase) {
+            return [
+                'customer_name' => optional($purchase->purchase->customer)->name,
+                'amount' => optional($purchase)->amount,
+                'bank_detail' => optional($purchase)->bank_detail,
+                'total_price' => null, // This will be filled by PurchaseOrder
+                'to_deposit' => null,  // This will be filled by PurchaseOrder
+                'purchase_month' => $purchase->created_at->format('Y-m'), // Format the date as Year-Month
+                'purchase_time' => $purchase->created_at->format('Y-m-d H:i'),
+            ];
+        });
+
+        // Retrieve the purchase orders
+        $purchaseOrders = $queryPO->get()->map(function ($purchaseOrder) {
+            return [
+                'customer_name' => null, // This will be filled by Payment
+                'amount' => null, // This will be filled by Payment
+                'bank_detail' => null, // This will be filled by Payment
+                'total_price' => optional($purchaseOrder)->total_price,
+                'to_deposit' => optional($purchaseOrder)->to_deposit,
+                'purchase_month' => $purchaseOrder->created_at->format('Y-m'), // Format the date as Year-Month
+                'purchase_time' => $purchaseOrder->created_at->format('Y-m-d H:i'),
+            ];
+        });
+
+        // Combine both collections and group by purchase_month
+        $combinedPurchases = $payments->concat($purchaseOrders)->groupBy('purchase_month')->map(function ($groupedPurchases) {
+            // Merge values from each grouped item based on purchase_month
+            return $groupedPurchases->reduce(function ($carry, $item) {
+                return [
+                    'customer_name' => $carry['customer_name'] ?? $item['customer_name'],
+                    'amount' => $carry['amount'] ?? $item['amount'],
+                    'bank_detail' => $carry['bank_detail'] ?? $item['bank_detail'],
+                    'total_price' => $carry['total_price'] ?? $item['total_price'],
+                    'to_deposit' => $carry['to_deposit'] ?? $item['to_deposit'],
+                    'purchase_month' => $item['purchase_month'], // Same purchase_month for all
+                    'purchase_time' => $item['purchase_time'],   // Can be used if needed
+                ];
+            });
+        });
+
+        return $combinedPurchases;
+    }
+
+
     /**
      * Translate the payment status from English to Indonesian.
      *

@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithPreCalculateFormulas;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use App\Models\PurchaseOrder;
 use Carbon\Carbon;
 
 class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithTitle, WithPreCalculateFormulas
@@ -51,6 +52,7 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
 
         // Calculate the total for cash purchases
         $totalCash = $data->where('bank_detail', 'CASH')->sum('amount');
+        $totalAdditionalPrice = PurchaseOrder::sum('additional_price');
 
         // Add rows for the total and total cash at the end
         $data->push([
@@ -74,6 +76,24 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
         $data->push([
             'customer_name' => 'Cash',
             'amount' => $totalCash,
+            'bank_detail' => '',
+            'purchase_date' => '',
+            'shift' => '',
+            'total_per_shift_per_day' => ''
+        ]);
+
+        $data->push([
+            'customer_name' => 'Total dtf',
+            'amount' => $total - $totalAdditionalPrice,
+            'bank_detail' => '',
+            'purchase_date' => '',
+            'shift' => '',
+            'total_per_shift_per_day' => ''
+        ]);
+
+        $data->push([
+            'customer_name' => 'Biaya Lain-Lain',
+            'amount' => $totalAdditionalPrice,
             'bank_detail' => '',
             'purchase_date' => '',
             'shift' => '',
