@@ -11,7 +11,6 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithPreCalculateFormulas;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use App\Models\PurchaseOrder;
 use Carbon\Carbon;
 
 class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithTitle, WithPreCalculateFormulas
@@ -22,11 +21,12 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
     private $currentRow = 0;
     private $totals = [];
 
-    public function __construct($purchasesData, $startDate = null, $endDate = null)
+    public function __construct($purchasesData, $startDate = null, $endDate = null, $totalAdditionalPrices)
     {
         $this->purchasesData = $purchasesData;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->totalAdditionalPrices = $totalAdditionalPrices;
         $this->calculateTotals();
     }
 
@@ -52,7 +52,6 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
 
         // Calculate the total for cash purchases
         $totalCash = $data->where('bank_detail', 'CASH')->sum('amount');
-        $totalAdditionalPrice = PurchaseOrder::sum('additional_price');
 
         // Add rows for the total and total cash at the end
         $data->push([
@@ -84,7 +83,7 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
 
         $data->push([
             'customer_name' => 'Total dtf',
-            'amount' => $total - $totalAdditionalPrice,
+            'amount' => $total - $this->totalAdditionalPrices,
             'bank_detail' => '',
             'purchase_date' => '',
             'shift' => '',
@@ -93,7 +92,7 @@ class BookkeepingExport implements FromCollection, WithHeadings, WithMapping, Wi
 
         $data->push([
             'customer_name' => 'Biaya Lain-Lain',
-            'amount' => $totalAdditionalPrice,
+            'amount' => $this->totalAdditionalPrices,
             'bank_detail' => '',
             'purchase_date' => '',
             'shift' => '',
