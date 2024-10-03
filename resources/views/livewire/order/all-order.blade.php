@@ -52,7 +52,7 @@
     {{-- {{ $purchase->purchase_orders->count() }}
     $purchase->purchase_orders[0]->status == 'cancel' --}}
     @forelse ($purchases as $purchase)
-        @if ($purchase->purchase_orders->count() != 1 ||  $purchase->purchase_orders[0]->status != 'cancel')
+        @if ($purchase->purchase_orders->count() != 1 || $purchase->purchase_orders[0]->status != 'cancel')
             <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key="{{ $purchase->id }}">
                 <div class="flex justify-between pb-2 border-b">
                     <p class="my-auto text-sm text-slate-500">Dibuat Pada
@@ -126,7 +126,14 @@
                                 <span class="px-2 py-1 text-white bg-green-600 rounded-md">
                                     {{-- @dump($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0) --}}
                                     @if ($purchase->purchase_orders->where('status', '!=', 'cancel')->count() != 0)
-                                        {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }}
+                                        @php
+                                            $remaining = $purchase->total_payment - $purchase->payments->sum('amount');
+                                        @endphp
+                                        @if ($remaining < 0)
+                                            0
+                                        @else
+                                            {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }}
+                                        @endif
                                     @else
                                         0
                                     @endif
@@ -255,8 +262,10 @@
             @endphp
             <div>
                 <x-inputs.currency label="Nominal pembayaran *" max="{{ $remainingPayment }}"
-                    placeholder="Nominal pembayaran" wire:model="amount" />
-
+                    placeholder="Nominal pembayaran" wire:model.live.debounce.500ms="amount" />
+                <div class="mt-5">
+                    <x-checkbox id="right-label" label="Masuk deposit" wire:model.live="to_deposit" />
+                </div>
                 <div class="flex justify-between gap-5 mt-5">
                     <div class="w-1/2">
                         <x-input-label>Bukti pembayaran</x-input-label>
@@ -274,12 +283,22 @@
             </div>
 
             <div class="flex justify-end mt-2 text-right">
-                <div>
-                    <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
-                    <p class="text-sm text-gray-500">
-                        {{ rupiah_format($remainingPayment) }}
-                    </p>
-                </div>
+                @if ($to_deposit)
+                    <div>
+                        <p class="text-sm text-gray-500">Total yang akan masuk deposit</p>
+                        <p class="text-sm text-gray-500">
+                            {{ rupiah_format($this->amount - $this->maxAmount) }}
+                        </p>
+                    </div>
+                @else
+                    <div>
+                        <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
+                        <p class="text-sm text-gray-500">
+                            {{ rupiah_format($remainingPayment) }}
+                        </p>
+                    </div>
+                @endif
+
             </div>
 
             <x-slot name="footer">

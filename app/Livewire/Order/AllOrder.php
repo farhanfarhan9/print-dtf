@@ -29,14 +29,16 @@ class AllOrder extends Component
     public $maxAmount;
     public $bank_detail;
 
-    public function rules()
-    {
-        return [
-            'amount' => 'required|numeric|max:' . $this->maxAmount,
-            'file' => 'nullable|file|max:2000',
-            'bank_detail' => 'required',
-        ];
-    }
+    public $to_deposit;
+
+    // public function rules()
+    // {
+    //     return [
+    //         'amount' => 'required|numeric|max:' . $this->maxAmount,
+    //         'file' => 'nullable|file|max:2000',
+    //         'bank_detail' => 'required',
+    //     ];
+    // }
 
     public function printLabel($orderId)
     {
@@ -69,19 +71,50 @@ class AllOrder extends Component
         // dd($this->maxAmount);
         // dd($remainingDebt);
         // dd( $purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price'));
-        $this->validate();
-
+        // $this->validate();
+        if ($this->to_deposit) {
+            $this->validate([
+                'amount' => 'required|numeric',
+                'file' => 'nullable|file|max:2000',
+                'bank_detail' => 'required',
+            ]);
+        } else {
+            $this->validate([
+                'amount' => 'required|numeric|max:' . $this->maxAmount,
+                'file' => 'nullable|file|max:2000',
+                'bank_detail' => 'required',
+            ]);
+        }
         if ($this->file) {
             $this->file = $this->file->store('bukti_pembayaran', 'public');
         }
 
-        Payment::create([
-            'purchase_id' => $purchase->id,
-            'amount' => $this->amount,
-            'is_dp' => 0,
-            'file' => $this->file,
-            'bank_detail' => $this->bank_detail,
-        ]);
+        if ($this->to_deposit) {
+            Payment::create([
+                'purchase_id' => $purchase->id,
+                'amount' => $this->amount,
+                'is_dp' => 0,
+                'file' => $this->file,
+                'bank_detail' => $this->bank_detail,
+                'to_deposit' => $this->amount - $this->maxAmount,
+            ]);
+        }else{
+            Payment::create([
+                'purchase_id' => $purchase->id,
+                'amount' => $this->amount,
+                'is_dp' => 0,
+                'file' => $this->file,
+                'bank_detail' => $this->bank_detail,
+            ]);
+        }
+        
+
+        if ($this->to_deposit) {
+            $selectedDeposit = $purchase->customer->deposit;
+            $purchase->customer->update([
+                'deposit' => $selectedDeposit + ($this->amount - $this->maxAmount)
+            ]);
+        }
 
         // if ($po->payments->sum('amount') >= $po->total_price) {
         //     $po->update([
@@ -91,13 +124,13 @@ class AllOrder extends Component
 
         $remainingDebt = $purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price') - $purchase->payments->sum('amount');
 
-        if ($remainingDebt == 0) {
+        if ($remainingDebt <= 0) {
             $purchase->update([
                 'payment_status' => 'close'
             ]);
         }
 
-        $this->reset('paymentModal', 'amount', 'file');
+        $this->reset('paymentModal', 'amount', 'file', 'to_deposit');
         $this->notification([
             'title'       => 'Sukses',
             'description' => "'Berhasil menambahkan pembayaran pada INV' .$purchase->invoice_code",

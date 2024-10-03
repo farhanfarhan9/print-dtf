@@ -41,8 +41,11 @@
         <p class="p-2 text-white bg-red-500 rounded-md">Total Bayar : {{ rupiah_format($purchase->total_payment) }}</p>
         <p class="p-2 text-white bg-yellow-500 rounded-md">Total Yang Sudah Dibayar :
             {{ rupiah_format($purchase->payments->sum('amount')) }}</p>
+        @php
+            $remaining = $purchase->total_payment - $purchase->payments->sum('amount');
+        @endphp
         <p class="p-2 text-white bg-green-600 rounded-md">Sisa Yang Harus Dibayarkan:
-            {{ rupiah_format($purchase->total_payment - $purchase->payments->sum('amount')) }} </p>
+            {{ $remaining < 0 ? 0 : $remaining }} </p>
     </div>
     @forelse ($purchase_orders as $item)
         <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7 {{ $item->po_status == 'close' ? 'border-green-600' : '' }}"
@@ -110,10 +113,10 @@
                 </div>
                 <div>
                     @if ($item->to_deposit)
-                    <div>
-                        <p class="font-medium text-slate-500">Masuk deposit</p>
-                        <p class="font-semibold">Rp. {{ number_format($item->to_deposit) }}</p>
-                    </div>
+                        <div>
+                            <p class="font-medium text-slate-500">Masuk deposit</p>
+                            <p class="font-semibold">Rp. {{ number_format($item->to_deposit) }}</p>
+                        </div>
                     @endif
                     <div>
                         <p class="font-medium text-slate-500">Dibuat oleh</p>
@@ -233,7 +236,7 @@
                         <x-input-error :messages="$errors->get('file')" class="mt-2" />
                     </div>
                     <div class="w-1/2">
-                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'Bank Aceh' 'CASH']"
                             wire:model.live="bank_detail" />
                     </div>
                 </div>
