@@ -236,7 +236,7 @@
                         <x-input-error :messages="$errors->get('file')" class="mt-2" />
                     </div>
                     <div class="w-1/2">
-                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'Bank Aceh' 'CASH']"
+                        <x-select label="Detail bank" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'Bank Aceh', 'CASH']"
                             wire:model.live="bank_detail" />
                     </div>
                 </div>
