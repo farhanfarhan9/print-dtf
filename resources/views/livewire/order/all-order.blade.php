@@ -169,6 +169,10 @@
                         <!-- Right-aligned buttons -->
                         <div class="flex gap-5">
                             @if ($purchase->payment_status == 'open')
+                                <x-button wire:click='updateAdditionalModal({{ $purchase->id }})'
+                                    label="Tambah Biaya Tambahan" positive class="items-center" primary icon="currency-dollar" />
+                            @endif
+                            @if ($purchase->payment_status == 'open')
                                 <x-button wire:click='updatePaymentModal({{ $purchase->id }})'
                                     label="Update Pembayaran" class="items-center" primary icon="currency-dollar" />
                             @else
@@ -328,6 +332,48 @@
                     </button>
                     <x-button primary wire:target="file" wire:loading.remove label="Simpan"
                         wire:click="updatePayment({{ $selectedPurchase->id }})" />
+                </div>
+            </x-slot>
+        @endif
+    </x-modal.card>
+    <x-modal.card title="Biaya tambahan INV {{ $selectedPurchase ? $selectedPurchase->invoice_code : '' }}" blur
+        wire:model="additionalModal">
+        @if ($selectedPurchase)
+            @php
+                $remainingPayment = $selectedPurchase->total_payment - $selectedPurchase->payments->sum('amount');
+            @endphp
+            <div>
+                <x-inputs.currency label="Nominal Biaya Tambahan *"
+                    placeholder="Nominal Biaya Tambahan" wire:model="additional_amount" />
+            </div>
+
+            <x-slot name="footer">
+                <div class="flex justify-end">
+                    <button type="button" wire:loading wire:target="file"
+                        class="px-4 py-2 text-sm font-semibold text-center text-white align-middle bg-gray-500 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 mx-auto" viewBox="0 0 200 200">
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="40"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4">
+                                </animate>
+                            </circle>
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="100"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2">
+                                </animate>
+                            </circle>
+                            <circle fill="#FFFFFF" stroke="#FFFFFF" stroke-width="15" r="15" cx="160"
+                                cy="65">
+                                <animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;"
+                                    keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0">
+                                </animate>
+                            </circle>
+                        </svg>
+                    </button>
+                    <x-button primary wire:target="file" wire:loading.remove label="Simpan"
+                        wire:click="updateAdditional({{ $selectedPurchase->id }})" />
                 </div>
             </x-slot>
         @endif

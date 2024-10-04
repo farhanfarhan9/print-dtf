@@ -20,7 +20,7 @@ class AllOrder extends Component
     public $search;
     public $selectedHistory;
     public $paymentHistories = [];
-    public $paymentHistoryModal, $paymentModal;
+    public $paymentHistoryModal, $paymentModal, $additionalModal;
     public $selectedPurchase;
 
     // payment
@@ -30,6 +30,8 @@ class AllOrder extends Component
     public $bank_detail;
 
     public $to_deposit;
+
+    public $additional_amount;
 
     // public function rules()
     // {
@@ -58,6 +60,33 @@ class AllOrder extends Component
         $this->paymentHistories = Payment::where('purchase_id', $purchase->id)->get();
         $this->paymentHistoryModal = 1;
     }
+
+    public function updateAdditionalModal(Purchase $purchase)
+    {
+        $this->selectedPurchase = $purchase;
+        $this->additionalModal = 1;
+    }
+
+    public function updateAdditional(Purchase $purchase)
+    {
+        $last_po = $purchase->purchase_orders->last();
+        $purchase->update([
+            'total_payment' => $purchase->total_payment + $this->additional_amount
+        ]);
+        $last_po->update([
+            'additional_price' => $last_po->additional_price + $this->additional_amount,
+            'total_price' => $last_po->total_price + $this->additional_amount,
+        ]);
+
+        $this->reset('additionalModal', 'additional_amount');
+        $this->notification([
+            'title'       => 'Sukses',
+            'description' => "'Berhasil menambahkan biaya tambahan pada INV' .$purchase->invoice_code",
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
+    }
+
 
     public function updatePaymentModal(Purchase $purchase)
     {
