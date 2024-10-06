@@ -23,7 +23,7 @@ class CreateOrder extends Component
 
     public $customer_id;
     public $expedition_id;
-    public $qty;
+    public $qty =0;
     public $product_price = 0;
     public $total_price = 0;
     public $shipped_price = 0;
@@ -35,6 +35,7 @@ class CreateOrder extends Component
     public $is_deposit;
     public $to_deposit;
     public $invoice_code;
+    public $without_dtf;
 
     public $customer;
     public $expedition;
@@ -145,31 +146,31 @@ class CreateOrder extends Component
         if ($existingOpenOrder) {
             $this->validate([
                 'customer_id' => 'required',
-                'qty' => 'required',
+                'qty' => $this->without_dtf ? 'nullable' : 'required',
                 'status' => 'required',
                 'file' => 'nullable|file|max:2000',
-                'additional_price' => 'nullable',
+                'additional_price' => $this->without_dtf ? 'nullable' : 'required',
                 'discount' => 'nullable',
             ]);
         } elseif ($this->status == 'Belum Bayar') {
             $this->validate([
                 'customer_id' => 'required',
-                'qty' => 'required',
+                'qty' => $this->without_dtf ? 'nullable' : 'required',
                 'expedition_id' => 'required',
                 'status' => 'required',
                 'file' => 'nullable|file|max:2000',
-                'additional_price' => 'nullable',
+                'additional_price' => $this->without_dtf ? 'nullable' : 'required',
                 'discount' => 'nullable',
             ]);
         } else {
             $this->validate([
                 'customer_id' => 'required',
-                'qty' => 'required',
+                'qty' => $this->without_dtf ? 'nullable' : 'required',
                 'expedition_id' => 'required',
                 'status' => 'required',
                 'bank_detail' => 'required',
                 'file' => 'nullable|file|max:2000',
-                'additional_price' => 'nullable',
+                'additional_price' => $this->without_dtf ? 'nullable' : 'required',
                 'discount' => 'nullable',
             ]);
         }
@@ -192,7 +193,7 @@ class CreateOrder extends Component
                 $existingOpenOrder->update([
                     'total_payment' => $existingOpenOrder->total_payment + $this->paid_amount
                 ]);
-            }else{
+            } else {
                 $existingOpenOrder->update([
                     'total_payment' => $existingOpenOrder->total_payment + $this->total_price
                 ]);
@@ -314,6 +315,9 @@ class CreateOrder extends Component
 
 
             $this->expedition = Ekspedisi::find($this->expedition_id);
+            if($this->without_dtf){
+                $this->qty = 0;
+            }
 
             if ($this->qty <= $this->product->stok) {
                 $this->outOfStock = false;
@@ -338,6 +342,7 @@ class CreateOrder extends Component
                 $this->total_price -= $this->deposit_cut;
             }
         }
+
 
 
         return view('livewire.order.create-order', [

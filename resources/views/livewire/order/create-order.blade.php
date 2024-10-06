@@ -117,7 +117,7 @@
                         </div>
                         <div>
                             <p class="text-slate-600">Panjang (m)</p>
-                            @if ($customer_id)
+                            @if ($customer_id && $without_dtf == false)
                                 <x-input shadowless="true" wire:model.live.debounce.300ms='qty' type="number"
                                     step=".01" placeholder="0" />
                             @else
@@ -134,13 +134,16 @@
                             @endif
                         </div>
                     </div>
-                    @if ($found == false)
-                        <p class="text-red-500">Panjang produk tidak dalam range harga produk</p>
-                    @elseif ($qty == 0)
-                        <p class="text-red-500">Panjang produk harus lebih besar dari 0</p>
-                    @elseif($outOfStock == true)
-                        <p class="text-red-500">Stok produk tidak mencukupi</p>
+                    @if ($without_dtf == false)
+                        @if ($found == false)
+                            <p class="text-red-500">Panjang produk tidak dalam range harga produk</p>
+                        @elseif ($qty == 0)
+                            <p class="text-red-500">Panjang produk harus lebih besar dari 0</p>
+                        @elseif($outOfStock == true)
+                            <p class="text-red-500">Stok produk tidak mencukupi</p>
+                        @endif
                     @endif
+                    <x-checkbox id="right-label" label="Tanpa dtf" wire:model.live="without_dtf" />
                     <div class="px-8 mt-3">
                         {{-- <p class="text-slate-600">Ekspedisi</p> --}}
                         <x-select wire:model.live="expedition_id" label='Ekspedisi' placeholder="Pilih ekspedisi"
@@ -266,12 +269,18 @@
                             </circle>
                         </svg>
                     </button>
-                    @if ($outOfStock == true || $found == false || $qty == 0)
-                        <x-button wire:target="file" label="Simpan" secondary disabled />
+                    @if ($without_dtf == false)
+                        @if ($outOfStock == true || $found == false || $qty == 0)
+                            <x-button wire:target="file" label="Simpan" secondary disabled />
+                        @else
+                            <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan"
+                                green />
+                        @endif
                     @else
                         <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan"
-                            green />
+                                green />
                     @endif
+
                 </div>
             </div>
         </div>
