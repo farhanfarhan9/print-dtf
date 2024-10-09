@@ -143,7 +143,7 @@
                             <p class="text-red-500">Stok produk tidak mencukupi</p>
                         @endif
                     @endif
-                    <x-checkbox id="right-label" label="Tanpa dtf" wire:model.live="without_dtf" />
+                    <x-checkbox id="wo-dtf" label="Tanpa dtf" wire:model.live="without_dtf" />
                     <div class="px-8 mt-3">
                         {{-- <p class="text-slate-600">Ekspedisi</p> --}}
                         <x-select wire:model.live="expedition_id" label='Ekspedisi' placeholder="Pilih ekspedisi"
@@ -230,7 +230,7 @@
                                 wire:model.live="bank_detail" />
                         </div>
                         <div class="mt-5">
-                            <x-checkbox id="right-label" label="Masuk deposit" wire:model.live="to_deposit" />
+                            <x-checkbox id="to-depo" label="Masuk deposit" wire:model.live="to_deposit" />
                         </div>
                         <div class="mt-5">
                             @if ($to_deposit)
