@@ -170,7 +170,8 @@
                         <div class="flex gap-5">
                             @if ($purchase->payment_status == 'open')
                                 <x-button wire:click='updateAdditionalModal({{ $purchase->id }})'
-                                    label="Tambah Biaya Tambahan" positive class="items-center" primary icon="currency-dollar" />
+                                    label="Tambah Biaya Tambahan" positive class="items-center" primary
+                                    icon="currency-dollar" />
                             @endif
                             @if ($purchase->payment_status == 'open')
                                 <x-button wire:click='updatePaymentModal({{ $purchase->id }})'
@@ -265,19 +266,34 @@
                 $remainingPayment = $selectedPurchase->total_payment - $selectedPurchase->payments->sum('amount');
             @endphp
             <div>
-                <x-inputs.currency label="Nominal pembayaran *" max="{{ $remainingPayment }}"
-                    placeholder="Nominal pembayaran" wire:model.live.debounce.500ms="amount" />
+                @if ($deposit_opt == 'cut_deposit')
+                    @if ($this->maxAmount - $selectedPurchase->customer->deposit > 0)
+                        <x-inputs.currency label="Nominal pembayaran *" max="{{ $remainingPayment }}"
+                            placeholder="Nominal pembayaran" wire:model.live.debounce.500ms="amount" />
+                    @else
+                        <x-inputs.currency label="Nominal pembayaran *" max="{{ $remainingPayment }}"
+                            placeholder="Nominal pembayaran" disabled />
+                    @endif
+                @else
+                    <x-inputs.currency label="Nominal pembayaran *" max="{{ $remainingPayment }}"
+                        placeholder="Nominal pembayaran" wire:model.live.debounce.500ms="amount" />
+                @endif
                 <div class="mt-5">
-                    <x-checkbox id="right-label" label="Masuk deposit" wire:model.live="to_deposit" />
+                    {{-- <x-checkbox id="right-label" label="Masuk deposit" wire:model.live="to_deposit" /> --}}
+                    <x-radio id="to_deposit" value="to_deposit" label="Masuk deposit"
+                        wire:model.live="deposit_opt" />
+                    <x-radio id="cut_deposit" value="cut_deposit" label="Potong deposit"
+                        wire:model.live="deposit_opt" />
+                    {{-- <x-radio id="cut_deposit" label="Potong deposit" wire:model.live="cut_deposit" /> --}}
                 </div>
                 <div class="flex justify-between gap-5 mt-5">
                     <div class="w-1/2">
-                        <x-input-label>Bukti pembayaran</x-input-label>
+                        <x-input-label>Bukti pembayaran *</x-input-label>
                         <x-input-file wire:model='file'></x-input-file>
                         <x-input-error :messages="$errors->get('file')" class="mt-2" />
                     </div>
                     <div class="w-1/2">
-                        <x-select label="Detail bank *" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'CASH']"
+                        <x-select label="Detail bank *" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'Bank Aceh', 'CASH']"
                             wire:model="bank_detail" />
                     </div>
                 </div>
@@ -286,12 +302,25 @@
                 @endif
             </div>
 
-            <div class="flex justify-end mt-2 text-right">
-                @if ($to_deposit)
+            <div class="flex justify-between mt-2">
+                <div>
+                    <p class="text-sm text-gray-500">Jumlah deposit customer</p>
+                    <p class="text-sm text-gray-500">
+                        {{ rupiah_format($selectedPurchase->customer->deposit) }}
+                    </p>
+                </div>
+                @if ($deposit_opt == 'to_deposit')
                     <div>
                         <p class="text-sm text-gray-500">Total yang akan masuk deposit</p>
                         <p class="text-sm text-gray-500">
                             {{ rupiah_format($this->amount - $this->maxAmount) }}
+                        </p>
+                    </div>
+                @elseif ($deposit_opt == 'cut_deposit')
+                    <div>
+                        <p class="text-sm text-gray-500">Sisa yang harus dibayarkan</p>
+                        <p class="text-sm text-gray-500">
+                            {{ rupiah_format($this->maxAmount - $selectedPurchase->customer->deposit > 0 ? $this->maxAmount - $selectedPurchase->customer->deposit : 0) }}
                         </p>
                     </div>
                 @else
@@ -343,8 +372,8 @@
                 $remainingPayment = $selectedPurchase->total_payment - $selectedPurchase->payments->sum('amount');
             @endphp
             <div>
-                <x-inputs.currency label="Nominal Biaya Tambahan *"
-                    placeholder="Nominal Biaya Tambahan" wire:model="additional_amount" />
+                <x-inputs.currency label="Nominal Biaya Tambahan *" placeholder="Nominal Biaya Tambahan"
+                    wire:model="additional_amount" />
             </div>
 
             <x-slot name="footer">

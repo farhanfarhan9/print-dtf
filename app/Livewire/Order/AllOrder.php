@@ -29,7 +29,8 @@ class AllOrder extends Component
     public $maxAmount;
     public $bank_detail;
 
-    public $to_deposit;
+    public $deposit_opt = '';
+    public $paymentCut;
 
     public $additional_amount;
 
@@ -101,12 +102,29 @@ class AllOrder extends Component
         // dd($remainingDebt);
         // dd( $purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price'));
         // $this->validate();
-        if ($this->to_deposit) {
+        if ($this->deposit_opt == 'to_deposit') {
             $this->validate([
                 'amount' => 'required|numeric',
                 'file' => 'nullable|file|max:2000',
                 'bank_detail' => 'required',
             ]);
+        } elseif ($this->deposit_opt == 'cut_deposit') {
+            // dd($purchase->customer->deposit);
+            // dd($this->maxAmount);
+            $this->paymentCut =  $this->maxAmount - $purchase->customer->deposit;
+            if ($this->paymentCut > 0) {
+                $this->validate([
+                    'amount' => 'required|numeric|max:' . $this->paymentCut,
+                    'file' => 'nullable|file|max:2000',
+                    'bank_detail' => 'required',
+                ]);
+            } else {
+                $this->validate([
+                    'amount' => 'nullable',
+                    'file' => 'nullable|file|max:2000',
+                    'bank_detail' => 'required',
+                ]);
+            }
         } else {
             $this->validate([
                 'amount' => 'required|numeric|max:' . $this->maxAmount,
@@ -118,7 +136,7 @@ class AllOrder extends Component
             $this->file = $this->file->store('bukti_pembayaran', 'public');
         }
 
-        if ($this->to_deposit) {
+        if ($this->deposit_opt == 'to_deposit') {
             Payment::create([
                 'purchase_id' => $purchase->id,
                 'amount' => $this->amount,
@@ -127,7 +145,15 @@ class AllOrder extends Component
                 'bank_detail' => $this->bank_detail,
                 'to_deposit' => $this->amount - $this->maxAmount,
             ]);
-        }else{
+        } elseif ($this->deposit_opt == 'cut_deposit') {
+            Payment::create([
+                'purchase_id' => $purchase->id,
+                'amount' => $this->paymentCut > 0 ? $this->amount + $purchase->customer->deposit : $this->maxAmount,
+                'is_dp' => 0,
+                'file' => $this->file,
+                'bank_detail' => $this->bank_detail,
+            ]);
+        } else {
             Payment::create([
                 'purchase_id' => $purchase->id,
                 'amount' => $this->amount,
@@ -136,14 +162,20 @@ class AllOrder extends Component
                 'bank_detail' => $this->bank_detail,
             ]);
         }
-        
 
-        if ($this->to_deposit) {
+
+        if ($this->deposit_opt == 'to_deposit') {
             $selectedDeposit = $purchase->customer->deposit;
             $purchase->customer->update([
                 'deposit' => $selectedDeposit + ($this->amount - $this->maxAmount)
             ]);
+        } elseif ($this->deposit_opt == 'cut_deposit') {
+            $selectedDeposit = $purchase->customer->deposit;
+            $purchase->customer->update([
+                'deposit' => $this->paymentCut > 0 ? 0 : $selectedDeposit - $this->maxAmount,
+            ]);
         }
+
 
         // if ($po->payments->sum('amount') >= $po->total_price) {
         //     $po->update([
@@ -159,7 +191,7 @@ class AllOrder extends Component
             ]);
         }
 
-        $this->reset('paymentModal', 'amount', 'file', 'to_deposit');
+        $this->reset('paymentModal', 'amount', 'file', 'deposit_opt');
         $this->notification([
             'title'       => 'Sukses',
             'description' => "'Berhasil menambahkan pembayaran pada INV' .$purchase->invoice_code",
