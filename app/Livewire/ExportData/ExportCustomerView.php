@@ -65,7 +65,7 @@ class ExportCustomerView extends Component
 
             // Return the download response
             return Excel::download(new CustomersExport($customerOrders, $displayStartDate, $displayEndDate), $filename);
-        }else if ($this->startDate == null || $this->endDate == null){
+        } else if ($this->startDate == null || $this->endDate == null) {
             session()->flash('exportFailed');
             $this->redirect(route('export-customer.index'), navigate: true);
         }
@@ -242,18 +242,21 @@ class ExportCustomerView extends Component
             $query->whereBetween('purchase_orders.created_at', [$start, $end]);
         }
 
+        if (!empty($this->search)) {
+            $query->where('customers.name', 'like', '%' . $this->search . '%');
+        }
+
         $purchaseOrders = $query->get();
 
         $customerData = $purchaseOrders->groupBy('purchase.customer_id')->map(function ($orders, $customerId) {
             return [
-                'jumlah_order' => $orders->sum('qty'),  // 'total_qty' is now 'jumlah_order'
-                'frekuensi' => $orders->count(),  // 'frequency' is now 'frekuensi'
-                'nama_customer' => $orders->first()->purchase->customer->name,  // 'customer_name' is now 'nama_customer'
-                'newest_date' => $orders->max('created_at'),  // Keeping 'newest_date' for clarity
+                'jumlah_order' => $orders->sum('qty'),
+                'frekuensi' => $orders->count(),
+                'nama_customer' => $orders->first()->purchase->customer->name,
+                'newest_date' => $orders->max('created_at'),
             ];
         });
 
-        // Sorting logic
         if (in_array($this->sortField, ['jumlah_order', 'frekuensi', 'nama_customer'])) {
             $customerData = $customerData->sortBy($this->sortField, SORT_REGULAR, $this->sortDirection === 'desc');
         } else {
@@ -262,6 +265,7 @@ class ExportCustomerView extends Component
 
         return $customerData;
     }
+
 
 
     private function getCustomerOrdersNew()
