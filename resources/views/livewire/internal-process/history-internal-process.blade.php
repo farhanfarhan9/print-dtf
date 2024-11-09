@@ -142,20 +142,5 @@
         </div> --}}
 
         {{-- RIP MODAL --}}
-        <x-modal.card
-            title="RIP invoice: {{ isset($selectedData) ? $selectedData->purchase_order->invoice_code : '' }}" blur
-            wire:model.defer="ripModal">
-            <x-native-select label="Nomor Mesin" placeholder="Pilih Nomor Mesin" :options="[1, 2]"
-                wire:model="machineNo" />
-
-            <x-slot name="footer">
-                <div class="flex justify-end gap-x-4">
-                    <div class="flex">
-                        <x-button flat label="Cancel" x-on:click="close" />
-                        <x-button primary label="Simpan" wire:click="addMachineNo" />
-                    </div>
-                </div>
-            </x-slot>
-        </x-modal.card>
     </div>
 </div>

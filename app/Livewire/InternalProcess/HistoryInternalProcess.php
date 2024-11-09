@@ -16,11 +16,13 @@ class HistoryInternalProcess extends Component
     public function render()
     {
         $today = Carbon::today();
+        $thirtyDaysAgo = $today->subDays(15);
 
         $internalsQuery = InternalProcess::whereHas('purchase_order', function ($query) {
             $query->where('status', '!=', 'cancel');
         })
-          ->orderBy('execution_date', 'desc')->get();
+        ->where('execution_date', '>=', $thirtyDaysAgo) // Only records from the last 30 days
+        ->orderBy('execution_date', 'desc')->get();
 
         // Group the paginated internals by execution date
         $groupedInternals = $internalsQuery->groupBy(function($internal) {
