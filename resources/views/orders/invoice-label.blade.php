@@ -142,7 +142,13 @@
                         <td class="tg-0lax" style="font-size: 9px">{{ number_format($pembayaran->qty, 0, ',', '.') }}
                         </td>
                         <td class="tg-0lax" style="font-size: 9px">
-                            {{ rupiah_format($pembayaran->product_price / $pembayaran->qty) }}</td>
+                            @if ($pembayaran->product_price > 0)
+                                {{ rupiah_format($pembayaran->product_price / $pembayaran->qty) }}
+                            @else
+                                0
+                            @endif
+                            {{-- @dump($pembayaran->product_price) --}}
+                        </td>
                         <td class="tg-0lax right-text" style="font-size: 9px">
                             {{ rupiah_format($pembayaran->product_price) }}</td>
                     </tr>
@@ -256,7 +262,7 @@
                             {{ rupiah_format($pembayaran->amount) }}</td>
                     </tr>
                     <tr>
-                      <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
+                        <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
                     </tr>
                     @php $cicilan -= $pembayaran->amount; @endphp
                 @empty
