@@ -21,7 +21,7 @@
         })
     </script>
 @endif
-<div>
+<div wire:poll.5s>
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
@@ -290,4 +290,18 @@
 
         {{-- Default --}}
     @endif
+    {{-- Put it here --}}
+    <div class="mt-4">
+        <div class="flex space-x-4">
+            <div>
+                <span class="font-bold">Loading Time:</span> {{ $loadingTime }} seconds
+            </div>
+            <div>
+                <span class="font-bold">RAM Usage:</span> {{ $ramUsage }} MB
+            </div>
+            <div>
+                <span class="font-bold">Data Size:</span> {{ $dataSize }} KB
+            </div>
+        </div>
+    </div>
 </div>
