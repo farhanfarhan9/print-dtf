@@ -59,8 +59,8 @@
     @if ($viewMode == 'daily')
         {{-- Daily --}}
         <div class="pt-12">
-            @forelse ($dailyGroupPurchases as $purchase_date => $dailyPurchase)
-                <div class="mb-10" wire:key='key-{{ \Carbon\Carbon::parse($purchase_date)->isoFormat('D-MM-YYYY') }}'>
+            @forelse ($dailyGroupPurchases as $group)
+                <div class="mb-10" wire:key='key-{{ \Carbon\Carbon::parse($group['purchase_date'])->isoFormat('D-MM-YYYY') }}'>
                     <x-card>
                         @php
                             $totalPricePerDay = 0;
@@ -69,7 +69,7 @@
                             @php
                                 \Carbon\Carbon::setLocale('id');
                             @endphp
-                            {{ \Carbon\Carbon::parse($purchase_date)->isoFormat('dddd, D MMMM YYYY') }}
+                            {{ \Carbon\Carbon::parse($group['purchase_date'])->isoFormat('dddd, D MMMM YYYY') }}
                         </div>
                         {{--  --}}
                         <div class="p-5 mb-5 border rounded-md">
@@ -103,18 +103,18 @@
                                         $totalPricePerDayShift1 = 0;
                                         $totalPricePerDayShift2 = 0;
                                     @endphp
-                                    @forelse ($dailyPurchase as $key => $purchaseData)
+                                    @forelse ($group['dailyPurchases'] as $key => $dailyPurchases)
                                         @php
 
-                                            $date = \Carbon\Carbon::parse($purchaseData['purchase_time'])->format('Y-m-d');
-                                            $time = \Carbon\Carbon::parse($purchaseData['purchase_time'])->format('H:i');
+                                            $date = \Carbon\Carbon::parse($dailyPurchases['purchase_time'])->format('Y-m-d');
+                                            $time = \Carbon\Carbon::parse($dailyPurchases['purchase_time'])->format('H:i');
                                             $shift = (strtotime($time) >= strtotime('09:00') && strtotime($time) <= strtotime('16:59')) ? 'Shift 1' : 'Shift 2';
                                             if(strtotime($time) >= strtotime('09:00') && strtotime($time) <= strtotime('16:59')){
-                                                $totalPricePerDayShift1 += $purchaseData['amount'];
+                                                $totalPricePerDayShift1 += $dailyPurchases['amount'];
                                             }else{
-                                                $totalPricePerDayShift2 += $purchaseData['amount'];;
+                                                $totalPricePerDayShift2 += $dailyPurchases['amount'];;
                                             }
-                                            $totalPricePerDay += $purchaseData['amount'];
+                                            $totalPricePerDay += $dailyPurchases['amount'];
                                         @endphp
                                         <tr wire:key="key-{{ $key }}"
                                             class=" odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
@@ -124,15 +124,15 @@
                                             </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $purchaseData['customer_name'] }}
+                                                {{ $dailyPurchases['customer_name'] }}
                                             </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ rupiah_format($purchaseData['amount']) }}
+                                                {{ rupiah_format($dailyPurchases['amount']) }}
                                             </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $purchaseData['bank_detail'] }}
+                                                {{ $dailyPurchases['bank_detail'] }}
                                             </th>
                                             <th scope="row" colspan="4"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
@@ -140,7 +140,7 @@
                                             </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $purchaseData['purchase_time'] }}
+                                                {{ $dailyPurchases['purchase_time'] }}
                                             </th>
                                         </tr>
                                     @empty
@@ -154,7 +154,7 @@
                                             Total
                                         </th>
                                         <th class="px-6 py-2 font-bold text-medium whitespace-nowrap">
-                                            {{ count($dailyPurchase) }} Customer
+                                            {{-- {{ count($dailyGroupPurchases) }} Customer --}}
                                         </th>
                                         <th colspan="2"
                                             class="px-6 py-2 font-bold text-medium whitespace-nowrap">
@@ -187,13 +187,14 @@
                 No Data
             @endforelse
         </div>
+        {{ $dailyGroupPurchases->links() }} <!-- Pagination links -->
         {{-- Daily --}}
     @elseif($viewMode == 'monthly')
         {{-- Monthly --}}
         <div class="pt-12">
-            @forelse ($monthlyGroupPurchases as $purchase_month => $monthlyPurchase)
+            @forelse ($monthlyGroupPurchases as $group)
                 <div class="mb-10"
-                    wire:key='key-{{ \Carbon\Carbon::createFromFormat('Y-m', $purchase_month)->isoFormat('MM-YYYY') }}'>
+                    wire:key='key-{{ \Carbon\Carbon::parse($group['purchase_month'])->isoFormat('MM-YYYY') }}'>
                     <x-card>
                         @php
                             $totalPricePerMonth = 0;
@@ -202,7 +203,7 @@
                             @php
                                 \Carbon\Carbon::setLocale('id');
                             @endphp
-                            {{ \Carbon\Carbon::createFromFormat('Y-m', $purchase_month)->isoFormat('MMMM YYYY') }}
+                            {{ \Carbon\Carbon::parse($group['purchase_month'])->isoFormat('MMMM YYYY') }}
                         </div>
                         <div class="p-5 mb-5 border rounded-md">
                             <table
@@ -228,9 +229,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($monthlyPurchase as $key => $purchaseData)
+                                    @forelse ($group['monthlyPurchases'] as $key => $monthlyPurchase)
                                         @php
-                                            $totalPricePerMonth += $purchaseData['amount'];
+                                            $totalPricePerMonth += $monthlyPurchase['amount'];
                                         @endphp
                                         <tr wire:key="key-{{ $key }}"
                                             class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
@@ -240,19 +241,19 @@
                                             </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $purchaseData['customer_name'] }}
+                                                {{ $monthlyPurchase['customer_name'] }}
                                             </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ rupiah_format($purchaseData['amount']) }}
+                                                {{ rupiah_format($monthlyPurchase['amount']) }}
                                             </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $purchaseData['bank_detail'] }}
+                                                {{ $monthlyPurchase['bank_detail'] }}
                                             </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $purchaseData['purchase_time'] }}
+                                                {{ $monthlyPurchase['purchase_time'] }}
                                             </th>
                                         </tr>
                                     @empty
@@ -266,7 +267,7 @@
                                             Total
                                         </th>
                                         <th class="px-6 py-2 font-bold text-medium whitespace-nowrap">
-                                            {{ count($monthlyPurchase) }} Customer
+                                            {{-- {{ count($monthlyPurchase['customer_name']) }} Customer --}}
                                         </th>
                                         <th colspan="3"
                                             class="px-6 py-2 font-bold text-medium rounded-e-lg whitespace-nowrap">
@@ -282,59 +283,11 @@
                 <div>No Data</div>
             @endforelse
         </div>
+        {{ $monthlyGroupPurchases->links() }} <!-- Pagination links -->
         {{-- Monthly --}}
     @else
         {{-- Default --}}
-        <div class="py-12">
-            <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                No
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Nama Customer
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Harga
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Bank
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Tanggal Pembelian
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            \Carbon\Carbon::setLocale('id');
-                        @endphp
-                        @forelse ($dailyPurchases as $index => $purchase)
-                            <tr class="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700">
-                                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $index + 1 }}
-                                </td>
-                                <td class="px-6 py-4">{{ $purchase['customer_name'] }}</td>
-                                <td class="px-6 py-4">{{ rupiah_format($purchase['amount']) }}</td>
-                                <td class="px-6 py-4">{{ $purchase['bank_detail'] }}</td>
-                                <td class="px-6 py-4">
-                                    {{ \Carbon\Carbon::parse($purchase['purchase_date'])->isoFormat('dddd, DD-MM-YYYY, H:mm:s') }}
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="py-4 text-center">Data Kosong</td>
-                            </tr>
-                        @endforelse
 
-                    </tbody>
-                </table>
-            </div>
-            {{-- <div class="mt-4">
-                {{ $dailyPurchases->links() }}
-            </div> --}}
-        </div>
         {{-- Default --}}
     @endif
 </div>

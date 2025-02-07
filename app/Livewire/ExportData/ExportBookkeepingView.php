@@ -8,6 +8,7 @@ use App\Models\Purchase;
 use App\Models\Payment;
 use App\Exports\BookkeepingExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Pagination\LengthAwarePaginator; // Import LengthAwarePaginator
 use Carbon\Carbon;
 use DB;
 
@@ -17,6 +18,8 @@ class ExportBookkeepingView extends Component
     public $startDate;
     public $endDate;
     public $viewMode = 'daily';  // Default to daily
+    public $sortField = 'created_at'; // Default sort field
+    public $sortDirection = 'desc'; // Default sort direction
 
     public function switchToDaily()
     {
@@ -75,77 +78,79 @@ class ExportBookkeepingView extends Component
         }
     }
 
-    private function getProductsSold()
-    {
-        $query = PurchaseOrder::query()
-            ->with('product')
-            ->select('product_id', DB::raw('SUM(qty) as total_sold'), DB::raw('SUM(product_price) as total_omzet'))
-            ->where('po_status', 'close');
-
-        // Check if start and end dates are set and add them to the query
-        if ($this->startDate && $this->endDate) {
-            if($this->viewMode == 'monthly'){
-                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
-                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
-            }else{
-                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
-                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
-            }
-
-            $query->whereBetween('created_at', [$start, $end]);
-        }
-
-        return $query->groupBy('product_id')->get()->map(function ($order) {
-            return [
-                'total_sold' => $order->total_sold,
-                'total_omzet' => $order->total_omzet,
-                'product_name' => optional($order->product)->nama_produk, // Assuming the related product has a 'name' attribute
-            ];
-        });
-    }
-
     private function getGroupDailyPurchasesData()
     {
+        // Start building the query
         $query = Payment::orderBy('created_at', 'desc');
 
         // Check if start and end dates are set and add them to the query
         if ($this->startDate && $this->endDate) {
-            if($this->viewMode == 'monthly'){
-                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
-                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
-            }else{
-                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
-                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
+            if ($this->viewMode == 'monthly') {
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay()->format('Y-m-d H:i:s');  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay()->format('Y-m-d H:i:s');  // Adjusts time to 23:59:59
+            } else {
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay()->format('Y-m-d H:i:s');  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay()->format('Y-m-d H:i:s');  // Adjusts time to 23:59:59
             }
 
             $query->whereBetween('created_at', [$start, $end]);
         }
 
-        // Retrieve the payments, apply transformations
-        $purchases = $query->get()->map(function ($purchase) {
+        // Apply sorting
+        $query->orderBy($this->sortField, $this->sortDirection);
+
+        // #######################################
+        // Retrieve the payments
+        $dailyPurchases = $query->get()->map(function ($dailyPurchase, $index) {
+            // Attempt to get customer name from purchaseOrder
+            $customerName = optional(optional($dailyPurchase->purchase)->customer)->name;
+            // $customerFrekuensi = optional(optional($dailyPurchase->purchase_order)->customer)->purchase_orders->get();
+            // $customerFrekuensi = optional(optional(optional($dailyPurchase->purchase_order)->customer)->purchase_orders)->count();
+
             return [
-                'customer_name' => optional($purchase->purchase->customer)->name, // Safe access using optional
-                'amount' => optional($purchase)->amount, // Safe access to amount
-                'bank_detail' => optional($purchase)->bank_detail, // Safe access to bank detail
-                'purchase_date' => $purchase->created_at->format('Y-m-d'), // Format the date as Y-m-d
-                'purchase_time' => $purchase->created_at->format('Y-m-d H:i'), // Format the date as Y-m-d
+                'number' => $index + 1, // Start dari 1
+                'customer_name' => $customerName ?? 'Unknown', // Fallback to 'Unknown' if still null
+                'amount' => optional($dailyPurchase)->amount ?? 'Unknown', // Fallback to 'Unknown' if still null
+                'bank_detail' => optional($dailyPurchase)->bank_detail ?? 'Unknown', // Fallback to 'Unknown' if still null
+                'purchase_date' => $dailyPurchase->created_at->format('Y-m-d') ?? 'Unknown', // Fallback to 'Unknown' if still null
+                'purchase_time' => $dailyPurchase->created_at->format('Y-m-d H:i') ?? 'Unknown', // Fallback to 'Unknown' if still null
             ];
         });
 
         // Group the data by purchase_date
-        // This will group all purchase details under each date
-        $groupedPurchases = $purchases->groupBy('purchase_date')->map(function ($datePurchases) {
-            return $datePurchases->map(function ($purchase) {
+        $groupeddailyPurchases = $dailyPurchases->groupBy('purchase_date')->map(function ($datedailyPurchases) {
+            return $datedailyPurchases->map(function ($dailyPurchase) {
                 return [
-                    'customer_name' => $purchase['customer_name'],
-                    'amount' => $purchase['amount'],
-                    'bank_detail' => $purchase['bank_detail'],
-                    'purchase_time' => $purchase['purchase_time'],
+                    'number' => $dailyPurchase['number'],
+                    'customer_name' => $dailyPurchase['customer_name'],
+                    'amount' => $dailyPurchase['amount'],
+                    'bank_detail' => $dailyPurchase['bank_detail'],
+                    'purchase_date' => $dailyPurchase['purchase_date'],
+                    'purchase_time' => $dailyPurchase['purchase_time'],
                 ];
             });
         });
 
-        return $groupedPurchases;
+        // Convert the grouped data to a flat array for pagination
+        $flatGroupeddailyPurchases = [];
+        foreach ($groupeddailyPurchases as $date => $dailyPurchases) {
+            $flatGroupeddailyPurchases[] = [
+                'purchase_date' => $date,
+                'dailyPurchases' => $dailyPurchases,
+                'customer_count' => $dailyPurchases->count(), // Count of customers for the day
+            ];
+        }
+
+        // Paginate the flat grouped dailyPurchases
+        $perPage = 2; // Number of days per page
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = array_slice($flatGroupeddailyPurchases, ($currentPage - 1) * $perPage, $perPage);
+        $paginatedGroupeddailyPurchases = new LengthAwarePaginator($currentItems, count($flatGroupeddailyPurchases), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+
+        return $paginatedGroupeddailyPurchases; // Return the paginated instance directly
+        // #######################################
     }
 
     private function getGroupMonthlyPurchasesData()
@@ -155,11 +160,11 @@ class ExportBookkeepingView extends Component
         // Check if start and end dates are set and add them to the query
         if ($this->startDate && $this->endDate) {
             if($this->viewMode == 'monthly'){
-                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
-                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
-            }else{
-                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfMonth()->startOfDay();  // Ensures the time is at 00:00:00
-                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfMonth()->endOfDay();  // Adjusts time to 23:59:59
+                $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay()->format('Y-m-d H:i:s');  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay()->format('Y-m-d H:i:s');  // Adjusts time to 23:59:59
+            } else {
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay()->format('Y-m-d H:i:s');  // Ensures the time is at 00:00:00
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay()->format('Y-m-d H:i:s');  // Adjusts time to 23:59:59
             }
 
 
@@ -167,29 +172,50 @@ class ExportBookkeepingView extends Component
         }
 
         // Retrieve the payments, apply transformations
-        $purchases = $query->get()->map(function ($purchase) {
+        $MonthlyPurchases = $query->get()->map(function ($MonthlyPurchase, $index) {
+            $customerName = optional(optional($MonthlyPurchase->purchase)->customer)->name;
             return [
-                'customer_name' => optional($purchase->purchase->customer)->name, // Safe access using optional
-                'amount' => optional($purchase)->amount, // Safe access to amount
-                'bank_detail' => optional($purchase)->bank_detail, // Safe access to bank detail
-                'purchase_month' => $purchase->created_at->format('Y-m'), // Format the date as Year-Month
-                'purchase_time' => $purchase->created_at->format('Y-m-d H:i'), // Format the date as Year-Month
+                'number' => $index + 1, // Start dari 1,
+                'customer_name' => $customerName ?? 'Unknown', // Safe access using optional
+                'amount' => optional($MonthlyPurchase)->amount, // Safe access to amount
+                'bank_detail' => optional($MonthlyPurchase)->bank_detail, // Safe access to bank detail
+                'purchase_month' => $MonthlyPurchase->created_at->format('Y-m'), // Format the date as Year-Month
+                'purchase_time' => $MonthlyPurchase->created_at->format('Y-m-d H:i'), // Format the date as Year-Month
             ];
         });
 
         // Group the data by purchase_month
-        $groupedPurchases = $purchases->groupBy('purchase_month')->map(function ($monthPurchases) {
-            return $monthPurchases->map(function ($purchase) {
+        $groupedMonthlyPurchases = $MonthlyPurchases->groupBy('purchase_month')->map(function ($dateMonthlyPurchases) {
+            return $dateMonthlyPurchases->map(function ($MonthlyPurchase) {
                 return [
-                    'customer_name' => $purchase['customer_name'],
-                    'amount' => $purchase['amount'],
-                    'bank_detail' => $purchase['bank_detail'],
-                    'purchase_time' => $purchase['purchase_time'],
+                    'customer_name' => $MonthlyPurchase['customer_name'],
+                    'amount' => $MonthlyPurchase['amount'],
+                    'bank_detail' => $MonthlyPurchase['bank_detail'],
+                    'purchase_month' => $MonthlyPurchase['purchase_month'],
+                    'purchase_time' => $MonthlyPurchase['purchase_time'],
                 ];
             });
         });
 
-        return $groupedPurchases;
+        // Convert the grouped data to a flat array for pagination
+        $flatGroupedMonthlyPurchases = [];
+        foreach ($groupedMonthlyPurchases as $date => $MonthlyPurchases) {
+            $flatGroupedMonthlyPurchases[] = [
+                'purchase_month' => $date,
+                'monthlyPurchases' => $MonthlyPurchases,
+                'customer_count' => $MonthlyPurchases->count(), // Count of customers for the day
+            ];
+        }
+
+        // Paginate the flat grouped MonthlyPurchases
+        $perPage = 1; // Number of Months per page
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = array_slice($flatGroupedMonthlyPurchases, ($currentPage - 1) * $perPage, $perPage);
+        $paginatedGroupedMonthlyPurchases = new LengthAwarePaginator($currentItems, count($flatGroupedMonthlyPurchases), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+
+        return $paginatedGroupedMonthlyPurchases; // Return the paginated instance directly
     }
 
     private function getPurchasesData()
@@ -256,14 +282,10 @@ class ExportBookkeepingView extends Component
 
     public function render()
     {
-        $productsSold = $this->getProductsSold();
-        $dailyPurchases = $this->getPurchasesData();
         $dailyGroupPurchases = $this->getGroupDailyPurchasesData();
         $monthlyGroupPurchases = $this->getGroupMonthlyPurchasesData();
 
         return view('livewire.export-data.export-bookkeeping-view', [
-            'productsSold' => $productsSold,
-            'dailyPurchases' => $dailyPurchases,
             'dailyGroupPurchases' => $dailyGroupPurchases,
             'monthlyGroupPurchases' => $monthlyGroupPurchases,
             'viewMode' => $this->viewMode,
