@@ -107,7 +107,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('export-data')->group(function () {
         Route::get('/customer', ExportCustomerView::class)->name('export-customer.index');
         Route::get('/product', ExportProductView::class)->name('export-product.index');
-        Route::get('/bookkeeping', ExportBookkeepingView::class)->name('export-bookkeeping.index');
+        Route::get('/bookkeeping/{type?}', ExportBookkeepingView::class)->name('export-bookkeeping.index');
     });
 
     Route::prefix('internal_process')->group(function () {
