@@ -23,7 +23,7 @@ class CreateOrder extends Component
 
     public $customer_id;
     public $expedition_id;
-    public $qty =0;
+    public $qty = 0;
     public $product_price = 0;
     public $total_price = 0;
     public $shipped_price = 0;
@@ -207,7 +207,7 @@ class CreateOrder extends Component
         $purchaseOrderData = [
             'invoice_code' => $this->invoice_code,
             'purchase_id' => $purchase->id,
-            'product_id' => $this->product->id,
+            'product_id' => $this->without_dtf ? null : $this->product->id,
             'expedition_id' => $this->expedition_id ? $this->expedition_id : null,
             'user_id' => Auth::id(),
             'expedition_price' => $this->expedition ? $this->expedition->ongkir : 0,
@@ -315,7 +315,7 @@ class CreateOrder extends Component
 
 
             $this->expedition = Ekspedisi::find($this->expedition_id);
-            if($this->without_dtf){
+            if ($this->without_dtf) {
                 $this->qty = 0;
             }
 

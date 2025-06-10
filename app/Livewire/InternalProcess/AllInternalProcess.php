@@ -144,7 +144,7 @@ class AllInternalProcess extends Component
             //     $query->where('status', '!=', 'cancel');
             // })->paginate(10)
             'internals' => InternalProcess::whereHas('purchase_order', function ($query) {
-                $query->where('status', '!=', 'cancel');
+                $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0);
             })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
                 return $internal->execution_date; // Grouping by creation date
             })

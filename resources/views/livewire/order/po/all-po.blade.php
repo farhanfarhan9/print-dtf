@@ -61,8 +61,14 @@
                 <div class="flex justify-between mt-5">
                     <div>
                         <p class="font-medium text-slate-500">Produk</p>
-                        <p class="font-semibold">{{ $item->product->nama_produk }} ({{ $item->qty }}m)
-                            {{ rupiah_format($item->product_price) }}</p>
+                        <p class="font-semibold">
+                            @if ($item->product)
+                                {{ $item->product->nama_produk }} ({{ $item->qty }}m)
+                                {{ rupiah_format($item->product_price) }}
+                            @else
+                                Tanpa dtf
+                            @endif
+                        </p>
                     </div>
                     <div>
                         <p class="font-medium text-slate-500">Total Bayar
