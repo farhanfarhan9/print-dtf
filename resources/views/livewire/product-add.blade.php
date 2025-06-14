@@ -28,10 +28,28 @@
                         <x-button label="-" negative wire:click.prevent="removePriceRange({{ $index }})" />
                     </div>
                 @endforeach
+                <div class="mt-4">
+                    <x-button label="+" primary wire:click.prevent="addPriceRange" />
+                </div>
+
+                <label for="title" class="block mt-4 text-sm font-medium">Range Harga (dalam meter)</label>
+                @foreach ($priceRetailRanges as $index => $range)
+                    <div class="flex items-center mt-2 space-x-2">
+                        <!-- Adding margin-top to each row of price ranges -->
+                        <x-input type="number" placeholder="Start"
+                            wire:model="priceRetailRanges.{{ $index }}.start" />
+                        <span>—</span>
+                        <x-input type="number" placeholder="End"
+                            wire:model="priceRetailRanges.{{ $index }}.end" />
+                        <x-input placeholder="Harga" wire:model="priceRetailRanges.{{ $index }}.price" />
+                        <x-button label="-" negative
+                            wire:click.prevent="removePriceRangeRetail({{ $index }})" />
+                    </div>
+                @endforeach
 
                 <!-- Adding margin-top to the button -->
                 <div class="mt-4">
-                    <x-button label="+" primary wire:click.prevent="addPriceRange" />
+                    <x-button label="+" primary wire:click.prevent="addPriceRangeRetail" />
                 </div>
 
                 <!-- Adding margin-top to the input -->
