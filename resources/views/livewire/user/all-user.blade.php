@@ -36,7 +36,7 @@
             <x-button label="Tambah User" href="{{ route('user.create') }}" class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green
                 icon="plus" />
         </div>
-        <a href="{{route('user.archieve')}}" class="text-slate-600 hover:underline">Data Arsip</a>
+        <a href="{{ route('user.archieve') }}" class="text-slate-600 hover:underline">Data Arsip</a>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -78,7 +78,14 @@
                                         {{ $user->roles }}</div>
                                 @else
                                     <div class="inline-block px-4 py-1 text-white bg-orange-500 rounded-xl">
-                                        {{ $user->roles }}</div>
+                                        @if ($user->roles == 'operator')
+                                            Operator
+                                        @elseif($user->roles == 'operator_sublim')
+                                            Operator Sublim
+                                        @elseif($user->roles == 'operator_dtfuv')
+                                            Operator DTF UV
+                                        @endif
+                                    </div>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
