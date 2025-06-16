@@ -54,7 +54,7 @@
     @forelse ($purchases as $purchase)
         @if ($purchase->purchase_orders->count() != 1 || $purchase->purchase_orders[0]->status != 'cancel')
             <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key="{{ $purchase->id }}">
-                <div class="border-b pb-2 ">
+                <div class="pb-2 border-b ">
                     <div class="flex justify-between">
                         <p class="my-auto text-sm text-slate-500">Dibuat Pada
                             {{ \Carbon\Carbon::parse($purchase->created_at)->format('d F Y') }}</p>
@@ -71,10 +71,12 @@
                         @foreach ($purchase->purchase_orders as $item)
                             @if ($item->qty > 0)
                                 <span
-                                    class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-yellow-600/20 ring-inset">DTF</span>
+                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 uppercase rounded-md bg-yellow-50 ring-1 ring-yellow-600/20 ring-inset">
+                                    {{ $item->product->nama_produk }}
+                                </span>
                             @elseif($item->qty == 0)
                                 <span
-                                    class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-yellow-600/20 ring-inset">Tanpa
+                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 rounded-md bg-yellow-50 ring-1 ring-yellow-600/20 ring-inset">Tanpa
                                     DTF</span>
                             @endif
                         @endforeach

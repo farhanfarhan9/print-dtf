@@ -113,7 +113,12 @@
                     <div class="flex justify-between px-8">
                         <div>
                             <p class="text-slate-600">Nama Produk</p>
-                            <p class="text-slate-600">{{ $product->nama_produk }}</p>
+                            <x-native-select wire:model.live='product_id'>
+                                @foreach ($products as $product)
+                                    <option hidden>Pilih produk</option>
+                                    <option value="{{ $product->id }}">{{ $product->nama_produk }}</option>
+                                @endforeach
+                            </x-native-select>
                         </div>
                         <div>
                             <p class="text-slate-600">Panjang (m)</p>
@@ -278,7 +283,7 @@
                         @endif
                     @else
                         <x-button wire:target="file" wire:loading.remove type="submit" spinner label="Simpan"
-                                green />
+                            green />
                     @endif
 
                 </div>
