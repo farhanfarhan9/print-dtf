@@ -22,7 +22,6 @@
                 </li>
             </ul>
         </div>
-
     </x-slot>
     <div class="pt-12">
         @forelse ($internals as $execution_date => $internalProcesses)
@@ -44,9 +43,9 @@
                             @endif
                             @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                 @if ($machine != null)
-                                    <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Inno Lite' : 'Magna' }}</p>
+                                    <p class="mb-2 font-medium">Mesin {{ $machine == 3 ? 'Mesin DTF UV' : '-' }}</p>
                                 @else
-                                    <p class="mb-2 font-medium">Belum ada Mesin</p>
+                                    {{-- <p class="mb-2 font-medium">Belum ada Mesin</p> --}}
                                 @endif
                                 <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                                     <thead
@@ -122,7 +121,7 @@
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         @if ($internal->machine_no == null)
                                                             <x-button positive label="RIP"
-                                                                wire:click='ripDialog({{ $internal->id }})' />
+                                                                wire:click='rip({{ $internal->id }})' />
                                                         @endif
                                                     </th>
                                                     <th scope="row"

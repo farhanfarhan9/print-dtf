@@ -7,38 +7,15 @@ use Livewire\Component;
 use WireUi\Traits\Actions;
 use Livewire\WithPagination;
 use App\Models\InternalProcess;
-use Livewire\Attributes\Validate;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
-class AllInternalProcess extends Component
+class AllInternalProcessWithoutMachine extends Component
 {
     use Actions;
     use WithPagination;
-
-    // public $data;
-    // public function mount()
-    // {
-    //     $this->data = InternalProcess::whereHas('purchase_order', function ($query) {
-    //         $query->where('status', '!=', 'cancel');
-    //     })->get();
-    // }
-
-    public $selectedData;
-    public $ripModal;
-
-    #[Validate('required')]
-    public $machineNo;
-
     public $printNos = [];
 
-    public function ripDialog(InternalProcess $internal)
-    {
-        $this->selectedData = $internal;
-        $this->ripModal = 1;
-    }
-
-    public function addMachineNo()
+    public function rip(InternalProcess $internal)
     {
         $currentTime = Carbon::now();
 
@@ -50,21 +27,18 @@ class AllInternalProcess extends Component
         } else {
             $shift = 2;
         }
-        $this->validate();
         // $existingDeposit = $this->editedUser->deposit;
-        $this->selectedData->update([
-            'machine_no' => $this->machineNo,
+        $internal->update([
+            'machine_no' => 3,
             'shift_no' => $shift,
         ]);
 
         $this->notification([
             'title'       => 'Sukses',
-            'description' => 'Berhasil Menambahkan Mesin Untuk Invoice' . $this->selectedData->purchase_order->invoice_code,
+            'description' => 'Berhasil RIP Untuk Invoice' . $internal->purchase_order->invoice_code,
             'icon'        => 'success',
             'timeout'     => 3000
         ]);
-
-        $this->reset('selectedData', 'ripModal', 'machineNo');
     }
 
     public function addPrintNo(InternalProcess $internal)
@@ -138,14 +112,14 @@ class AllInternalProcess extends Component
     public function render()
     {
         $today = Carbon::today();
-        // dd($today);
-        return view('livewire.internal-process.all-internal-process', [
+
+        return view('livewire.internal-process.all-internal-process-without-machine', [
             // 'internals' => InternalProcess::whereHas('purchase_order', function ($query) {
             //     $query->where('status', '!=', 'cancel');
             // })->paginate(10)
             'internals' => InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
-                    $query->where('nama_produk', 'dtf');
+                    $query->where('nama_produk', '!=', 'dtf');
                 });
             })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
                 return $internal->execution_date; // Grouping by creation date
