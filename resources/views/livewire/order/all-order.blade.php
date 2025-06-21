@@ -54,17 +54,31 @@
     @forelse ($purchases as $purchase)
         @if ($purchase->purchase_orders->count() != 1 || $purchase->purchase_orders[0]->status != 'cancel')
             <div class="px-2 py-5 mb-6 bg-white border rounded-xl md:px-7" wire:key="{{ $purchase->id }}">
-                <div class="flex justify-between pb-2 border-b">
-                    <p class="my-auto text-sm text-slate-500">Dibuat Pada
-                        {{ \Carbon\Carbon::parse($purchase->created_at)->format('d F Y') }}</p>
-                    @if (
-                        ($purchase->payment_status == 'close' && $purchase->purchase_orders->count() == 0) ||
-                            ($purchase->payment_status == 'open' && $purchase->purchase_orders->count() == 0))
-                        <button type="button" wire:click='deleteDialog({{ $purchase->id }})'
-                            class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                            Cancel Order
-                        </button>
-                    @endif
+                <div class="border-b pb-2 ">
+                    <div class="flex justify-between">
+                        <p class="my-auto text-sm text-slate-500">Dibuat Pada
+                            {{ \Carbon\Carbon::parse($purchase->created_at)->format('d F Y') }}</p>
+                        @if (
+                            ($purchase->payment_status == 'close' && $purchase->purchase_orders->count() == 0) ||
+                                ($purchase->payment_status == 'open' && $purchase->purchase_orders->count() == 0))
+                            <button type="button" wire:click='deleteDialog({{ $purchase->id }})'
+                                class="px-4 py-2 text-sm font-medium text-red-400 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                Cancel Order
+                            </button>
+                        @endif
+                    </div>
+                    <div class="flex gap-2">
+                        @foreach ($purchase->purchase_orders as $item)
+                            @if ($item->qty > 0)
+                                <span
+                                    class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-yellow-600/20 ring-inset">DTF</span>
+                            @elseif($item->qty == 0)
+                                <span
+                                    class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-yellow-600/20 ring-inset">Tanpa
+                                    DTF</span>
+                            @endif
+                        @endforeach
+                    </div>
                 </div>
                 <div class="space-y-3">
                     <div class="flex justify-between mt-5">

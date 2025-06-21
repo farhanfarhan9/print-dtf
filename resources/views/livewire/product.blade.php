@@ -38,10 +38,10 @@
         <div class="flex sm:justify-end">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Produk" />
-            @if ($products->count() == 0)
-                <x-button label="Tambah Data Produk" href="{{ route('product.add') }}"
-                    class="w-1/3 mt-2 sm:w-1/6 sm:mt-0" green icon="plus" />
-            @endif
+            {{-- @if ($products->count() == 0) --}}
+            <x-button label="Tambah Data Produk" href="{{ route('product.add') }}" class="w-1/3 mt-2 sm:w-1/6 sm:mt-0"
+                green icon="plus" />
+            {{-- @endif --}}
         </div>
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500">
