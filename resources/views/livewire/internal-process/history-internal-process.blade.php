@@ -34,13 +34,15 @@
                                 @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                     @if ($machine != null)
                                         <p class="mb-2 font-medium">
-                                            Mesin {{ $machine == 1 ? 'Inno Lite' : 'Magna' }}
+                                            Mesin
                                             @if ($machine == 1)
                                                 Inno Lite
                                             @elseif ($machine == 2)
                                                 Magna
                                             @elseif ($machine == 3)
-                                                Mesin DTF UV
+                                                DTF UV
+                                            @elseif ($machine == 4)
+                                                DTF Sublim
                                             @endif
                                         </p>
                                         <table

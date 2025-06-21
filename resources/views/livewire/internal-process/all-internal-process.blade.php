@@ -44,7 +44,17 @@
                             @endif
                             @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                 @if ($machine != null)
-                                    <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Inno Lite' : 'Magna' }}</p>
+                                    <p class="mb-2 font-medium">Mesin
+                                        @if ($machine == 1)
+                                            Inno Lite
+                                        @elseif ($machine == 2)
+                                            Magna
+                                        @elseif ($machine == 3)
+                                            DTF UV
+                                        @elseif ($machine == 4)
+                                            DTF Sublim
+                                        @endif
+                                    </p>
                                 @else
                                     <p class="mb-2 font-medium">Belum ada Mesin</p>
                                 @endif
@@ -60,6 +70,9 @@
                                             </th>
                                             <th scope="col" class="px-6 py-3">
                                                 Pemesan
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Produk
                                             </th>
                                             <th scope="col" class="px-6 py-3">
                                                 Panjang / M
@@ -112,6 +125,10 @@
                                                     </th>
                                                     <th scope="row"
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ $internal->purchase_order->product->nama_produk }}
+                                                    </th>
+                                                    <th scope="row"
+                                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {{ $internal->purchase_order->qty }}
                                                     </th>
                                                     <th scope="row"
@@ -121,8 +138,13 @@
                                                     <th scope="row"
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         @if ($internal->machine_no == null)
-                                                            <x-button positive label="RIP"
-                                                                wire:click='ripDialog({{ $internal->id }})' />
+                                                            @if ($internal->purchase_order->product->nama_produk == 'dtf')
+                                                                <x-button positive label="RIP"
+                                                                    wire:click='ripDialog({{ $internal->id }})' />
+                                                            @else
+                                                                <x-button positive label="RIP"
+                                                                    wire:click='rip({{ $internal->id }})' />
+                                                            @endif
                                                         @endif
                                                     </th>
                                                     <th scope="row"
