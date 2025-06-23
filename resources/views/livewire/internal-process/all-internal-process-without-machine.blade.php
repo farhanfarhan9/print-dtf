@@ -6,6 +6,22 @@
             </h2>
         </div>
 
+        <div
+            class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+            <ul class="flex flex-wrap -mb-px">
+                <li class="me-2">
+                    <a href="{{ route('internal_process.index') }}"
+                        class="inline-block p-4 {{ request()->routeIs('internal_process.index') ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }}"
+                        aria-current="page">Dengan mesin</a>
+                </li>
+                <li class="me-2">
+                    <a href="{{ route('internal_process_without_machine.index') }}"
+                        class="inline-block p-4 {{ request()->routeIs('internal_process_without_machine.index') ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }}"
+                        aria-current="page">Tanpa
+                        Mesin</a>
+                </li>
+            </ul>
+        </div>
     </x-slot>
     <div class="pt-12">
         @forelse ($internals as $execution_date => $internalProcesses)
@@ -27,19 +43,9 @@
                             @endif
                             @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                 @if ($machine != null)
-                                    <p class="mb-2 font-medium">Mesin
-                                        @if ($machine == 1)
-                                            Inno Lite
-                                        @elseif ($machine == 2)
-                                            Magna
-                                        @elseif ($machine == 3)
-                                            DTF UV
-                                        @elseif ($machine == 4)
-                                            DTF Sublim
-                                        @endif
-                                    </p>
+                                    <p class="mb-2 font-medium">Mesin {{ $machine == 3 ? 'Mesin DTF UV' : '-' }}</p>
                                 @else
-                                    <p class="mb-2 font-medium">Belum ada Mesin</p>
+                                    {{-- <p class="mb-2 font-medium">Belum ada Mesin</p> --}}
                                 @endif
                                 <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                                     <thead
@@ -53,9 +59,6 @@
                                             </th>
                                             <th scope="col" class="px-6 py-3">
                                                 Pemesan
-                                            </th>
-                                            <th scope="col" class="px-6 py-3">
-                                                Produk
                                             </th>
                                             <th scope="col" class="px-6 py-3">
                                                 Panjang / M
@@ -108,10 +111,6 @@
                                                     </th>
                                                     <th scope="row"
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        {{ $internal->purchase_order->product->nama_produk }}
-                                                    </th>
-                                                    <th scope="row"
-                                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {{ $internal->purchase_order->qty }}
                                                     </th>
                                                     <th scope="row"
@@ -121,13 +120,8 @@
                                                     <th scope="row"
                                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         @if ($internal->machine_no == null)
-                                                            @if ($internal->purchase_order->product->nama_produk == 'dtf')
-                                                                <x-button positive label="RIP"
-                                                                    wire:click='ripDialog({{ $internal->id }})' />
-                                                            @else
-                                                                <x-button positive label="RIP"
-                                                                    wire:click='rip({{ $internal->id }})' />
-                                                            @endif
+                                                            <x-button positive label="RIP"
+                                                                wire:click='rip({{ $internal->id }})' />
                                                         @endif
                                                     </th>
                                                     <th scope="row"
@@ -143,11 +137,7 @@
                                                                     label="Submit" />
                                                             </form>
                                                         @elseif($internal->machine_no && $internal->print_no)
-                                                            @if (str_contains($internal->purchase_order->product->nama_produk, 'SUBLIM'))
-                                                                -
-                                                            @else
-                                                                {{ $internal->print_no }}
-                                                            @endif
+                                                            {{ $internal->print_no }}
                                                         @else
                                                             Tidak tersedia
                                                         @endif
@@ -159,9 +149,6 @@
                                                             <x-button positive label="Selesai"
                                                                 wire:click='doneProcess({{ $internal->id }})' />
                                                         @elseif($internal->machine_no && $internal->print_no && $internal->is_done)
-                                                            @if (str_contains($internal->purchase_order->product->nama_produk, 'SUBLIM'))
-                                                                -
-                                                            @endif
                                                         @else
                                                             Tidak Tersedia
                                                         @endif

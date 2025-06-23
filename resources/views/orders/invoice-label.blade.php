@@ -101,18 +101,20 @@
                     <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
                     <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
                 </tr>
-                <tr>
-                    <td class="tg-0lax center" style="text-align: center">Produk</td>
-                    <td class="tg-0lax center" style="text-align: center" colspan="2">{{ $product->nama_produk }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
-                    <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
-                    <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
-                </tr>
+
                 @php $tempTotal = 0; @endphp
                 @foreach ($order->purchase_orders->where('po_status', '!=', 'cancel') as $pembayaran)
+                    <tr>
+                        <td class="tg-0lax center" style="text-align: center">Produk</td>
+                        <td class="tg-0lax center" style="text-align: center" colspan="2">
+                            {{ $pembayaran->product->nama_produk }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
+                        <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
+                        <td class="tg-0lax center" style="text-align: center" colspan="4">&nbsp;</td>
+                    </tr>
                     <tr>
                         <td class="tg-0lax" colspan="3">Date :
                             {{ Carbon\Carbon::parse($pembayaran->updated_at)->format('d-m-Y') }} (Invoice Code
