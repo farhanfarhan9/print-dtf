@@ -35,6 +35,7 @@ class AllInternalProcess extends Component
 
     public function rip(InternalProcess $internal)
     {
+
         $currentTime = Carbon::now();
 
         $startWorkingTime = Carbon::today()->hour(9)->minute(0)->second(0);
@@ -47,10 +48,21 @@ class AllInternalProcess extends Component
         }
         // $existingDeposit = $this->editedUser->deposit;
 
-        $internal->update([
-            'machine_no' => $internal->purchase_order->product->nama_produk == 'dtf UV' ? 3 : 4,
-            'shift_no' => $shift,
-        ]);
+        if (str_contains($internal->purchase_order->product->nama_produk, 'SUBLIM')) {
+            $internal->update([
+                'machine_no' => 4,
+                'shift_no' => $shift,
+                'print_no' => 1,
+                'is_done' => 1,
+                'is_packing' => 1,
+            ]);
+        } else {
+            $internal->update([
+                'machine_no' => $internal->purchase_order->product->nama_produk == 'DTF UV' ? 3 : 4,
+                'shift_no' => $shift,
+            ]);
+        }
+
 
         $this->notification([
             'title'       => 'Sukses',
@@ -169,16 +181,15 @@ class AllInternalProcess extends Component
         if (Auth::user()->roles == 'operator_dtfuv') {
             $internals = InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
-                    $query->where('nama_produk', '!=', 'dtf Sublim')->where('nama_produk', '!=', 'dtf');
+                    $query->where('nama_produk', 'not like', '%Sublim%')->where('nama_produk', '!=', 'dtf');
                 });
             })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
                 return $internal->execution_date; // Grouping by creation date
             });
         } elseif (Auth::user()->roles == 'operator_sublim') {
-
             $internals = InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
-                    $query->where('nama_produk', '!=', 'dtf UV')->where('nama_produk', '!=', 'dtf');
+                    $query->where('nama_produk', '!=', 'DTF UV')->where('nama_produk', '!=', 'dtf');
                 });
             })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
                 return $internal->execution_date; // Grouping by creation date

@@ -6,23 +6,6 @@
             </h2>
         </div>
 
-        <div
-            class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-            <ul class="flex flex-wrap -mb-px">
-                <li class="me-2">
-                    <a href="{{ route('internal_process.index') }}"
-                        class="inline-block p-4 {{ request()->routeIs('internal_process.index') ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }}"
-                        aria-current="page">Dengan mesin</a>
-                </li>
-                <li class="me-2">
-                    <a href="{{ route('internal_process_without_machine.index') }}"
-                        class="inline-block p-4 {{ request()->routeIs('internal_process_without_machine.index') ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }}"
-                        aria-current="page">Tanpa
-                        Mesin</a>
-                </li>
-            </ul>
-        </div>
-
     </x-slot>
     <div class="pt-12">
         @forelse ($internals as $execution_date => $internalProcesses)
@@ -160,7 +143,11 @@
                                                                     label="Submit" />
                                                             </form>
                                                         @elseif($internal->machine_no && $internal->print_no)
-                                                            {{ $internal->print_no }}
+                                                            @if (str_contains($internal->purchase_order->product->nama_produk, 'SUBLIM'))
+                                                                -
+                                                            @else
+                                                                {{ $internal->print_no }}
+                                                            @endif
                                                         @else
                                                             Tidak tersedia
                                                         @endif
@@ -172,6 +159,9 @@
                                                             <x-button positive label="Selesai"
                                                                 wire:click='doneProcess({{ $internal->id }})' />
                                                         @elseif($internal->machine_no && $internal->print_no && $internal->is_done)
+                                                            @if (str_contains($internal->purchase_order->product->nama_produk, 'SUBLIM'))
+                                                                -
+                                                            @endif
                                                         @else
                                                             Tidak Tersedia
                                                         @endif
