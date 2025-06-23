@@ -39,7 +39,8 @@ class CreateOrder extends Component
 
     public $customer;
     public $expedition;
-    public $product;
+    public $products;
+    public $product_id;
 
     public $customerModal;
 
@@ -55,6 +56,8 @@ class CreateOrder extends Component
     public $paid_amount = 0;
 
     public $isExpeditionManuallySet = false;
+
+    public $selectedProduct;
 
 
     public function mount()
@@ -207,7 +210,7 @@ class CreateOrder extends Component
         $purchaseOrderData = [
             'invoice_code' => $this->invoice_code,
             'purchase_id' => $purchase->id,
-            'product_id' => $this->without_dtf ? null : $this->product->id,
+            'product_id' => $this->without_dtf ? null : $this->product_id,
             'expedition_id' => $this->expedition_id ? $this->expedition_id : null,
             'user_id' => Auth::id(),
             'expedition_price' => $this->expedition ? $this->expedition->ongkir : 0,
@@ -282,8 +285,8 @@ class CreateOrder extends Component
             ]);
         }
 
-        $this->product->update([
-            'stok' => $this->product->stok - $this->qty
+        $this->selectedProduct->update([
+            'stok' => $this->selectedProduct->stok - $this->qty
         ]);
         session()->flash('orderCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('order.index'), navigate: true);
@@ -297,14 +300,15 @@ class CreateOrder extends Component
     public function render()
     {
 
-        $this->product = Products::first();
+        $this->products = Products::get();
         $this->customer = Customer::find($this->customer_id);
-        if ($this->customer) {
+        $this->selectedProduct = Products::find($this->product_id);
+        if ($this->customer && $this->selectedProduct) {
 
             if ($this->customer->is_reseller) {
-                $price_range = json_decode($this->product['detail_harga_retail'], true);
+                $price_range = json_decode($this->selectedProduct['detail_harga_retail'], true);
             } else {
-                $price_range = json_decode($this->product['detail_harga'], true);
+                $price_range = json_decode($this->selectedProduct['detail_harga'], true);
             }
 
             if (!$this->isExpeditionManuallySet) {
@@ -319,7 +323,7 @@ class CreateOrder extends Component
                 $this->qty = 0;
             }
 
-            if ($this->qty <= $this->product->stok) {
+            if ($this->qty <= $this->selectedProduct->stok) {
                 $this->outOfStock = false;
                 foreach ($price_range as $range) {
                     $this->found = false; // Initialize the found flag to false for each iteration
@@ -348,7 +352,7 @@ class CreateOrder extends Component
         return view('livewire.order.create-order', [
             'customer' => $this->customer,
             'expedition' => $this->expedition,
-            'product' => $this->product
+            'products' => $this->products
         ]);
     }
 }

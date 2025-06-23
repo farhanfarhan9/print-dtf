@@ -33,7 +33,18 @@
                                 @endphp
                                 @foreach ($shiftProcesses->groupBy('machine_no') as $machine => $processes)
                                     @if ($machine != null)
-                                        <p class="mb-2 font-medium">Mesin {{ $machine == 1 ? 'Inno Lite' : 'Magna' }}</p>
+                                        <p class="mb-2 font-medium">
+                                            Mesin
+                                            @if ($machine == 1)
+                                                Inno Lite
+                                            @elseif ($machine == 2)
+                                                Magna
+                                            @elseif ($machine == 3)
+                                                DTF UV
+                                            @elseif ($machine == 4)
+                                                DTF Sublim
+                                            @endif
+                                        </p>
                                         <table
                                             class="w-full mb-8 text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                                             <thead
@@ -78,7 +89,7 @@
                                                             </th>
                                                             <th scope="row"
                                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                {{ $internal->purchase_order->expedition ? $internal->purchase_order->expedition->nama_ekspedisi: '' }}
+                                                                {{ $internal->purchase_order->expedition ? $internal->purchase_order->expedition->nama_ekspedisi : '' }}
                                                             </th>
                                                             <th scope="row"
                                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
