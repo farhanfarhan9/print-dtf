@@ -68,8 +68,14 @@
                         @endif
                     </div>
                     <div class="flex gap-2">
+                        @php
+                            $hasDTF = false;
+                            $hasNonDTF = false;
+                        @endphp
+
                         @foreach ($purchase->purchase_orders as $item)
-                            @if ($item->qty > 0)
+                            @if ($item->qty > 0 && !$hasDTF)
+                                @php $hasDTF = true; @endphp
                                 <span
                                     class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 uppercase rounded-md bg-yellow-50 ring-1 ring-yellow-600/20 ring-inset">
                                     {{ $item->product->nama_produk }}

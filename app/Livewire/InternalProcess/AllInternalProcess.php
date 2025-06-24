@@ -194,6 +194,14 @@ class AllInternalProcess extends Component
             })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
                 return $internal->execution_date; // Grouping by creation date
             });
+        } elseif (Auth::user()->roles == 'operator') {
+            $internals = InternalProcess::whereHas('purchase_order', function ($query) {
+                $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
+                    $query->where('nama_produk', 'dtf');
+                });
+            })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
+                return $internal->execution_date; // Grouping by creation date
+            });
         } else {
             $internals = InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0);
