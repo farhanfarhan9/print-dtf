@@ -8,6 +8,7 @@ use WireUi\Traits\Actions;
 use Livewire\WithPagination;
 use App\Models\InternalProcess;
 use Livewire\Attributes\Validate;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
@@ -138,16 +139,41 @@ class AllInternalProcess extends Component
     public function render()
     {
         $today = Carbon::today();
-        // dd($today);
-        return view('livewire.internal-process.all-internal-process', [
-            // 'internals' => InternalProcess::whereHas('purchase_order', function ($query) {
-            //     $query->where('status', '!=', 'cancel');
-            // })->paginate(10)
-            'internals' => InternalProcess::whereHas('purchase_order', function ($query) {
+        if (Auth::user()->roles == 'operator_dtfuv') {
+            $internals = InternalProcess::whereHas('purchase_order', function ($query) {
+                $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
+                    $query->where('nama_produk', 'not like', '%Sublim%')->where('nama_produk', '!=', 'dtf');
+                });
+            })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
+                return $internal->execution_date; // Grouping by creation date
+            });
+        } elseif (Auth::user()->roles == 'operator_sublim') {
+            $internals = InternalProcess::whereHas('purchase_order', function ($query) {
+                $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
+                    $query->where('nama_produk', '!=', 'DTF UV')->where('nama_produk', '!=', 'dtf');
+                });
+            })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
+                return $internal->execution_date; // Grouping by creation date
+            });
+        } elseif (Auth::user()->roles == 'operator') {
+            $internals = InternalProcess::whereHas('purchase_order', function ($query) {
+                $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
+                    $query->where('nama_produk', 'dtf');
+                });
+            })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
+                return $internal->execution_date; // Grouping by creation date
+            });
+        } else {
+            $internals = InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0);
             })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
                 return $internal->execution_date; // Grouping by creation date
-            })
+            });
+        }
+
+        // dd($today);
+        return view('livewire.internal-process.all-internal-process', [
+            'internals' => $internals
         ]);
     }
 }
