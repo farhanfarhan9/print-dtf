@@ -77,9 +77,10 @@
                             @if ($item->qty > 0 && !$hasDTF)
                                 @php $hasDTF = true; @endphp
                                 <span
-                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 rounded-md bg-yellow-50 ring-1 ring-yellow-600/20 ring-inset">{{ $item->product->nama_produk }}</span>
-                            @elseif ($item->qty == 0 && !$hasNonDTF)
-                                @php $hasNonDTF = true; @endphp
+                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 uppercase rounded-md bg-yellow-50 ring-1 ring-yellow-600/20 ring-inset">
+                                    {{ $item->product->nama_produk }}
+                                </span>
+                            @elseif($item->qty == 0)
                                 <span
                                     class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 rounded-md bg-yellow-50 ring-1 ring-yellow-600/20 ring-inset">Tanpa
                                     DTF</span>

@@ -33,6 +33,45 @@ class AllInternalProcess extends Component
 
     public $printNos = [];
 
+    public function rip(InternalProcess $internal)
+    {
+
+        $currentTime = Carbon::now();
+
+        $startWorkingTime = Carbon::today()->hour(9)->minute(0)->second(0);
+        $endWorkingTime = Carbon::today()->hour(17)->minute(0)->second(0);
+
+        if ($currentTime->between($startWorkingTime, $endWorkingTime)) {
+            $shift = 1;
+        } else {
+            $shift = 2;
+        }
+        // $existingDeposit = $this->editedUser->deposit;
+
+        if (str_contains($internal->purchase_order->product->nama_produk, 'SUBLIM')) {
+            $internal->update([
+                'machine_no' => 4,
+                'shift_no' => $shift,
+                'print_no' => 1,
+                'is_done' => 1,
+                'is_packing' => 1,
+            ]);
+        } else {
+            $internal->update([
+                'machine_no' => $internal->purchase_order->product->nama_produk == 'DTF UV' ? 3 : 4,
+                'shift_no' => $shift,
+            ]);
+        }
+
+
+        $this->notification([
+            'title'       => 'Sukses',
+            'description' => 'Berhasil RIP Untuk Invoice' . $internal->purchase_order->invoice_code,
+            'icon'        => 'success',
+            'timeout'     => 3000
+        ]);
+    }
+
     public function ripDialog(InternalProcess $internal)
     {
         $this->selectedData = $internal;
@@ -151,14 +190,6 @@ class AllInternalProcess extends Component
             $internals = InternalProcess::whereHas('purchase_order', function ($query) {
                 $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
                     $query->where('nama_produk', '!=', 'DTF UV')->where('nama_produk', '!=', 'dtf');
-                });
-            })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
-                return $internal->execution_date; // Grouping by creation date
-            });
-        } elseif (Auth::user()->roles == 'operator') {
-            $internals = InternalProcess::whereHas('purchase_order', function ($query) {
-                $query->where('status', '!=', 'cancel')->whereNotNull('product_id')->where('qty', '!=', 0)->whereHas('product', function ($query) {
-                    $query->where('nama_produk', 'dtf');
                 });
             })->where('execution_date', $today)->get()->sortByDesc('execution_date')->groupBy(function ($internal) {
                 return $internal->execution_date; // Grouping by creation date
