@@ -284,10 +284,12 @@ class CreateOrder extends Component
                 'deposit' => $this->customer->deposit - $this->deposit_cut
             ]);
         }
+        if ($this->selectedProduct) {
+            $this->selectedProduct->update([
+                'stok' => $this->selectedProduct->stok - $this->qty
+            ]);
+        }
 
-        $this->selectedProduct->update([
-            'stok' => $this->selectedProduct->stok - $this->qty
-        ]);
         session()->flash('orderCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
         $this->redirect(route('order.index'), navigate: true);
     }
@@ -303,49 +305,110 @@ class CreateOrder extends Component
         $this->products = Products::get();
         $this->customer = Customer::find($this->customer_id);
         $this->selectedProduct = Products::find($this->product_id);
-        if ($this->customer && $this->selectedProduct) {
+        // if ($this->customer) {
+        //     if (!$this->isExpeditionManuallySet) {
+        //         if ($this->customer->ekspedisis) {
+        //             $this->expedition_id = $this->customer->ekspedisis->id;
+        //         };
+        //     }
+        //     $this->expedition = Ekspedisi::find($this->expedition_id);
+        //     if ($this->without_dtf) {
+        //         $this->qty = 0;
+        //     }
+        //     if ($this->selectedProduct) {
+        //         # code...
+        //         if ($this->customer->is_reseller) {
+        //             $price_range = json_decode($this->selectedProduct['detail_harga_retail'], true);
+        //         } else {
+        //             $price_range = json_decode($this->selectedProduct['detail_harga'], true);
+        //         }
 
-            if ($this->customer->is_reseller) {
-                $price_range = json_decode($this->selectedProduct['detail_harga_retail'], true);
-            } else {
-                $price_range = json_decode($this->selectedProduct['detail_harga'], true);
+
+
+        //         if ($this->qty <= $this->selectedProduct->stok) {
+        //             $this->outOfStock = false;
+        //             foreach ($price_range as $range) {
+        //                 $this->found = false; // Initialize the found flag to false for each iteration
+        //                 if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
+        //                     $this->product_price = $range['price'] * $this->qty;
+        //                     $this->found = true;
+        //                     break;
+        //                 }
+        //             }
+        //         } else {
+        //             $this->outOfStock = true;
+        //             $this->found = true;
+        //         }
+        //     }
+
+
+        //     $this->shipped_price = $this->selectedProduct ? $this->product_price : 0 + ($this->expedition ? $this->expedition->ongkir : 0) + $this->additional_price - $this->discount;
+        //     $this->total_price = $this->shipped_price;
+
+        //     if ($this->is_deposit && $this->customer) {
+        //         $this->deposit_cut = min($this->shipped_price, $this->customer->deposit);
+        //         $this->total_price -= $this->deposit_cut;
+        //     }
+        // }
+
+        if ($this->customer) {
+            // Auto-assign expedition if not set manually
+            if (!$this->isExpeditionManuallySet && $this->customer->ekspedisis) {
+                $this->expedition_id = $this->customer->ekspedisis->id;
             }
-
-            if (!$this->isExpeditionManuallySet) {
-                if ($this->customer->ekspedisis) {
-                    $this->expedition_id = $this->customer->ekspedisis->id;
-                };
-            }
-
 
             $this->expedition = Ekspedisi::find($this->expedition_id);
+
+            // Reset qty if without DTF
             if ($this->without_dtf) {
                 $this->qty = 0;
             }
 
-            if ($this->qty <= $this->selectedProduct->stok) {
-                $this->outOfStock = false;
-                foreach ($price_range as $range) {
-                    $this->found = false; // Initialize the found flag to false for each iteration
-                    if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
-                        $this->product_price = $range['price'] * $this->qty;
-                        $this->found = true;
-                        break;
+            // Price calculation only when product is selected
+            if ($this->selectedProduct) {
+                if ($this->customer->is_reseller) {
+                    $price_range = json_decode($this->selectedProduct['detail_harga_retail'], true);
+                } else {
+                    $price_range = json_decode($this->selectedProduct['detail_harga'], true);
+                }
+
+                // Only calculate price if enough stock
+                if ($this->qty <= $this->selectedProduct->stok) {
+                    $this->outOfStock = false;
+                    $this->found = false;
+
+                    foreach ($price_range as $range) {
+                        if ($this->qty >= $range['start'] && $this->qty <= $range['end']) {
+                            $this->product_price = $range['price'] * $this->qty;
+                            $this->found = true;
+                            break;
+                        }
                     }
+                } else {
+                    $this->outOfStock = true;
+                    $this->found = true;
+                    $this->product_price = 0; // ensure price is 0 when out of stock
                 }
             } else {
-                $this->outOfStock = true;
-                $this->found = true;
+                $this->product_price = 0; // ensure price is reset if no product
             }
 
-            $this->shipped_price = $this->product_price + ($this->expedition ? $this->expedition->ongkir : 0) + $this->additional_price - $this->discount;
+            // Calculate total price
+            $this->shipped_price =
+                ($this->selectedProduct ? $this->product_price : 0)
+                + ($this->expedition ? $this->expedition->ongkir : 0)
+                + $this->additional_price
+                - $this->discount;
+
             $this->total_price = $this->shipped_price;
 
+            // Apply deposit if any
             if ($this->is_deposit && $this->customer) {
                 $this->deposit_cut = min($this->shipped_price, $this->customer->deposit);
                 $this->total_price -= $this->deposit_cut;
             }
         }
+
 
 
 
