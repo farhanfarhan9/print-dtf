@@ -195,9 +195,25 @@
 
                     </div>
                     <hr class="my-5">
+                    {{-- <div class="flex justify-between px-8">
+                        <p>produk</p>
+                        @if ($found)
+                            <p>{{ rupiah_format($product_price) }}</p>
+                        @else
+                            <p class="">Rp. 0</p>
+                        @endif
+                    </div>
+                    <div class="flex justify-between px-8">
+                        <p>ekspedisi</p>
+                        @if ($found)
+                            <p>{{ rupiah_format($product_price) }}</p>
+                        @else
+                            <p class="">Rp. 0</p>
+                        @endif
+                    </div> --}}
                     <div class="flex justify-between px-8">
                         <p>Total</p>
-                        @if ($found)
+                        @if ($total_price)
                             <p>{{ rupiah_format($total_price) }}</p>
                         @else
                             <p class="">Rp. 0</p>
