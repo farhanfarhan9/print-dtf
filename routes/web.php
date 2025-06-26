@@ -4,6 +4,7 @@ use App\Livewire\Product;
 use App\Livewire\ProductAdd;
 use App\Livewire\ProductEdit;
 use App\Livewire\Bank\AllBank;
+use App\Livewire\DebtCustomer;
 use App\Livewire\Order\AllOrder;
 use App\Livewire\Order\Po\AllPo;
 use App\Livewire\Order\Po\EditPo;
@@ -109,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/customer', ExportCustomerView::class)->name('export-customer.index');
         Route::get('/product', ExportProductView::class)->name('export-product.index');
         Route::get('/bookkeeping/{type?}', ExportBookkeepingView::class)->name('export-bookkeeping.index');
+        Route::get('/debt-customer', DebtCustomer::class)->name('debt-customer.index');
     });
 
     Route::prefix('internal_process')->group(function () {

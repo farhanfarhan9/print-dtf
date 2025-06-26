@@ -116,6 +116,18 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('debt-customer.index') }}"
+                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                    :class="{ 'justify-center': !sidebarOpen }">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                                        class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                        fill="currentColor">
+                                        <path d="M0 112.5V422.3c0 18 10.1 35 27 41.3c87 32.5 174 33.9 261 4.1v-108c-8.1 1.8-16.2 3.3-24.3 4.1c-33.5 3.9-67.3 1.6-99.8-6.3c-119.6-29.3-214.6-130.3-214.6-252.2c0-34.5 7.5-67.3 20.8-97.3C-10.6 38.2 0 69.6 0 112.5zM128 416H64V352c35.3 0 64 28.7 64 64zM64 224V160h64c0 35.3-28.7 64-64 64zM512 160h64v64c-35.3 0-64-28.7-64-64zM512 416c0-35.3 28.7-64 64-64v64H512zM224 96H352V64H224V96zM224 192H352V160H224v32zM224 288H352V256H224v32zM320 384H256v32h64V384z"/>
+                                    </svg>
+                                    <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Debt Customer</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('export-bookkeeping.index') }}"
                                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                     :class="{ 'justify-center': !sidebarOpen }">
