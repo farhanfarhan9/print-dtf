@@ -29,8 +29,8 @@
                         <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Dashboard</span>
                     </a>
                 </li>
-                <li>
-                    @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'owner')
+                @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'owner')
+                    <li>
                         <button type="button" @click="dropdownOrder = !dropdownOrder"
                             class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                             :class="{ 'justify-center gap-2': !sidebarOpen }">
@@ -78,8 +78,24 @@
                                 </a>
                             </li>
                         </ul>
-                    @endif
-                </li>
+                    </li>
+                    <li>
+                        <a href="{{ route('rejected-products.index') }}"
+                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                            :class="{ 'justify-center': !sidebarOpen }">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                                <path
+                                    d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375Z" />
+                                <path fill-rule="evenodd"
+                                    d="m3.087 9 .54 9.176A3 3 0 0 0 6.62 21h10.757a3 3 0 0 0 2.995-2.824L20.913 9H3.087Zm6.133 2.845a.75.75 0 0 1 1.06 0l1.72 1.72 1.72-1.72a.75.75 0 1 1 1.06 1.06l-1.72 1.72 1.72 1.72a.75.75 0 1 1-1.06 1.06L12 15.685l-1.72 1.72a.75.75 0 1 1-1.06-1.06l1.72-1.72-1.72-1.72a.75.75 0 0 1 0-1.06Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Reject Product</span>
+                        </a>
+                    </li>
+                @endif
+
                 <li>
                     @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'owner')
                         <button type="button" @click="dropdownExport = !dropdownExport"
