@@ -37,6 +37,9 @@ class ExportCustomerView extends Component
         'perPage' => ['except' => 10],
     ];
 
+    // Disable automatic Livewire rendering on property updates
+    protected $disableRenderOnPropertyUpdate = true;
+
     public function updatedPerPage()
     {
         $this->resetPage();
@@ -116,11 +119,10 @@ class ExportCustomerView extends Component
 
     public function getCustomerOrderData($paginate = true)
     {
-        // First, get the base query for customer data
+        // First, get the base query for customer data - optimized version
         $query = DB::table('purchase_orders')
             ->join('purchases', 'purchase_orders.purchase_id', '=', 'purchases.id')
             ->join('customers', 'purchases.customer_id', '=', 'customers.id')
-            ->leftJoin('products', 'purchase_orders.product_id', '=', 'products.id')
             ->select(
                 'customers.id as customer_id',
                 'customers.name as nama_customer',
@@ -142,13 +144,13 @@ class ExportCustomerView extends Component
             $query->where('customers.name', 'like', '%' . $this->search . '%');
         }
 
-        // Apply sorting
+        // Apply sorting - optimized to use index fields when possible
         switch ($this->sortField) {
             case 'jumlah_order':
                 $query->orderBy('jumlah_order', $this->sortDirection);
                 break;
             case 'nama_customer':
-                $query->orderBy('nama_customer', $this->sortDirection);
+                $query->orderBy('customers.name', $this->sortDirection); // Use the actual column name
                 break;
             case 'frekuensi':
                 $query->orderBy('frekuensi', $this->sortDirection);
@@ -159,60 +161,19 @@ class ExportCustomerView extends Component
 
         // Return paginated or all results
         if ($paginate) {
+            // Only select the fields we actually need for display
             return $query->paginate($this->perPage);
         } else {
             return $query->get();
         }
     }
 
-    private function getCustomerOrdersNew()
-    {
-        $query = Payment::query()
-            ->orderBy('created_at', 'asc')
-            ->with(['purchase.customer', 'purchase.purchase_orders'])  // Eager load associated purchases, customers, and purchase orders
-            ->select('payments.*');  // Ensure we're selecting from payments
-
-        // Date filtering
-        if ($this->startDate && $this->endDate) {
-            $start = $this->viewMode == 'monthly'
-                ? Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay()
-                : Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
-            $end = $this->viewMode == 'monthly'
-                ? Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay()
-                : Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
-            $query->whereBetween('created_at', [$start, $end]);
-        }
-
-        // Retrieve the payments
-        $payments = $query->get();
-
-        // Organize data by customer_id
-        $customerData = $payments->groupBy(function ($payment) {
-            return $payment->purchase->customer_id;  // Group by the customer_id from each payment's purchase
-        })->mapWithKeys(function ($payments, $customerId) {
-            $customer = $payments->first()->purchase->customer;
-            $totalQty = $payments->reduce(function ($carry, $payment) {
-                // Sum up all quantities in purchase_orders related to each payment's purchase
-                return $carry + $payment->purchase->purchase_orders->sum('qty');
-            }, 0);
-            return [$customerId => [
-                'jumlah_order' => $totalQty,  // Total quantity from purchase_orders
-                'nama_customer' => $customer ? $customer->name : 'Unknown',  // Get the customer's name
-                'frekuensi' => $payments->pluck('purchase_id')->unique()->count(),  // Unique purchase counts
-            ]];
-        });
-
-        return $customerData;
-    }
-
     public function render()
     {
         // Get the paginated customer orders for display in the view
         $customerOrders = $this->getCustomerOrderData();
-        $newCustomerOrders = $this->getCustomerOrdersNew();
 
         return view('livewire.export-data.export-customer-view', [
-            'newCustomerOrders' => $newCustomerOrders,
             'customerOrders' => $customerOrders,
         ]);
     }

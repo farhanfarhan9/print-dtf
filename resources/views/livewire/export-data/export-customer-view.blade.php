@@ -133,7 +133,14 @@
                         $startTime = defined('LARAVEL_START') ? LARAVEL_START : microtime(true);
                         $loadTime = round((microtime(true) - $startTime), 2);
                         $ramUsage = round(memory_get_usage() / 1024 / 1024, 2);
-                        $dataSize = round(strlen(json_encode($customerOrders)) / 1024, 2);
+
+                        // Calculate data size more efficiently
+                        $dataSize = 0;
+                        if (isset($customerOrders) && $customerOrders->count() > 0) {
+                            // Estimate data size based on a sample of the first item
+                            $sampleSize = strlen(json_encode($customerOrders->first()));
+                            $dataSize = round(($sampleSize * $customerOrders->count()) / 1024, 2);
+                        }
                     @endphp
                     Loading Time: {{ $loadTime }} seconds | RAM Usage: {{ $ramUsage }} MB | Data Size: {{ $dataSize }} KB
                 </div>
