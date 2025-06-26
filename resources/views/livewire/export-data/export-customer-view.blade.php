@@ -94,13 +94,14 @@
                         <tbody>
                             {{-- Edited 09 05 2024 --}}
                             {{-- {{ dd($customerOrders) }} --}}
-                        @forelse ($customerOrders as $key  => $order)
+                        @forelse ($customerOrders as $index => $order)
                             <tr class="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700">
-                                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $loop->index + 1 }}</td>
-                                <td class="px-6 py-4">{{ $order['jumlah_order'] }}</td>
-                                <td class="px-6 py-4">{{ $order['nama_customer'] }}</td>
-                                <td class="px-6 py-4">{{ $order['frekuensi'] }}</td>
-                                {{-- <td>{{ $order['newest_date']->format('d-m-Y H:i') }}</td> --}}
+                                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                    {{ ($customerOrders->currentPage() - 1) * $customerOrders->perPage() + $loop->index + 1 }}
+                                </td>
+                                <td class="px-6 py-4">{{ $order->jumlah_order }}</td>
+                                <td class="px-6 py-4">{{ $order->nama_customer }}</td>
+                                <td class="px-6 py-4">{{ $order->frekuensi }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -111,9 +112,31 @@
                         </tbody>
                     </table>
                 </div>
-                {{-- <div class="mt-2">
-                    {{ $PurchaseOrders->links() }}
-                </div> --}}
+                <div class="mt-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-700">Show</span>
+                            <select wire:model.live="perPage" class="text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span class="text-sm text-gray-700">entries</span>
+                        </div>
+                        {{ $customerOrders->links() }}
+                    </div>
+                </div>
+
+                <div class="mt-6 text-xs text-gray-500 text-right">
+                    @php
+                        $startTime = defined('LARAVEL_START') ? LARAVEL_START : microtime(true);
+                        $loadTime = round((microtime(true) - $startTime), 2);
+                        $ramUsage = round(memory_get_usage() / 1024 / 1024, 2);
+                        $dataSize = round(strlen(json_encode($customerOrders)) / 1024, 2);
+                    @endphp
+                    Loading Time: {{ $loadTime }} seconds | RAM Usage: {{ $ramUsage }} MB | Data Size: {{ $dataSize }} KB
+                </div>
     </div>
 </div>
 
