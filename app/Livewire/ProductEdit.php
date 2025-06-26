@@ -12,6 +12,7 @@ class ProductEdit extends Component
     public array $priceRanges = [];
     public array $priceRetailRanges = [];
     public $nama_produk, $stok;
+    public $isEceran = false;
 
     public function mount(Products $product) // Correct type hinting
     {
@@ -20,6 +21,7 @@ class ProductEdit extends Component
         $this->stok = $product->stok;
         $this->priceRanges = json_decode($product->detail_harga, true) ?? [];
         $this->priceRetailRanges = json_decode($product->detail_harga_retail, true) ?? [];
+        $this->isEceran = $product->type === 'eceran';
     }
 
     public function addPriceRange()
@@ -63,6 +65,7 @@ class ProductEdit extends Component
         $this->product->stok = $this->stok;
         $this->product->detail_harga = json_encode($this->priceRanges);
         $this->product->detail_harga_retail = json_encode($this->priceRetailRanges);
+        $this->product->type = $this->isEceran ? 'eceran' : 'meteran';
 
         // Save the product
         $this->product->save();

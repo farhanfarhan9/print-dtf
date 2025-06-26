@@ -14,6 +14,7 @@ class Products extends Model
         'detail_harga',
         'detail_harga_retail',
         'stok',
+        'type',
     ];
 
     protected $casts = [
