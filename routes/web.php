@@ -25,7 +25,7 @@ use App\Livewire\Ekspedisi\EkspedisiAdd;
 use App\Http\Controllers\OrderController;
 use App\Livewire\Customer\CreateCustomer;
 use App\Livewire\Ekspedisi\EkspedisiEdit;
-use App\Http\Middleware\isAdminMiddleware;
+use App\Http\Middleware\isAdminOMiddleware;
 use App\Http\Middleware\isOwnerMiddleware;
 use App\Livewire\Customer\ArchieveCustomer;
 use App\Livewire\Bank\CreateBankInformations;
@@ -37,6 +37,8 @@ use App\Livewire\ExportData\ExportBookkeepingView;
 use App\Livewire\InternalProcess\AllInternalProcess;
 use App\Livewire\InternalProcess\HistoryInternalProcess;
 use App\Livewire\InternalProcess\AllInternalProcessWithoutMachine;
+use App\Livewire\Reject\AllRejectProduct;
+use App\Livewire\Reject\CreateRejectProduct;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +95,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/products', Product::class)->name('products-view')->middleware(isOwnerMiddleware::class);
     Route::get('/products/add', ProductAdd::class)->name('product.add')->middleware(isOwnerMiddleware::class);
     Route::get('/product/edit/{product}', ProductEdit::class)->name('product-edit')->middleware(isOwnerMiddleware::class);
+
+    Route::get('/rejected-products', AllRejectProduct::class)->name('rejected-products.index')->middleware(isAdminOrOwnerMiddleware::class);
+    Route::get('/rejected-products/add', CreateRejectProduct::class)->name('rejected-products.create')->middleware(isAdminOrOwnerMiddleware::class);
+    // Route::get('/rejected-products/edit/{product}', ProductEdit::class)->name('rejected-products.edit')->middleware(isAdminOrOwnerMiddleware::class);
 
     Route::get('/ekspedisi', Ekspedisis::class)->name('ekspedisi-view')->middleware(isOwnerMiddleware::class);
     Route::get('/ekspedisi/add', EkspedisiAdd::class)->name('ekspedisi.add')->middleware(isOwnerMiddleware::class);
