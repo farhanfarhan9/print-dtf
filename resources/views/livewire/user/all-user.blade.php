@@ -73,7 +73,7 @@
                                 {{ $user->email }}
                             </td>
                             <td class="px-6 py-4">
-                                @if ($user->roles == 'admin')
+                                @if ($user->roles == 'admin' || $user->roles == 'owner')
                                     <div class="inline-block px-4 py-1 text-white bg-green-500 rounded-xl">
                                         {{ $user->roles }}</div>
                                 @else
