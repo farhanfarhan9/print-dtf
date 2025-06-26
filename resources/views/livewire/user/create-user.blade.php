@@ -18,6 +18,7 @@
                     <x-input type="password" label="Password" wire:model='password' placeholder="Password" />
                 </div>
                 <x-native-select label="Pilih Role" placeholder="Pilih satu role" :options="[
+                    ['name' => 'owner', 'label' => 'Owner'],
                     ['name' => 'admin', 'label' => 'Admin'],
                     ['name' => 'operator', 'label' => 'Operator'],
                     ['name' => 'operator_sublim', 'label' => 'Operator Sublim'],

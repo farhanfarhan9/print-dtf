@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class isAdminMiddleware
+class isOwnerMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,7 +15,7 @@ class isAdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || auth()->user()->roles !== 'admin') {
+        if (!auth()->check() || auth()->user()->roles !== 'owner') {
             abort(403);
         }
         return $next($request);

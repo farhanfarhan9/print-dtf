@@ -30,7 +30,7 @@
                     </a>
                 </li>
                 <li>
-                    @if (Auth::user()->roles === 'admin')
+                    @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'owner')
                         <button type="button" @click="dropdownOrder = !dropdownOrder"
                             class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                             :class="{ 'justify-center gap-2': !sidebarOpen }">
@@ -81,7 +81,7 @@
                     @endif
                 </li>
                 <li>
-                    @if (Auth::user()->roles === 'admin')
+                    @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'owner')
                         <button type="button" @click="dropdownExport = !dropdownExport"
                             class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                             :class="{ 'justify-center gap-2': !sidebarOpen }">
@@ -101,20 +101,22 @@
                             </svg>
                         </button>
                         <ul class="py-2 ml-3 space-y-2" :class="{ 'hidden': !dropdownExport }">
-                            <li>
-                                <a href="{{ route('export-customer.index') }}"
-                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                                    :class="{ 'justify-center': !sidebarOpen }">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"
-                                        class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-                                        <path
-                                            d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z" />
-                                    </svg>
-                                    <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Analyzer</span>
-                                </a>
-                            </li>
+                            @if (Auth::user()->roles === 'owner')
+                                <li>
+                                    <a href="{{ route('export-customer.index') }}"
+                                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                        :class="{ 'justify-center': !sidebarOpen }">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"
+                                            class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                            <path
+                                                d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z" />
+                                        </svg>
+                                        <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Analyzer</span>
+                                    </a>
+                                </li>
+                            @endif
                             <li>
                                 <a href="{{ route('export-bookkeeping.index') }}"
                                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -194,7 +196,7 @@
                     </a> --}}
                 </li>
             </div>
-            @if (Auth::user()->roles === 'admin')
+            @if (Auth::user()->roles === 'owner' || Auth::user()->roles === 'admin')
                 <div>
                     <p class="text-sm text-slate-400">Master Data</p>
                     <li>
@@ -210,53 +212,57 @@
                             <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Customers</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('products-view') }}"
-                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            :class="{ 'justify-center': !sidebarOpen }">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
-                                <path fill-rule="evenodd"
-                                    d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Produk</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('ekspedisi-view') }}"
-                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            :class="{ 'justify-center': !sidebarOpen }">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path
-                                    d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                                <path
-                                    d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
-                            </svg>
-                            <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Ekspedisi</span>
-                        </a>
-                    </li>
+                    @if (Auth::user()->roles === 'owner')
+                        <li>
+                            <a href="{{ route('products-view') }}"
+                                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                :class="{ 'justify-center': !sidebarOpen }">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
+                                    <path fill-rule="evenodd"
+                                        d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Produk</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('ekspedisi-view') }}"
+                                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                :class="{ 'justify-center': !sidebarOpen }">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                        d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                                    <path
+                                        d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
+                                </svg>
+                                <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Ekspedisi</span>
+                            </a>
+                        </li>
+                    @endif
                 </div>
-                <div>
-                    <p class="text-sm text-slate-400">Admin</p>
-                    <li>
-                        <a href="{{ route('user.index') }}"
-                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            :class="{ 'justify-center': !sidebarOpen }">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path
-                                    d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                            </svg>
-                            <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Pengguna aplikasi</span>
-                        </a>
-                    </li>
-                </div>
+                @if (Auth::user()->roles === 'owner')
+                    <div>
+                        <p class="text-sm text-slate-400">Admin</p>
+                        <li>
+                            <a href="{{ route('user.index') }}"
+                                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                :class="{ 'justify-center': !sidebarOpen }">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                        d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                                </svg>
+                                <span class="ms-3" :class="{ 'hidden': !sidebarOpen }">Pengguna aplikasi</span>
+                            </a>
+                        </li>
+                    </div>
+                @endif
             @endif
 
         </ul>
