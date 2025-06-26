@@ -92,8 +92,13 @@ class ExportCustomerView extends Component
             $filename .= $formattedEndDate ? "_-_$formattedEndDate" : '';
             $filename .= '.xlsx';
 
-            // Fetch the data for export
-            $customerOrders = $this->getCustomerOrderData(false); // Get all data without pagination
+            // Fetch the data for export - ensure we get all data without pagination
+            $customerOrders = $this->getCustomerOrderData(false);
+
+            // Convert to array if needed for the export
+            if (is_object($customerOrders) && method_exists($customerOrders, 'toArray')) {
+                $customerOrders = $customerOrders->toArray();
+            }
 
             // Convert the original date format to a display format only if dates are set
             $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
