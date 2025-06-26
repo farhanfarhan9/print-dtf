@@ -18,6 +18,7 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3">No</th>
+                        <th scope="col" class="px-6 py-3">ID PO</th>
                         <th scope="col" class="px-6 py-3">Customer Name</th>
                         <th scope="col" class="px-6 py-3">Nama Produk</th>
                         <th scope="col" class="px-6 py-3">Jumlah Hutang</th>
@@ -30,6 +31,7 @@
                     @forelse($debtCustomers as $index => $debtCustomer)
                         <tr class="bg-white border-b">
                             <td class="px-6 py-4">{{ $index + 1 }}</td>
+                            <td class="px-6 py-4">{{ $debtCustomer->id }}</td>
                             <td class="px-6 py-4">{{ $debtCustomer->customer_name }}</td>
                             <td class="px-6 py-4">{{ $debtCustomer->nama_produk ?? 'N/A' }}</td>
                             <td class="px-6 py-4">{{ rupiah_format($debtCustomer->debt_amount) }}</td>
@@ -43,7 +45,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-4 text-center">Tidak ada data hutang customer</td>
+                            <td colspan="8" class="py-4 text-center">Tidak ada data hutang customer</td>
                         </tr>
                     @endforelse
                 </tbody>
