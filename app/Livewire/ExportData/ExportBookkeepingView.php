@@ -12,6 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator; // Import LengthAwarePaginator
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ExportBookkeepingView extends Component
 {
@@ -25,6 +26,7 @@ class ExportBookkeepingView extends Component
     public $ramUsage = 0;
     public $dataSize = 0;
     public $type;
+    public $isAdmin = false;
 
     public function switchToDaily()
     {
@@ -37,6 +39,11 @@ class ExportBookkeepingView extends Component
 
     public function switchToMonthly()
     {
+        // Don't allow admin to switch to monthly view
+        if ($this->isAdmin) {
+            return;
+        }
+
         $this->viewMode = 'monthly';
         $this->startDate = null;
         $this->endDate = null;
@@ -46,11 +53,26 @@ class ExportBookkeepingView extends Component
 
     public function mount($type = null)
     {
-        // Set the viewMode based on the type parameter
-        if ($type === 'monthly') {
-            $this->viewMode = 'monthly';
+        // Check if user is admin
+        $this->isAdmin = Auth::user()->roles === 'admin';
+
+        // For admin users, always set to daily view but allow date selection
+        if ($this->isAdmin) {
+            $this->viewMode = 'daily';
+
+            // Set default date range to today and 2 days back for admin if no dates are selected
+            if (!$this->startDate && !$this->endDate) {
+                $today = Carbon::today();
+                $this->endDate = $today->format('Y-m-d');
+                $this->startDate = $today->copy()->subDays(2)->format('Y-m-d');
+            }
         } else {
-            $this->viewMode = 'daily'; // Default to daily if type is null or anything else
+            // Set the viewMode based on the type parameter for non-admin users
+            if ($type === 'monthly') {
+                $this->viewMode = 'monthly';
+            } else {
+                $this->viewMode = 'daily'; // Default to daily if type is null or anything else
+            }
         }
     }
 
@@ -104,7 +126,7 @@ class ExportBookkeepingView extends Component
         $startMemory = memory_get_usage();
 
         // Define a unique cache key based on the current parameters
-        $cacheKey = 'daily_purchases_' . $this->startDate . '_' . $this->endDate . '_' . $this->viewMode . '_' . $this->sortField . '_' . $this->sortDirection;
+        $cacheKey = 'daily_purchases_' . $this->startDate . '_' . $this->endDate . '_' . $this->viewMode . '_' . $this->sortField . '_' . $this->sortDirection . '_' . ($this->isAdmin ? 'admin' : 'user');
 
         // Use Cache::remember to cache the results with longer duration (5 minutes instead of 1)
         $dailyPurchases = Cache::remember($cacheKey, 300, function () {
@@ -113,8 +135,23 @@ class ExportBookkeepingView extends Component
                     ->select('payments.*')
                     ->orderBy($this->sortField, $this->sortDirection);
 
-            // Check if start and end dates are set and add them to the query
-            if ($this->startDate && $this->endDate) {
+            // For admin users, enforce max 3-day range
+            if ($this->isAdmin && $this->startDate && $this->endDate) {
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+
+                // Calculate the difference in days
+                $diffInDays = $end->diffInDays($start);
+
+                // If the range is more than 3 days, limit it to 3 days from the end date
+                if ($diffInDays > 2) {
+                    $start = $end->copy()->subDays(2)->startOfDay();
+                }
+
+                $query->whereBetween('created_at', [$start->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s')]);
+            }
+            // For non-admin users, use the selected date range
+            else if ($this->startDate && $this->endDate) {
                 if ($this->viewMode == 'monthly') {
                     $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay()->format('Y-m-d H:i:s');
                     $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay()->format('Y-m-d H:i:s');
@@ -278,8 +315,23 @@ class ExportBookkeepingView extends Component
                 ->select('payments.*')
                 ->orderBy('created_at', 'desc');
 
-        // Check if start and end dates are set and add them to the query
-        if ($this->startDate && $this->endDate) {
+        // For admin users, enforce max 3-day range
+        if ($this->isAdmin && $this->startDate && $this->endDate) {
+            $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+
+            // Calculate the difference in days
+            $diffInDays = $end->diffInDays($start);
+
+            // If the range is more than 3 days, limit it to 3 days from the end date
+            if ($diffInDays > 2) {
+                $start = $end->copy()->subDays(2)->startOfDay();
+            }
+
+            $query->whereBetween('created_at', [$start, $end]);
+        }
+        // For non-admin users, use the selected date range
+        else if ($this->startDate && $this->endDate) {
             if($this->viewMode == 'monthly'){
                 $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();
                 $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();
@@ -310,7 +362,27 @@ class ExportBookkeepingView extends Component
     private function getAdditionalPrices()
     {
         // Use direct SQL aggregation for better performance
-        if ($this->startDate && $this->endDate) {
+
+        // For admin users, enforce max 3-day range
+        if ($this->isAdmin && $this->startDate && $this->endDate) {
+            $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+
+            // Calculate the difference in days
+            $diffInDays = $end->diffInDays($start);
+
+            // If the range is more than 3 days, limit it to 3 days from the end date
+            if ($diffInDays > 2) {
+                $start = $end->copy()->subDays(2)->startOfDay();
+            }
+
+            // Use a direct DB query with sum for better performance
+            $totalAdditionalPrices = DB::table('purchase_orders')
+                ->whereBetween('created_at', [$start, $end])
+                ->sum('additional_price');
+        }
+        // For non-admin users, use the selected date range
+        else if ($this->startDate && $this->endDate) {
             if ($this->viewMode == 'monthly') {
                 $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();
                 $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();
@@ -350,6 +422,7 @@ class ExportBookkeepingView extends Component
             'dailyGroupPurchases' => $this->viewMode == 'daily' ? $this->getGroupDailyPurchasesData() : null,
             'monthlyGroupPurchases' => $this->viewMode == 'monthly' ? $this->getGroupMonthlyPurchasesData() : null,
             'viewMode' => $this->viewMode,
+            'isAdmin' => $this->isAdmin,
         ]);
     }
 }
