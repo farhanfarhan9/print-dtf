@@ -30,17 +30,29 @@
         </div>
     </x-slot>
     <div class="py-12">
-        <div class="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 sm:space-x-4">
-            <x-input wire:model.live.debounce.300ms="search" icon="search" placeholder="Search product name..." class="w-full sm:w-1/4" shadowless="true" />
-            <div class="flex space-x-4">
-                <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
-                <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
+        <div class="flex flex-wrap items-center justify-between mb-6">
+            <div class="flex space-x-4 w-auto">
+                <x-input wire:model.live="startDate" type="date" placeholder="dd/mm/yyyy" class="w-44" />
+                <x-input wire:model.live="endDate" type="date" placeholder="dd/mm/yyyy" class="w-44" />
             </div>
-            <div class="flex space-x-2">
-                <x-button wire:click="exportExcel" label="Export" blue icon="download" class="w-full sm:w-auto" wire:loading.attr="disabled" wire:target="exportExcel">
-                    <span wire:loading wire:target="exportExcel">Exporting...</span>
+            <div class="flex space-x-4">
+                <x-button wire:click="exportExcel" blue wire:loading.attr="disabled" wire:target="exportExcel" class="px-10 py-2.5">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span wire:loading.remove wire:target="exportExcel">Export</span>
+                        <span wire:loading wire:target="exportExcel">Exporting...</span>
+                    </div>
                 </x-button>
-                <x-button href="{{ route('rejected-products.create') }}" label="Tambah Data" green icon="plus" class="w-full sm:w-auto" />
+                <x-button href="{{ route('rejected-products.create') }}" green class="px-8 py-2.5">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        Tambah Data
+                    </div>
+                </x-button>
             </div>
         </div>
 
