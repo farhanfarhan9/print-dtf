@@ -51,7 +51,6 @@
                         <th scope="col" class="px-6 py-3">Stock</th>
                         <th scope="col" class="px-6 py-3">Price Details</th>
                         <th scope="col" class="px-6 py-3">Price Retail Details</th>
-                        <th scope="col" class="px-6 py-3">Type</th>
                         <th scope="col" class="px-6 py-3">Aksi</th>
                     </tr>
                 </thead>
@@ -59,15 +58,14 @@
                     @forelse($products as $product)
                         <tr class="bg-white border-b">
                             <td class="px-6 py-4">{{ $product->nama_produk }}</td>
-                            <td class="px-6 py-4">{{ $product->stok }} {{ $product->type === 'eceran' ? 'cm' : 'm' }}</td>
+                            <td class="px-6 py-4">{{ $product->stok }} m</td>
                             <td class="px-6 py-4">
                                 @php
                                     $detailHarga = json_decode($product->detail_harga, true);
-                                    $unit = $product->type === 'eceran' ? 'cm' : 'm';
                                 @endphp
 
                                 @foreach ($detailHarga as $detail)
-                                    Range: {{ $detail['start'] }} {{ $unit }} - {{ $detail['end'] }} {{ $unit }}, Harga:
+                                    Range: {{ $detail['start'] }} m - {{ $detail['end'] }} m, Harga:
                                     Rp.{{ $detail['price'] }}<br>
                                 @endforeach
                             </td>
@@ -75,11 +73,10 @@
                                 @if ($product->detail_harga_retail)
                                     @php
                                         $detailHargaRetail = json_decode($product->detail_harga_retail, true);
-                                        $unit = $product->type === 'eceran' ? 'cm' : 'm';
                                     @endphp
 
                                     @foreach ($detailHargaRetail as $detailRetail)
-                                        Range: {{ $detailRetail['start'] }} {{ $unit }} - {{ $detailRetail['end'] }} {{ $unit }}, Harga
+                                        Range: {{ $detailRetail['start'] }} m - {{ $detailRetail['end'] }} m, Harga
                                         Retail:
                                         Rp.{{ $detailRetail['price'] }}<br>
                                     @endforeach
@@ -87,9 +84,6 @@
                                     Belum ada harga reseller
                                 @endif
 
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ ucfirst($product->type) }}
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center space-x-4">
@@ -100,7 +94,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-4 text-center">Data Kosong</td>
+                            <td colspan="5" class="py-4 text-center">Data Kosong</td>
                         </tr>
                     @endforelse
                 </tbody>
