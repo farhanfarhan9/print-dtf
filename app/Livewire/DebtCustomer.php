@@ -86,9 +86,11 @@ class DebtCustomer extends Component
                 DB::raw('COALESCE(SUM(payment_summary.total_paid), 0) as total_paid'),
                 DB::raw('MAX(payment_summary.last_payment_date) as last_payment_date'),
                 DB::raw('MIN(purchases.created_at) as first_purchase_date'),
-                DB::raw('COUNT(purchases.id) as open_purchases_count')
+                DB::raw('COUNT(purchases.id) as open_purchases_count'),
+                DB::raw('(SUM(purchases.total_payment) - COALESCE(SUM(payment_summary.total_paid), 0)) as remaining_debt')
             )
-            ->groupBy('customers.id', 'customers.name');
+            ->groupBy('customers.id', 'customers.name')
+            ->having(DB::raw('(SUM(purchases.total_payment) - COALESCE(SUM(payment_summary.total_paid), 0))'), '>', 0);
 
         // Apply search filter if search term is provided
         if (!empty($this->search)) {
@@ -107,7 +109,7 @@ class DebtCustomer extends Component
                 $query->orderBy('total_paid', $this->sortDirection);
                 break;
             case 'remaining_debt':
-                $query->orderBy(DB::raw('(SUM(purchases.total_payment) - COALESCE(SUM(payment_summary.total_paid), 0))'), $this->sortDirection);
+                $query->orderBy('remaining_debt', $this->sortDirection);
                 break;
             case 'last_payment_date':
                 $query->orderBy('last_payment_date', $this->sortDirection);
@@ -119,7 +121,7 @@ class DebtCustomer extends Component
                 $query->orderBy('open_purchases_count', $this->sortDirection);
                 break;
             default:
-                $query->orderBy(DB::raw('(SUM(purchases.total_payment) - COALESCE(SUM(payment_summary.total_paid), 0))'), $this->sortDirection);
+                $query->orderBy('remaining_debt', $this->sortDirection);
                 break;
         }
 

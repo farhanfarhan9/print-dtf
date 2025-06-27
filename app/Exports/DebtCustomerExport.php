@@ -23,17 +23,23 @@ class DebtCustomerExport implements FromCollection, WithHeadings, WithMapping, W
 
     public function __construct($debtCustomers)
     {
-        $this->debtCustomers = $debtCustomers;
+        // Filter out any customers with zero or negative debt
+        $this->debtCustomers = $debtCustomers->filter(function($item) {
+            $remainingDebt = is_object($item) ?
+                ($item->total_debt - $item->total_paid) :
+                ($item['total_debt'] - $item['total_paid']);
+            return $remainingDebt > 0;
+        });
 
         // Calculate total debt
-        $this->totalDebt = $debtCustomers->sum(function($item) {
+        $this->totalDebt = $this->debtCustomers->sum(function($item) {
             return is_object($item) ? ($item->total_debt - $item->total_paid) : ($item['total_debt'] - $item['total_paid']);
         });
     }
 
     public function collection()
     {
-        // Return the collection as is
+        // Return the filtered collection
         return $this->debtCustomers;
     }
 
