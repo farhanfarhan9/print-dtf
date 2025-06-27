@@ -17,8 +17,13 @@
                     <x-input type="email" label="Email" wire:model='email' placeholder="Email" />
                     <x-input type="password" label="Password" wire:model='password' placeholder="Password" />
                 </div>
-                <x-native-select label="Pilih Role" placeholder="Pilih satu role" :options="['admin', 'operator']"
-                    wire:model="role" />
+                <x-native-select label="Pilih Role" placeholder="Pilih satu role" :options="[
+                    ['name' => 'owner', 'label' => 'Owner'],
+                    ['name' => 'admin', 'label' => 'Admin'],
+                    ['name' => 'operator', 'label' => 'Operator'],
+                    ['name' => 'operator_sublim', 'label' => 'Operator Sublim'],
+                    ['name' => 'operator_dtfuv', 'label' => 'Operator DTF UV'],
+                ]" wire:model="role" />
 
                 <x-button type="submit" spinner label="Simpan" green />
                 <x-button href="{{ route('user.index') }}" wire:navigate label="Batal" red />
