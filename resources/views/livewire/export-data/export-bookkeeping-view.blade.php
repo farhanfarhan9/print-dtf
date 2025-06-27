@@ -38,20 +38,31 @@
                 <!-- Toggle Buttons for Daily and Monthly View -->
                 <x-button wire:click="switchToDaily"
                     class="{{ $viewMode == 'daily' ? 'bg-blue-500 text-white hover:bg-gray-300 hover:text-black' : 'bg-gray-300 text-black hover:bg-blue-500 hover:text-white' }} w-full sm:w-auto">Harian</x-button>
-                <x-button wire:click="switchToMonthly"
-                    class="{{ $viewMode == 'monthly' ? 'bg-blue-500 text-white hover:bg-gray-300 hover:text-black' : 'bg-gray-300 text-black hover:bg-blue-500 hover:text-white' }} w-full sm:w-auto">Bulanan</x-button>
+
+                <!-- Only show Monthly button for non-admin users -->
+                @if (!$isAdmin)
+                    <x-button wire:click="switchToMonthly"
+                        class="{{ $viewMode == 'monthly' ? 'bg-blue-500 text-white hover:bg-gray-300 hover:text-black' : 'bg-gray-300 text-black hover:bg-blue-500 hover:text-white' }} w-full sm:w-auto">Bulanan</x-button>
+                @endif
             </div>
 
             <div class="flex space-x-4">
-                <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai"
-                    class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
-                <x-input wire:model.live="startDate" type="month" placeholder="Bulan mulai"
-                    class="w-full {{ $viewMode == 'daily' ? 'hidden' : '' }}" />
+                <!-- For admin users, date inputs are disabled and show a message -->
+                @if ($isAdmin)
+                    <div class="text-sm text-gray-600 italic">
+                        <span class="font-medium">Catatan:</span> Admin hanya dapat melihat data hari ini dan 2 hari sebelumnya
+                    </div>
+                @else
+                    <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai"
+                        class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
+                    <x-input wire:model.live="startDate" type="month" placeholder="Bulan mulai"
+                        class="w-full {{ $viewMode == 'daily' ? 'hidden' : '' }}" />
 
-                <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir"
-                    class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
-                <x-input wire:model.live="endDate" type="month" placeholder="Bulan akhir"
-                    class="w-full {{ $viewMode == 'daily' ? 'hidden' : '' }}" />
+                    <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir"
+                        class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
+                    <x-input wire:model.live="endDate" type="month" placeholder="Bulan akhir"
+                        class="w-full {{ $viewMode == 'daily' ? 'hidden' : '' }}" />
+                @endif
             </div>
             <x-button wire:click="exportExcel" label="Export" blue icon="download" class="w-full sm:w-auto" />
         </div>
