@@ -14,13 +14,9 @@
             <form wire:submit="save">
                 <x-input label="Nama Produk" placeholder="Nama produk" wire:model="productName" />
 
-                <div class="mt-4">
-                    <x-checkbox label="Apakah Eceran?" wire:model.live="isEceran" />
-                </div>
-
                 <!-- Adding margin-top to the label -->
                 <label for="title" class="block mt-4 text-sm font-medium">
-                    Range Harga Customer (dalam {{ $isEceran ? 'centimeter' : 'meter' }})
+                    Range Harga Customer (dalam meter)
                 </label>
 
                 @foreach ($priceRanges as $index => $range)
@@ -39,7 +35,7 @@
                 </div>
 
                 <label for="title" class="block mt-4 text-sm font-medium">
-                    Range Harga Reseller (dalam {{ $isEceran ? 'centimeter' : 'meter' }})
+                    Range Harga Reseller (dalam meter)
                 </label>
                 @foreach ($priceRetailRanges as $index => $range)
                     <div class="flex items-center mt-2 space-x-2">
@@ -62,7 +58,7 @@
 
                 <!-- Adding margin-top to the input -->
                 <div class="mt-4">
-                    <x-input label="Stok (dalam {{ $isEceran ? 'centimeter' : 'meter' }})" type="number" placeholder="Jumlah stok" wire:model="stock" />
+                    <x-input label="Stok (dalam meter)" type="number" placeholder="Jumlah stok" wire:model="stock" />
                 </div>
 
                 <!-- Adding margin-top to the save button -->

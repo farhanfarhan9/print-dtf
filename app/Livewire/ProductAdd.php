@@ -12,7 +12,6 @@ class ProductAdd extends Component
     public $stock;
     public $priceRanges = [];
     public $priceRetailRanges = [];
-    public $isEceran = false;
 
     public function mount()
     {
@@ -51,7 +50,6 @@ class ProductAdd extends Component
             'stok' => $this->stock,
             'detail_harga' => json_encode($this->priceRanges),
             'detail_harga_retail' => json_encode($this->priceRetailRanges),
-            'type' => $this->isEceran ? 'eceran' : 'meteran',
         ]);
 
         session()->flash('productCreated', ['Sukses', 'Berhasil menambahkan data', 'success']);
