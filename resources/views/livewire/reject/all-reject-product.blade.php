@@ -32,11 +32,11 @@
     <div class="py-12">
         <div class="flex flex-wrap items-center justify-between mb-6">
             <div class="flex space-x-4">
-                <x-input wire:model.live="startDate" type="date" placeholder="dd/mm/yyyy" class="w-44" />
-                <x-input wire:model.live="endDate" type="date" placeholder="dd/mm/yyyy" class="w-44" />
+                <x-input wire:model.live.debounce.300ms="search" placeholder="Search product name..." class="w-64" />
             </div>
             <div class="flex space-x-4">
-                <x-input wire:model.live.debounce.300ms="search" placeholder="Search product name..." class="w-64" />
+                <x-input wire:model.live="startDate" type="date" placeholder="dd/mm/yyyy" class="w-44" />
+                <x-input wire:model.live="endDate" type="date" placeholder="dd/mm/yyyy" class="w-44" />
                 <x-button wire:click="exportExcel" blue wire:loading.attr="disabled" wire:target="exportExcel" class="px-10 py-2.5">
                     <div class="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
