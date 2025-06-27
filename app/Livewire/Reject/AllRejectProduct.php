@@ -18,7 +18,7 @@ class AllRejectProduct extends Component
     public $search = '';
     public $startDate;
     public $endDate;
-    public $perPage = 15;
+    public $perPage = 10;
     public $loadingTime = 0;
     public $ramUsage = 0;
     public $dataSize = 0;
@@ -29,11 +29,15 @@ class AllRejectProduct extends Component
         'search' => ['except' => ''],
         'startDate' => ['except' => ''],
         'endDate' => ['except' => ''],
-        'perPage' => ['except' => 15],
+        'perPage' => ['except' => 10],
+        'page' => ['except' => 1],
     ];
 
-    // Disable automatic Livewire rendering on property updates
-    protected $disableRenderOnPropertyUpdate = true;
+    public function mount()
+    {
+        // Initialize component
+        $this->resetPage();
+    }
 
     public function updatedSearch()
     {
@@ -56,6 +60,12 @@ class AllRejectProduct extends Component
     public function updatedPerPage()
     {
         $this->resetPage();
+        Cache::forget($this->getCacheKey());
+    }
+
+    public function gotoPage($page)
+    {
+        $this->setPage($page);
         Cache::forget($this->getCacheKey());
     }
 
