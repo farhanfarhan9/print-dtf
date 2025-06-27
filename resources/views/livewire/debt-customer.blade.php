@@ -10,7 +10,7 @@
     <div class="py-12">
         <div class="flex justify-end">
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
-                placeholder="Cari Customer atau Produk" />
+                placeholder="Cari Customer" />
         </div>
 
         <div class="relative mt-5 overflow-x-auto shadow-md sm:rounded-lg">
@@ -30,7 +30,6 @@
                     </style>
                     <tr>
                         <th scope="col" class="px-6 py-3">No</th>
-                        <th scope="col" class="px-6 py-3">ID PO</th>
                         <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('customer_name')">
                             Customer Name
                             @if($sortField === 'customer_name')
@@ -41,9 +40,9 @@
                                 @endif
                             @endif
                         </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('nama_produk')">
-                            Nama Produk
-                            @if($sortField === 'nama_produk')
+                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('total_debt')">
+                            Total Hutang
+                            @if($sortField === 'total_debt')
                                 @if($sortDirection === 'asc')
                                     &#x25B2;
                                 @else
@@ -51,9 +50,9 @@
                                 @endif
                             @endif
                         </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('debt_amount')">
-                            Jumlah Hutang
-                            @if($sortField === 'debt_amount')
+                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('total_paid')">
+                            Total Bayar
+                            @if($sortField === 'total_paid')
                                 @if($sortDirection === 'asc')
                                     &#x25B2;
                                 @else
@@ -61,9 +60,9 @@
                                 @endif
                             @endif
                         </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('paid_amount')">
-                            Jumlah Bayar
-                            @if($sortField === 'paid_amount')
+                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('remaining_debt')">
+                            Sisa Hutang
+                            @if($sortField === 'remaining_debt')
                                 @if($sortDirection === 'asc')
                                     &#x25B2;
                                 @else
@@ -81,9 +80,19 @@
                                 @endif
                             @endif
                         </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('purchase_date')">
-                            Tanggal Beli
-                            @if($sortField === 'purchase_date')
+                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('first_purchase_date')">
+                            Tanggal Pembelian Pertama
+                            @if($sortField === 'first_purchase_date')
+                                @if($sortDirection === 'asc')
+                                    &#x25B2;
+                                @else
+                                    &#x25BC;
+                                @endif
+                            @endif
+                        </th>
+                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('open_purchases_count')">
+                            Jumlah Transaksi
+                            @if($sortField === 'open_purchases_count')
                                 @if($sortDirection === 'asc')
                                     &#x25B2;
                                 @else
@@ -97,16 +106,18 @@
                     @forelse($debtCustomers as $index => $debtCustomer)
                         <tr class="bg-white border-b">
                             <td class="px-6 py-4">{{ ($debtCustomers->currentPage() - 1) * $debtCustomers->perPage() + $loop->index + 1 }}</td>
-                            <td class="px-6 py-4">{{ $debtCustomer->id }}</td>
                             <td class="px-6 py-4">{{ $debtCustomer->customer_name }}</td>
-                            <td class="px-6 py-4">{{ $debtCustomer->nama_produk ?? 'N/A' }}</td>
-                            <td class="px-6 py-4">{{ rupiah_format($debtCustomer->debt_amount) }}</td>
-                            <td class="px-6 py-4">{{ rupiah_format($debtCustomer->paid_amount) }}</td>
+                            <td class="px-6 py-4">{{ rupiah_format($debtCustomer->total_debt) }}</td>
+                            <td class="px-6 py-4">{{ rupiah_format($debtCustomer->total_paid) }}</td>
+                            <td class="px-6 py-4">{{ rupiah_format($debtCustomer->total_debt - $debtCustomer->total_paid) }}</td>
                             <td class="px-6 py-4">
                                 {{ $debtCustomer->last_payment_date ? date('d M Y', strtotime($debtCustomer->last_payment_date)) : 'Belum ada pembayaran' }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ date('d M Y', strtotime($debtCustomer->purchase_date)) }}
+                                {{ date('d M Y', strtotime($debtCustomer->first_purchase_date)) }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $debtCustomer->open_purchases_count }}
                             </td>
                         </tr>
                     @empty

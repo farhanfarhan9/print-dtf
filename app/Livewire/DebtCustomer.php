@@ -17,7 +17,7 @@ class DebtCustomer extends Component
     use WithPagination;
 
     public $search = '';
-    public $sortField = 'purchase_date';
+    public $sortField = 'total_debt';
     public $sortDirection = 'desc';
     public $perPage = 10;
     protected $paginationTheme = 'tailwind';
@@ -27,7 +27,7 @@ class DebtCustomer extends Component
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'sortField' => ['except' => 'purchase_date'],
+        'sortField' => ['except' => 'total_debt'],
         'sortDirection' => ['except' => 'desc'],
         'perPage' => ['except' => 10],
     ];
@@ -54,12 +54,9 @@ class DebtCustomer extends Component
 
     public function getDebtCustomersData()
     {
-        // Use a more efficient query with subqueries for better performance
-        $query = DB::table('purchase_orders')
-            ->where('purchase_orders.status', 'Belum Bayar')
-            ->join('purchases', 'purchase_orders.purchase_id', '=', 'purchases.id')
-            ->join('customers', 'purchases.customer_id', '=', 'customers.id')
-            ->leftJoin('products', 'purchase_orders.product_id', '=', 'products.id')
+        // Calculate debt per customer based on open purchases and their payments
+        $query = DB::table('customers')
+            ->join('purchases', 'customers.id', '=', 'purchases.customer_id')
             ->leftJoin(DB::raw('(SELECT
                                     purchase_id,
                                     SUM(amount) as total_paid,
@@ -67,22 +64,21 @@ class DebtCustomer extends Component
                                 FROM payments
                                 GROUP BY purchase_id) as payment_summary'),
                       'purchases.id', '=', 'payment_summary.purchase_id')
+            ->where('purchases.payment_status', 'open')
             ->select(
-                'purchase_orders.id',
+                'customers.id as customer_id',
                 'customers.name as customer_name',
-                'products.nama_produk',
-                'purchase_orders.total_price as debt_amount',
-                DB::raw('COALESCE(payment_summary.total_paid, 0) as paid_amount'),
-                'payment_summary.last_payment_date',
-                'purchase_orders.created_at as purchase_date'
-            );
+                DB::raw('SUM(purchases.total_payment) as total_debt'),
+                DB::raw('COALESCE(SUM(payment_summary.total_paid), 0) as total_paid'),
+                DB::raw('MAX(payment_summary.last_payment_date) as last_payment_date'),
+                DB::raw('MIN(purchases.created_at) as first_purchase_date'),
+                DB::raw('COUNT(purchases.id) as open_purchases_count')
+            )
+            ->groupBy('customers.id', 'customers.name');
 
         // Apply search filter if search term is provided
         if (!empty($this->search)) {
-            $query->where(function($q) {
-                $q->where('customers.name', 'like', '%' . $this->search . '%')
-                  ->orWhere('products.nama_produk', 'like', '%' . $this->search . '%');
-            });
+            $query->where('customers.name', 'like', '%' . $this->search . '%');
         }
 
         // Apply sorting
@@ -90,21 +86,26 @@ class DebtCustomer extends Component
             case 'customer_name':
                 $query->orderBy('customers.name', $this->sortDirection);
                 break;
-            case 'nama_produk':
-                $query->orderBy('products.nama_produk', $this->sortDirection);
+            case 'total_debt':
+                $query->orderBy('total_debt', $this->sortDirection);
                 break;
-            case 'debt_amount':
-                $query->orderBy('purchase_orders.total_price', $this->sortDirection);
+            case 'total_paid':
+                $query->orderBy('total_paid', $this->sortDirection);
                 break;
-            case 'paid_amount':
-                $query->orderBy('paid_amount', $this->sortDirection);
+            case 'remaining_debt':
+                $query->orderBy(DB::raw('(SUM(purchases.total_payment) - COALESCE(SUM(payment_summary.total_paid), 0))'), $this->sortDirection);
                 break;
             case 'last_payment_date':
-                $query->orderBy('payment_summary.last_payment_date', $this->sortDirection);
+                $query->orderBy('last_payment_date', $this->sortDirection);
                 break;
-            case 'purchase_date':
+            case 'first_purchase_date':
+                $query->orderBy('first_purchase_date', $this->sortDirection);
+                break;
+            case 'open_purchases_count':
+                $query->orderBy('open_purchases_count', $this->sortDirection);
+                break;
             default:
-                $query->orderBy('purchase_orders.created_at', $this->sortDirection);
+                $query->orderBy('total_debt', $this->sortDirection);
                 break;
         }
 
