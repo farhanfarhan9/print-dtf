@@ -56,14 +56,16 @@ class ExportBookkeepingView extends Component
         // Check if user is admin
         $this->isAdmin = Auth::user()->roles === 'admin';
 
-        // For admin users, always set to daily view
+        // For admin users, always set to daily view but allow date selection
         if ($this->isAdmin) {
             $this->viewMode = 'daily';
 
-            // Set date range to today and 2 days back for admin
-            $today = Carbon::today();
-            $this->endDate = $today->format('Y-m-d');
-            $this->startDate = $today->copy()->subDays(2)->format('Y-m-d');
+            // Set default date range to today and 2 days back for admin if no dates are selected
+            if (!$this->startDate && !$this->endDate) {
+                $today = Carbon::today();
+                $this->endDate = $today->format('Y-m-d');
+                $this->startDate = $today->copy()->subDays(2)->format('Y-m-d');
+            }
         } else {
             // Set the viewMode based on the type parameter for non-admin users
             if ($type === 'monthly') {
@@ -133,11 +135,20 @@ class ExportBookkeepingView extends Component
                     ->select('payments.*')
                     ->orderBy($this->sortField, $this->sortDirection);
 
-            // For admin users, enforce date restrictions (today and 2 days back)
-            if ($this->isAdmin) {
-                $today = Carbon::today();
-                $twoDaysAgo = $today->copy()->subDays(2)->startOfDay();
-                $query->whereBetween('created_at', [$twoDaysAgo->format('Y-m-d H:i:s'), $today->endOfDay()->format('Y-m-d H:i:s')]);
+            // For admin users, enforce max 3-day range
+            if ($this->isAdmin && $this->startDate && $this->endDate) {
+                $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+                $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+
+                // Calculate the difference in days
+                $diffInDays = $end->diffInDays($start);
+
+                // If the range is more than 3 days, limit it to 3 days from the end date
+                if ($diffInDays > 2) {
+                    $start = $end->copy()->subDays(2)->startOfDay();
+                }
+
+                $query->whereBetween('created_at', [$start->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s')]);
             }
             // For non-admin users, use the selected date range
             else if ($this->startDate && $this->endDate) {
@@ -304,11 +315,20 @@ class ExportBookkeepingView extends Component
                 ->select('payments.*')
                 ->orderBy('created_at', 'desc');
 
-        // For admin users, enforce date restrictions (today and 2 days back)
-        if ($this->isAdmin) {
-            $today = Carbon::today();
-            $twoDaysAgo = $today->copy()->subDays(2)->startOfDay();
-            $query->whereBetween('created_at', [$twoDaysAgo, $today->endOfDay()]);
+        // For admin users, enforce max 3-day range
+        if ($this->isAdmin && $this->startDate && $this->endDate) {
+            $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+
+            // Calculate the difference in days
+            $diffInDays = $end->diffInDays($start);
+
+            // If the range is more than 3 days, limit it to 3 days from the end date
+            if ($diffInDays > 2) {
+                $start = $end->copy()->subDays(2)->startOfDay();
+            }
+
+            $query->whereBetween('created_at', [$start, $end]);
         }
         // For non-admin users, use the selected date range
         else if ($this->startDate && $this->endDate) {
@@ -343,14 +363,22 @@ class ExportBookkeepingView extends Component
     {
         // Use direct SQL aggregation for better performance
 
-        // For admin users, enforce date restrictions (today and 2 days back)
-        if ($this->isAdmin) {
-            $today = Carbon::today();
-            $twoDaysAgo = $today->copy()->subDays(2)->startOfDay();
+        // For admin users, enforce max 3-day range
+        if ($this->isAdmin && $this->startDate && $this->endDate) {
+            $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+
+            // Calculate the difference in days
+            $diffInDays = $end->diffInDays($start);
+
+            // If the range is more than 3 days, limit it to 3 days from the end date
+            if ($diffInDays > 2) {
+                $start = $end->copy()->subDays(2)->startOfDay();
+            }
 
             // Use a direct DB query with sum for better performance
             $totalAdditionalPrices = DB::table('purchase_orders')
-                ->whereBetween('created_at', [$twoDaysAgo, $today->endOfDay()])
+                ->whereBetween('created_at', [$start, $end])
                 ->sum('additional_price');
         }
         // For non-admin users, use the selected date range

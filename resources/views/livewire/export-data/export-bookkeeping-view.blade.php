@@ -47,11 +47,15 @@
             </div>
 
             <div class="flex space-x-4">
-                <!-- For admin users, date inputs are disabled and show a message -->
+                <!-- Date inputs for all users, with warning for admin -->
                 @if ($isAdmin)
-                    <div class="text-sm text-gray-600 italic">
-                        <span class="font-medium">Catatan:</span> Admin hanya dapat melihat data hari ini dan 2 hari sebelumnya
+                    <div class="flex flex-col space-y-1">
+                        <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
+                        <div class="text-xs text-amber-600 italic">
+                            <span class="font-medium">Catatan:</span> Admin hanya dapat melihat data maksimal 3 hari
+                        </div>
                     </div>
+                    <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
                 @else
                     <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai"
                         class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
