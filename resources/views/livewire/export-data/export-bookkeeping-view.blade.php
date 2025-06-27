@@ -30,7 +30,7 @@
         </div>
     </x-slot>
     <div class="pt-12">
-        <div class="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 sm:space-x-4">
+        <div class="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-start sm:space-y-0 sm:space-x-4">
             <x-input wire:model.debounce.300ms="search" icon="search" placeholder="Cari Data Penjualan"
                 class="w-full sm:w-1/4" shadowless="true" />
 
@@ -46,17 +46,19 @@
                 @endif
             </div>
 
-            <div class="flex space-x-4">
-                <!-- Date inputs for all users, with warning for admin -->
-                @if ($isAdmin)
-                    <div class="flex flex-col space-y-1">
+            <!-- Date inputs section -->
+            @if ($isAdmin)
+                <div class="flex flex-col space-y-2">
+                    <div class="flex space-x-4">
                         <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
-                        <div class="text-xs text-amber-600 italic">
-                            <span class="font-medium">Catatan:</span> Admin hanya dapat melihat data maksimal 3 hari
-                        </div>
+                        <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
                     </div>
-                    <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
-                @else
+                    <div class="text-xs text-amber-600 italic text-center">
+                        <span class="font-medium">Catatan:</span> Admin hanya dapat melihat data maksimal 3 hari
+                    </div>
+                </div>
+            @else
+                <div class="flex space-x-4">
                     <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai"
                         class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
                     <x-input wire:model.live="startDate" type="month" placeholder="Bulan mulai"
@@ -66,8 +68,9 @@
                         class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
                     <x-input wire:model.live="endDate" type="month" placeholder="Bulan akhir"
                         class="w-full {{ $viewMode == 'daily' ? 'hidden' : '' }}" />
-                @endif
-            </div>
+                </div>
+            @endif
+
             <x-button wire:click="exportExcel" label="Export" blue icon="download" class="w-full sm:w-auto" />
         </div>
     </div>
