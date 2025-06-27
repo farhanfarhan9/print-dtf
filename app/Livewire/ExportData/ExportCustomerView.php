@@ -11,7 +11,7 @@ use WireUi\Traits\Actions;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CustomersExport;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class ExportCustomerView extends Component
@@ -25,12 +25,47 @@ class ExportCustomerView extends Component
     public $viewMode = 'daily';  // Default to daily
     public $sortField = 'newest_date';  // Default sort field
     public $sortDirection = 'desc';    // Default sort direction
+    protected $paginationTheme = 'tailwind';
+    public $perPage = 10;
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'startDate' => ['except' => ''],
+        'endDate' => ['except' => ''],
+        'sortField' => ['except' => 'newest_date'],
+        'sortDirection' => ['except' => 'desc'],
+        'perPage' => ['except' => 10],
+    ];
+
+    // Disable automatic Livewire rendering on property updates
+    protected $disableRenderOnPropertyUpdate = true;
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedStartDate()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedEndDate()
+    {
+        $this->resetPage();
+    }
 
     public function switchToDaily()
     {
         $this->viewMode = 'daily';
         $this->startDate = null;
         $this->endDate = null;
+        $this->resetPage();
     }
 
     public function switchToMonthly()
@@ -38,6 +73,7 @@ class ExportCustomerView extends Component
         $this->viewMode = 'monthly';
         $this->startDate = null;
         $this->endDate = null;
+        $this->resetPage();
     }
 
     public function exportExcel()
@@ -56,8 +92,13 @@ class ExportCustomerView extends Component
             $filename .= $formattedEndDate ? "_-_$formattedEndDate" : '';
             $filename .= '.xlsx';
 
-            // Fetch the data for export
-            $customerOrders = $this->getCustomerOrderData(); // Ensure this method exists and returns the correct data
+            // Fetch the data for export - ensure we get all data without pagination
+            $customerOrders = $this->getCustomerOrderData(false);
+
+            // Convert to array if needed for the export
+            if (is_object($customerOrders) && method_exists($customerOrders, 'toArray')) {
+                $customerOrders = $customerOrders->toArray();
+            }
 
             // Convert the original date format to a display format only if dates are set
             $displayStartDate = $this->startDate ? Carbon::createFromFormat('Y-m-d', $this->startDate)->isoFormat('dddd, D MMMM YYYY') : null;
@@ -71,153 +112,6 @@ class ExportCustomerView extends Component
         }
     }
 
-    // Old Function Below
-
-    // private function getCustomerOrders()
-    // {
-    //     $query = PurchaseOrder::query()
-    //         ->select('purchase_id', DB::raw('SUM(qty) as total_qty'));
-
-    //     // Apply date range filtering if both start and end dates are set
-    //     if ($this->startDate && $this->endDate) {
-    //         $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();  // Ensures the time is at 00:00:00
-    //         $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();  // Adjusts time to 23:59:59
-    //         $query->whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate]);
-    //     }
-
-    //     $purchasesWithTotalQty = $query->groupBy('purchase_id')->pluck('total_qty', 'purchase_id');
-
-    //     // Get the customer IDs from the purchases
-    //     $purchaseCustomerMapping = Purchase::query()
-    //         ->whereIn('id', $purchasesWithTotalQty->keys())
-    //         ->pluck('customer_id', 'id');
-
-    //     // Menghitung frekuensi pembelian setiap pelanggan dengan mempertimbangkan tanggal
-    //     $customerFrequencies = Purchase::query()
-    //         ->select('customer_id', DB::raw('COUNT(*) as frequency'))
-    //         ->whereIn('id', $purchasesWithTotalQty->keys())
-    //         ->when($this->startDate && $this->endDate, function ($query) {
-    //             $query->whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate]);
-    //         })
-    //         ->groupBy('customer_id')
-    //         ->pluck('frequency', 'customer_id');
-
-    //     // Calculate the total QTY for each customer
-    //     $customerTotals = [];
-    //     foreach ($purchasesWithTotalQty as $purchaseId => $totalQty) {
-    //         $customerId = $purchaseCustomerMapping[$purchaseId] ?? null;
-    //         if ($customerId) {
-    //             if (!isset($customerTotals[$customerId])) {
-    //                 $customerTotals[$customerId] = 0;
-    //             }
-    //             $customerTotals[$customerId] += $totalQty;
-    //         }
-    //     }
-
-    //     // Sort customer totals in descending order of total quantity
-    //     arsort($customerTotals);
-
-    //     // Get customer details and compile the final data for the export
-    //     $customers = Customer::query()
-    //         ->whereIn('id', array_keys($customerTotals))
-    //         ->get()
-    //         ->keyBy('id');
-
-    //     // Prepare the array for export
-    //     $customerOrders = array_map(function ($customerId) use ($customers, $customerTotals, $customerFrequencies) {
-    //         $customer = $customers->get($customerId);
-    //         return [
-    //             'jumlah_order' => $customerTotals[$customerId] ?? 0,
-    //             'nama_customer' => $customer ? $customer->name : 'N/A',
-    //             'frekuensi' => $customerFrequencies[$customerId] ?? 0,
-    //             // 'alamat' => $customer ? $customer->address : 'N/A',
-    //             // 'phone' => $customer ? $customer->phone : 'N/A',
-    //             // Assuming the email is also a part of your Customer model
-    //             // 'email' => $customer ? $customer->email : 'N/A',
-    //         ];
-    //     }, array_keys($customerTotals));
-
-    //     return $customerOrders;
-    // }
-
-    // private function getCustomerOrders()
-    // {
-    //     // Retrieve all PurchaseOrder entries and sum quantities grouped by purchase_id.
-    //     $query = PurchaseOrder::query()
-    //                     ->select('purchase_id')
-    //                     ->selectRaw('SUM(qty) as total_qty')
-    //                     ->groupBy('purchase_id');
-
-    //     // Apply date range filtering if both start and end dates are set
-    //     if ($this->startDate && $this->endDate) {
-    //         $query->whereBetween('created_at', [
-    //             Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay(),
-    //             Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay()
-    //         ]);
-    //     }
-
-    //     $purchasesWithTotalQty = $query->get()->pluck('total_qty', 'purchase_id');
-
-    //     // First, get unique purchase_ids from Payments table
-    //     $validPurchaseIds = Payment::select('purchase_id')
-    //                                 ->distinct()
-    //                                 ->when($this->startDate && $this->endDate, function ($query) {
-    //                                     $query->whereBetween('created_at', [
-    //                                         Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay(),
-    //                                         Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay()
-    //                                     ]);
-    //                                 })
-    //                                 ->pluck('purchase_id');
-
-    //     // Filter purchases that are actually paid for
-    //     $purchaseCustomerMapping = Purchase::whereIn('id', $validPurchaseIds)
-    //                                        ->get()
-    //                                        ->pluck('customer_id', 'id');
-
-    //     // Counting the frequency of valid purchases per customer
-    //     $customerFrequencies = Purchase::whereIn('id', $validPurchaseIds)
-    //                                    ->groupBy('customer_id')
-    //                                    ->select('customer_id')
-    //                                    ->selectRaw('COUNT(*) as frequency')
-    //                                    ->get()
-    //                                    ->pluck('frequency', 'customer_id');
-
-    //     // Calculate the total QTY for each customer, adjusted for valid purchase IDs
-    //     $customerTotals = [];
-    //     foreach ($validPurchaseIds as $purchaseId) {
-    //         $totalQty = $purchasesWithTotalQty[$purchaseId] ?? 0;
-    //         $customerId = $purchaseCustomerMapping[$purchaseId] ?? null;
-    //         if ($customerId) {
-    //             if (!isset($customerTotals[$customerId])) {
-    //                 $customerTotals[$customerId] = 0;
-    //             }
-    //             $customerTotals[$customerId] += $totalQty;
-    //         }
-    //     }
-
-    //     // Sort customer totals in descending order of total quantity
-    //     arsort($customerTotals);
-
-    //     // Fetch customer details from the database
-    //     $customers = Customer::findMany(array_keys($customerTotals))
-    //                          ->keyBy('id');
-
-    //     // Prepare the array for export
-    //     $customerOrders = array_map(function ($customerId) use ($customers, $customerTotals, $customerFrequencies) {
-    //         $customer = $customers->get($customerId);
-    //         return [
-    //             'jumlah_order' => $customerTotals[$customerId] ?? 0,
-    //             'nama_customer' => $customer ? $customer->name : 'N/A',
-    //             'frekuensi' => $customerFrequencies[$customerId] ?? 0,
-    //         ];
-    //     }, array_keys($customerTotals));
-
-    //     return $customerOrders;
-    // }
-
-    // Old Function Above
-
-    // New Function Below
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -228,96 +122,63 @@ class ExportCustomerView extends Component
         }
     }
 
-    public function getCustomerOrderData()
+    public function getCustomerOrderData($paginate = true)
     {
-        $query = PurchaseOrder::query()
-            ->select('purchase_orders.*', 'purchases.customer_id', 'customers.name as customer_name')
-            ->join('purchases', 'purchases.id', '=', 'purchase_orders.purchase_id')
-            ->join('customers', 'customers.id', '=', 'purchases.customer_id')
-            ->with(['purchase.customer']);
+        // First, get the base query for customer data - optimized version
+        $query = DB::table('purchase_orders')
+            ->join('purchases', 'purchase_orders.purchase_id', '=', 'purchases.id')
+            ->join('customers', 'purchases.customer_id', '=', 'customers.id')
+            ->select(
+                'customers.id as customer_id',
+                'customers.name as nama_customer',
+                DB::raw('SUM(purchase_orders.qty) as jumlah_order'),
+                DB::raw('COUNT(DISTINCT purchase_orders.id) as frekuensi'),
+                DB::raw('MAX(purchase_orders.created_at) as newest_date')
+            )
+            ->groupBy('customers.id', 'customers.name');
 
+        // Apply date filtering if both start and end dates are set
         if ($this->startDate && $this->endDate) {
             $start = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
             $end = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
             $query->whereBetween('purchase_orders.created_at', [$start, $end]);
         }
 
+        // Apply search filter if search term is provided
         if (!empty($this->search)) {
             $query->where('customers.name', 'like', '%' . $this->search . '%');
         }
 
-        $purchaseOrders = $query->get();
+        // Apply sorting - optimized to use index fields when possible
+        switch ($this->sortField) {
+            case 'jumlah_order':
+                $query->orderBy('jumlah_order', $this->sortDirection);
+                break;
+            case 'nama_customer':
+                $query->orderBy('customers.name', $this->sortDirection); // Use the actual column name
+                break;
+            case 'frekuensi':
+                $query->orderBy('frekuensi', $this->sortDirection);
+                break;
+            default:
+                $query->orderBy('newest_date', 'desc'); // Default sort
+        }
 
-        $customerData = $purchaseOrders->groupBy('purchase.customer_id')->map(function ($orders, $customerId) {
-            return [
-                'jumlah_order' => $orders->sum('qty'),
-                'frekuensi' => $orders->count(),
-                'nama_customer' => $orders->first()->purchase->customer->name,
-                'newest_date' => $orders->max('created_at'),
-            ];
-        });
-
-        if (in_array($this->sortField, ['jumlah_order', 'frekuensi', 'nama_customer'])) {
-            $customerData = $customerData->sortBy($this->sortField, SORT_REGULAR, $this->sortDirection === 'desc');
+        // Return paginated or all results
+        if ($paginate) {
+            // Only select the fields we actually need for display
+            return $query->paginate($this->perPage);
         } else {
-            $customerData = $customerData->sortByDesc('newest_date');
+            return $query->get();
         }
-
-        return $customerData;
     }
-
-
-
-    private function getCustomerOrdersNew()
-    {
-        $query = Payment::query()
-            ->orderBy('created_at', 'asc')
-            ->with(['purchase.customer', 'purchase.purchase_orders'])  // Eager load associated purchases, customers, and purchase orders
-            ->select('payments.*');  // Ensure we're selecting from payments
-
-        // Date filtering
-        if ($this->startDate && $this->endDate) {
-            $start = $this->viewMode == 'monthly'
-                ? Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay()
-                : Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
-            $end = $this->viewMode == 'monthly'
-                ? Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay()
-                : Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
-            $query->whereBetween('created_at', [$start, $end]);
-        }
-
-        // Retrieve the payments
-        $payments = $query->get();
-
-        // Organize data by customer_id
-        $customerData = $payments->groupBy(function ($payment) {
-            return $payment->purchase->customer_id;  // Group by the customer_id from each payment's purchase
-        })->mapWithKeys(function ($payments, $customerId) {
-            $customer = $payments->first()->purchase->customer;
-            $totalQty = $payments->reduce(function ($carry, $payment) {
-                // Sum up all quantities in purchase_orders related to each payment's purchase
-                return $carry + $payment->purchase->purchase_orders->sum('qty');
-            }, 0);
-            return [$customerId => [
-                'jumlah_order' => $totalQty,  // Total quantity from purchase_orders
-                'nama_customer' => $customer ? $customer->name : 'Unknown',  // Get the customer's name
-                'frekuensi' => $payments->pluck('purchase_id')->unique()->count(),  // Unique purchase counts
-            ]];
-        });
-
-        return $customerData;
-    }
-
-    // New Function Above
 
     public function render()
     {
-        // Get the sorted customer orders for display in the view
+        // Get the paginated customer orders for display in the view
         $customerOrders = $this->getCustomerOrderData();
-        $newCustomerOrders = $this->getCustomerOrdersNew();
 
         return view('livewire.export-data.export-customer-view', [
-            'newCustomerOrders' => $newCustomerOrders,
             'customerOrders' => $customerOrders,
         ]);
     }

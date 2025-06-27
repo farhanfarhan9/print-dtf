@@ -121,7 +121,7 @@
                             </x-native-select>
                         </div>
                         <div>
-                            <p class="text-slate-600">Panjang ({{ $selectedProduct && $selectedProduct->type === 'eceran' ? 'cm' : 'm' }})</p>
+                            <p class="text-slate-600">Panjang (m)</p>
                             @if ($customer_id && $without_dtf == false)
                                 <x-input shadowless="true" wire:model.live.debounce.300ms='qty' type="number"
                                     step=".01" placeholder="0" />

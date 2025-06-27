@@ -14,12 +14,8 @@
             <form wire:submit.prevent="save">
                 <x-input label="Nama Produk" placeholder="Nama produk" wire:model.defer="nama_produk" />
 
-                <div class="mt-4">
-                    <x-checkbox label="Apakah Eceran?" wire:model.live="isEceran" />
-                </div>
-
                 <label for="title" class="block mt-4 text-base font-bold">
-                    Range Harga Customer (dalam {{ $isEceran ? 'centimeter' : 'meter' }})
+                    Range Harga Customer (dalam meter)
                 </label>
 
                 @foreach ($priceRanges as $index => $range)
@@ -39,7 +35,7 @@
                 </div>
 
                 <label for="title" class="block mt-4 text-base font-bold">
-                    Range Harga Reseller (dalam {{ $isEceran ? 'centimeter' : 'meter' }})
+                    Range Harga Reseller (dalam meter)
                 </label>
 
                 @foreach ($priceRetailRanges as $index => $rangeRetail)
@@ -58,7 +54,7 @@
                     <x-button label="+" primary wire:click.prevent="addPriceRetailRange" />
                 </div>
 
-                <x-input label="Stok (dalam {{ $isEceran ? 'centimeter' : 'meter' }})" wire:model.defer="stok" />
+                <x-input label="Stok (dalam meter)" wire:model.defer="stok" />
 
                 <div class="mt-4">
                     <x-button label="Simpan" primary type="submit" />
