@@ -15,7 +15,9 @@
                 <x-input label="Nama Produk" placeholder="Nama produk" wire:model="productName" />
 
                 <!-- Adding margin-top to the label -->
-                <label for="title" class="block mt-4 text-sm font-medium">Range Harga (dalam meter)</label>
+                <label for="title" class="block mt-4 text-sm font-medium">
+                    Range Harga Customer (dalam meter)
+                </label>
 
                 @foreach ($priceRanges as $index => $range)
                     <div class="flex items-center mt-2 space-x-2">
@@ -32,7 +34,9 @@
                     <x-button label="+" primary wire:click.prevent="addPriceRange" />
                 </div>
 
-                <label for="title" class="block mt-4 text-sm font-medium">Range Harga (dalam meter)</label>
+                <label for="title" class="block mt-4 text-sm font-medium">
+                    Range Harga Reseller (dalam meter)
+                </label>
                 @foreach ($priceRetailRanges as $index => $range)
                     <div class="flex items-center mt-2 space-x-2">
                         <!-- Adding margin-top to each row of price ranges -->

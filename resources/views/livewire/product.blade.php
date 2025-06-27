@@ -58,7 +58,7 @@
                     @forelse($products as $product)
                         <tr class="bg-white border-b">
                             <td class="px-6 py-4">{{ $product->nama_produk }}</td>
-                            <td class="px-6 py-4">{{ $product->stok }}</td>
+                            <td class="px-6 py-4">{{ $product->stok }} m</td>
                             <td class="px-6 py-4">
                                 @php
                                     $detailHarga = json_decode($product->detail_harga, true);
@@ -94,7 +94,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="py-4 text-center">Data Kosong</td>
+                            <td colspan="5" class="py-4 text-center">Data Kosong</td>
                         </tr>
                     @endforelse
                 </tbody>

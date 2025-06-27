@@ -14,7 +14,9 @@
             <form wire:submit.prevent="save">
                 <x-input label="Nama Produk" placeholder="Nama produk" wire:model.defer="nama_produk" />
 
-                <label for="title" class="block mt-4 text-base font-bold">Range Harga Customer (dalam meter)</label>
+                <label for="title" class="block mt-4 text-base font-bold">
+                    Range Harga Customer (dalam meter)
+                </label>
 
                 @foreach ($priceRanges as $index => $range)
                     <div class="flex items-center mt-2 space-x-2">
@@ -32,7 +34,9 @@
                     <x-button label="+" primary wire:click.prevent="addPriceRange" />
                 </div>
 
-                <label for="title" class="block mt-4 text-base font-bold">Range Harga Reseller (dalam meter)</label>
+                <label for="title" class="block mt-4 text-base font-bold">
+                    Range Harga Reseller (dalam meter)
+                </label>
 
                 @foreach ($priceRetailRanges as $index => $rangeRetail)
                     <div class="flex items-center mt-2 space-x-2">

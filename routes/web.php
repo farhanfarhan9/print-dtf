@@ -5,6 +5,7 @@ use App\Livewire\Dashboard;
 use App\Livewire\ProductAdd;
 use App\Livewire\ProductEdit;
 use App\Livewire\Bank\AllBank;
+use App\Livewire\DebtCustomer;
 use App\Livewire\User\AllUser;
 use App\Livewire\User\EditUser;
 use App\Livewire\Order\AllOrder;
@@ -115,8 +116,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('export-data')->group(function () {
         Route::get('/customer', ExportCustomerView::class)->name('export-customer.index')->middleware(isOwnerMiddleware::class);
-        Route::get('/product', ExportProductView::class)->name('export-product.index')->middleware(isAdminOrOwnerMiddleware::class);
-        Route::get('/bookkeeping/{type?}', ExportBookkeepingView::class)->name('export-bookkeeping.index')->middleware(isAdminOrOwnerMiddleware::class);
+        Route::get('/product', ExportProductView::class)->name('export-product.index')->middleware(isOwnerMiddleware::class);
+        Route::get('/bookkeeping/{type?}', ExportBookkeepingView::class)->name('export-bookkeeping.index')->middleware(isOwnerMiddleware::class);
+        Route::get('/debt-customer', DebtCustomer::class)->name('debt-customer.index')->middleware(isOwnerMiddleware::class);
     });
 
     Route::prefix('internal_process')->group(function () {
