@@ -61,16 +61,6 @@
                                 @endif
                             @endif
                         </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('first_purchase_date')">
-                            Tanggal Pembelian Pertama
-                            @if($sortField === 'first_purchase_date')
-                                @if($sortDirection === 'asc')
-                                    &#x25B2;
-                                @else
-                                    &#x25BC;
-                                @endif
-                            @endif
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,13 +73,10 @@
                             <td class="px-6 py-4">
                                 {{ $debtCustomer->last_payment_date ? date('d M Y', strtotime($debtCustomer->last_payment_date)) : 'Belum ada pembayaran' }}
                             </td>
-                            <td class="px-6 py-4">
-                                {{ date('d M Y', strtotime($debtCustomer->first_purchase_date)) }}
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-4 text-center">Tidak ada data hutang customer</td>
+                            <td colspan="5" class="py-4 text-center">Tidak ada data hutang customer</td>
                         </tr>
                     @endforelse
                 </tbody>
