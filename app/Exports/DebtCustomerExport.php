@@ -89,11 +89,11 @@ class DebtCustomerExport implements FromCollection, WithHeadings, WithMapping, W
         $sheet->getStyle('A3:E3')->getFont()->setBold(true);
         $sheet->getStyle('A3:E3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-        // Add total row
-        $sheet->setCellValue('D' . $totalRow, 'Total Hutang');
-        $sheet->setCellValue('E' . $totalRow, 'Rp ' . number_format($this->totalDebt, 0, ',', '.'));
+        // Add total row in column C with the value in column D
+        $sheet->setCellValue('C' . $totalRow, 'Total Hutang');
+        $sheet->setCellValue('D' . $totalRow, 'Rp ' . number_format($this->totalDebt, 0, ',', '.'));
+        $sheet->getStyle('C' . $totalRow)->getFont()->setBold(true);
         $sheet->getStyle('D' . $totalRow)->getFont()->setBold(true);
-        $sheet->getStyle('E' . $totalRow)->getFont()->setBold(true);
 
         // Define the style array for borders
         $styleArray = [
