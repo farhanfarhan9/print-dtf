@@ -30,29 +30,10 @@
                     </style>
                     <tr>
                         <th scope="col" class="px-6 py-3">No</th>
+                        <th scope="col" class="px-6 py-3">Customer ID</th>
                         <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('customer_name')">
                             Customer Name
                             @if($sortField === 'customer_name')
-                                @if($sortDirection === 'asc')
-                                    &#x25B2;
-                                @else
-                                    &#x25BC;
-                                @endif
-                            @endif
-                        </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('total_debt')">
-                            Total Hutang
-                            @if($sortField === 'total_debt')
-                                @if($sortDirection === 'asc')
-                                    &#x25B2;
-                                @else
-                                    &#x25BC;
-                                @endif
-                            @endif
-                        </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('total_paid')">
-                            Total Bayar
-                            @if($sortField === 'total_paid')
                                 @if($sortDirection === 'asc')
                                     &#x25B2;
                                 @else
@@ -90,25 +71,14 @@
                                 @endif
                             @endif
                         </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer" wire:click="sortBy('open_purchases_count')">
-                            Jumlah Transaksi
-                            @if($sortField === 'open_purchases_count')
-                                @if($sortDirection === 'asc')
-                                    &#x25B2;
-                                @else
-                                    &#x25BC;
-                                @endif
-                            @endif
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($debtCustomers as $index => $debtCustomer)
                         <tr class="bg-white border-b">
                             <td class="px-6 py-4">{{ ($debtCustomers->currentPage() - 1) * $debtCustomers->perPage() + $loop->index + 1 }}</td>
+                            <td class="px-6 py-4">{{ $debtCustomer->customer_id }}</td>
                             <td class="px-6 py-4">{{ $debtCustomer->customer_name }}</td>
-                            <td class="px-6 py-4">{{ rupiah_format($debtCustomer->total_debt) }}</td>
-                            <td class="px-6 py-4">{{ rupiah_format($debtCustomer->total_paid) }}</td>
                             <td class="px-6 py-4">{{ rupiah_format($debtCustomer->total_debt - $debtCustomer->total_paid) }}</td>
                             <td class="px-6 py-4">
                                 {{ $debtCustomer->last_payment_date ? date('d M Y', strtotime($debtCustomer->last_payment_date)) : 'Belum ada pembayaran' }}
@@ -116,13 +86,10 @@
                             <td class="px-6 py-4">
                                 {{ date('d M Y', strtotime($debtCustomer->first_purchase_date)) }}
                             </td>
-                            <td class="px-6 py-4">
-                                {{ $debtCustomer->open_purchases_count }}
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="py-4 text-center">Tidak ada data hutang customer</td>
+                            <td colspan="6" class="py-4 text-center">Tidak ada data hutang customer</td>
                         </tr>
                     @endforelse
                 </tbody>

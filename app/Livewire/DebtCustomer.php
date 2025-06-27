@@ -17,7 +17,7 @@ class DebtCustomer extends Component
     use WithPagination;
 
     public $search = '';
-    public $sortField = 'total_debt';
+    public $sortField = 'remaining_debt';
     public $sortDirection = 'desc';
     public $perPage = 10;
     protected $paginationTheme = 'tailwind';
@@ -27,7 +27,7 @@ class DebtCustomer extends Component
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'sortField' => ['except' => 'total_debt'],
+        'sortField' => ['except' => 'remaining_debt'],
         'sortDirection' => ['except' => 'desc'],
         'perPage' => ['except' => 10],
     ];
@@ -105,7 +105,7 @@ class DebtCustomer extends Component
                 $query->orderBy('open_purchases_count', $this->sortDirection);
                 break;
             default:
-                $query->orderBy('total_debt', $this->sortDirection);
+                $query->orderBy(DB::raw('(SUM(purchases.total_payment) - COALESCE(SUM(payment_summary.total_paid), 0))'), $this->sortDirection);
                 break;
         }
 
