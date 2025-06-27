@@ -11,6 +11,8 @@ use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DebtCustomerExport;
 
 class DebtCustomer extends Component
 {
@@ -52,7 +54,19 @@ class DebtCustomer extends Component
         }
     }
 
-    public function getDebtCustomersData()
+    public function exportExcel()
+    {
+        // Get all debt customer data without pagination
+        $debtCustomers = $this->getDebtCustomersData(false);
+
+        // Generate filename with date
+        $filename = 'debt_customers_' . Carbon::now()->format('Y-m-d_H-i-s') . '.xlsx';
+
+        // Return the download response
+        return Excel::download(new DebtCustomerExport($debtCustomers), $filename);
+    }
+
+    public function getDebtCustomersData($paginate = true)
     {
         // Calculate debt per customer based on open purchases and their payments
         $query = DB::table('customers')
@@ -109,7 +123,11 @@ class DebtCustomer extends Component
                 break;
         }
 
-        return $query->paginate($this->perPage);
+        if ($paginate) {
+            return $query->paginate($this->perPage);
+        } else {
+            return $query->get();
+        }
     }
 
     public function render()

@@ -8,7 +8,8 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="flex justify-end">
+        <div class="flex justify-between">
+            <x-button wire:click="exportExcel" label="Export to Excel" green icon="download" />
             <x-input wire:model.live.debounce.300ms="search" icon="search" class="sm:!w-1/4" shadowless="true"
                 placeholder="Cari Customer" />
         </div>
