@@ -23,7 +23,8 @@
                     ['name' => 'operator', 'label' => 'Operator'],
                     ['name' => 'operator_sublim', 'label' => 'Operator Sublim'],
                     ['name' => 'operator_dtfuv', 'label' => 'Operator DTF UV'],
-                ]" wire:model="role" />
+                ]" option-label="label"
+                    option-value="name" wire:model="role" />
 
                 <x-button type="submit" spinner label="Simpan" green />
                 <x-button href="{{ route('user.index') }}" wire:navigate label="Batal" red />
