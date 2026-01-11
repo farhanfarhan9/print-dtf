@@ -180,7 +180,7 @@
                                 <div>{{ rupiah_format($discount) }}</div>
                             </div>
                         @endif
-                        @if ($customer_id && $expedition_id)
+                        @if ($customer_id && $expedition_id && $customer->deposit > 0)
                             <div class="flex justify-between mt-2">
                                 <x-checkbox id="right-label" label="Potong deposit" wire:model.live="is_deposit" />
                                 @if ($is_deposit)
