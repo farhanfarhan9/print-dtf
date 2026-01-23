@@ -315,7 +315,7 @@
                         <x-input-error :messages="$errors->get('file')" class="mt-2" />
                     </div>
                     <div class="w-1/2">
-                        <x-select label="Detail bank *" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'Bank Aceh', 'BSI', 'Mandiri' 'CASH']"
+                        <x-select label="Detail bank *" placeholder="Detail bank" :options="['BRI', 'BCA', 'BNI', 'Bank Aceh', 'BSI', 'Mandiri', 'CASH']"
                             wire:model="bank_detail" />
                     </div>
                 </div>
