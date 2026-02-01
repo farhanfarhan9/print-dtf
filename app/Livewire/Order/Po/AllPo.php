@@ -37,7 +37,7 @@ class AllPo extends Component
     {
         return [
             'amount' => 'required|numeric|max:' . $this->maxAmount,
-            'file' => 'nullable|file|max:2000',
+            'file' => 'nullable|file|max:2000|mimes:jpg,jpeg,png,pdf',
             'bank_detail' => 'required',
         ];
     }
@@ -86,8 +86,7 @@ class AllPo extends Component
             ]);
         }
 
-        if($po->purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price') >= $po->payments->sum('amount'))
-        {
+        if ($po->purchase->purchase_orders->where('status', '!=', 'cancel')->sum('total_price') >= $po->payments->sum('amount')) {
             $po->purchase->update([
                 'payment_status' => 'close'
             ]);
@@ -95,22 +94,22 @@ class AllPo extends Component
 
         $this->reset('paymentModal', 'amount', 'file', 'bank_detail');
         $this->notification([
-            'title'       => 'Sukses',
+            'title' => 'Sukses',
             'description' => "'Berhasil menambahkan pembayaran pada INV' .$po->invoice_code",
-            'icon'        => 'success',
-            'timeout'     => 3000
+            'icon' => 'success',
+            'timeout' => 3000
         ]);
     }
 
     public function deleteDialog(PurchaseOrder $po)
     {
         $this->dialog()->confirm([
-            'title'       => 'Membatalkan Order',
+            'title' => 'Membatalkan Order',
             'description' => 'Yakin Ingin Membatalkan Order?',
             'acceptLabel' => 'Ya',
-            'method'      => 'cancelPo',
-            'params'      => $po,
-            'timeout'     => 3000
+            'method' => 'cancelPo',
+            'params' => $po,
+            'timeout' => 3000
         ]);
     }
 
@@ -127,7 +126,7 @@ class AllPo extends Component
             $po->purchase->update([
                 'payment_status' => 'close'
             ]);
-        }else{
+        } else {
             $po->purchase->update([
                 'total_payment' => $po->purchase->total_payment - $po->total_price
             ]);
@@ -141,12 +140,12 @@ class AllPo extends Component
         if ($po->purchase->purchase_orders->count() == 1) {
             session()->flash('orderCanceled', ['Sukses', "'Berhasil membatalkan pesanan pada INV' .$po->invoice_code", 'success']);
             return redirect('/orders');
-        }else{
+        } else {
             $this->notification([
-                'title'       => 'Sukses',
+                'title' => 'Sukses',
                 'description' => "'Berhasil membatalkan pesanan pada INV' .$po->invoice_code",
-                'icon'        => 'success',
-                'timeout'     => 3000
+                'icon' => 'success',
+                'timeout' => 3000
             ]);
         }
     }

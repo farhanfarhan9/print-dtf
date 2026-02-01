@@ -151,7 +151,7 @@ class CreateOrder extends Component
                 'customer_id' => 'required',
                 'qty' => $this->without_dtf ? 'nullable' : 'required',
                 'status' => 'required',
-                'file' => 'nullable|file|max:2000',
+                'file' => 'nullable|file|max:2000|mimes:jpg,jpeg,png,pdf',
                 'additional_price' => $this->without_dtf ? 'nullable' : 'required',
                 'discount' => 'nullable',
             ]);
@@ -161,7 +161,7 @@ class CreateOrder extends Component
                 'qty' => $this->without_dtf ? 'nullable' : 'required',
                 'expedition_id' => 'required',
                 'status' => 'required',
-                'file' => 'nullable|file|max:2000',
+                'file' => 'nullable|file|max:2000|mimes:jpg,jpeg,png,pdf',
                 'additional_price' => $this->without_dtf ? 'nullable' : 'required',
                 'discount' => 'nullable',
             ]);
@@ -172,7 +172,7 @@ class CreateOrder extends Component
                 'expedition_id' => 'required',
                 'status' => 'required',
                 'bank_detail' => 'required',
-                'file' => 'nullable|file|max:2000',
+                'file' => 'nullable|file|max:2000|mimes:jpg,jpeg,png,pdf',
                 'additional_price' => $this->without_dtf ? 'nullable' : 'required',
                 'discount' => 'nullable',
             ]);
@@ -246,13 +246,13 @@ class CreateOrder extends Component
             'execution_date' => Carbon::now(),
         ]);
 
-        $paymentAmount = $this->status == 'Cicil' && (int)$this->amount != 0 ? (int)$this->amount : $this->total_price;
-        $is_dp = $this->status == 'Cicil' && (int)$this->amount != 0 ? 1 : 0;
+        $paymentAmount = $this->status == 'Cicil' && (int) $this->amount != 0 ? (int) $this->amount : $this->total_price;
+        $is_dp = $this->status == 'Cicil' && (int) $this->amount != 0 ? 1 : 0;
         if ($this->file) {
             $this->file = $this->file->store('bukti_pembayaran', 'public');
         }
 
-        if ($this->status == 'Cicil' && (int)$this->amount != 0) {
+        if ($this->status == 'Cicil' && (int) $this->amount != 0) {
             Payment::create([
                 'purchase_id' => $purchase->id,
                 'amount' => $paymentAmount == 0 ? 0 : $paymentAmount,

@@ -81,10 +81,10 @@ class AllOrder extends Component
 
         $this->reset('additionalModal', 'additional_amount');
         $this->notification([
-            'title'       => 'Sukses',
+            'title' => 'Sukses',
             'description' => "'Berhasil menambahkan biaya tambahan pada INV' .$purchase->invoice_code",
-            'icon'        => 'success',
-            'timeout'     => 3000
+            'icon' => 'success',
+            'timeout' => 3000
         ]);
     }
 
@@ -105,30 +105,30 @@ class AllOrder extends Component
         if ($this->deposit_opt == 'to_deposit') {
             $this->validate([
                 'amount' => 'required|numeric',
-                'file' => 'nullable|file|max:2000',
+                'file' => 'nullable|file|max:2000|mimes:jpg,jpeg,png,pdf',
                 'bank_detail' => 'required',
             ]);
         } elseif ($this->deposit_opt == 'cut_deposit') {
             // dd($purchase->customer->deposit);
             // dd($this->maxAmount);
-            $this->paymentCut =  $this->maxAmount - $purchase->customer->deposit;
+            $this->paymentCut = $this->maxAmount - $purchase->customer->deposit;
             if ($this->paymentCut > 0) {
                 $this->validate([
                     'amount' => 'required|numeric|max:' . $this->paymentCut,
-                    'file' => 'nullable|file|max:2000',
+                    'file' => 'nullable|file|max:2000|mimes:jpg,jpeg,png,pdf',
                     'bank_detail' => 'required',
                 ]);
             } else {
                 $this->validate([
                     'amount' => 'nullable',
-                    'file' => 'nullable|file|max:2000',
+                    'file' => 'nullable|file|max:2000|mimes:jpg,jpeg,png,pdf',
                     'bank_detail' => 'required',
                 ]);
             }
         } else {
             $this->validate([
                 'amount' => 'required|numeric|max:' . $this->maxAmount,
-                'file' => 'nullable|file|max:2000',
+                'file' => 'nullable|file|max:2000|mimes:jpg,jpeg,png,pdf',
                 'bank_detail' => 'required',
             ]);
         }
@@ -193,22 +193,22 @@ class AllOrder extends Component
 
         $this->reset('paymentModal', 'amount', 'file', 'deposit_opt');
         $this->notification([
-            'title'       => 'Sukses',
+            'title' => 'Sukses',
             'description' => "'Berhasil menambahkan pembayaran pada INV' .$purchase->invoice_code",
-            'icon'        => 'success',
-            'timeout'     => 3000
+            'icon' => 'success',
+            'timeout' => 3000
         ]);
     }
 
     public function deleteDialog(Purchase $purchase)
     {
         $this->dialog()->confirm([
-            'title'       => 'Menghapus Order',
+            'title' => 'Menghapus Order',
             'description' => 'Yakin Ingin Menghapus Order?',
             'acceptLabel' => 'Ya',
-            'method'      => 'deletePurchase',
-            'params'      => $purchase,
-            'timeout'     => 3000
+            'method' => 'deletePurchase',
+            'params' => $purchase,
+            'timeout' => 3000
         ]);
     }
 
@@ -216,10 +216,10 @@ class AllOrder extends Component
     {
         $purchase->delete();
         $this->notification([
-            'title'       => 'Sukses',
+            'title' => 'Sukses',
             'description' => "Berhasil Menghapus Order",
-            'icon'        => 'success',
-            'timeout'     => 3000
+            'icon' => 'success',
+            'timeout' => 3000
         ]);
     }
 
