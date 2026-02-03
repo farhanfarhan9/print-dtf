@@ -23,8 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Protected API routes - require authentication
-Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
+// Protected API routes - require web session authentication (for internal AJAX calls)
+Route::middleware(['web', 'auth', 'throttle:60,1'])->group(function () {
     Route::get('bank/index', [BankController::class, 'index'])->name('api.bank.index');
     Route::get('customer/allCustomer', [CustomerController::class, 'index'])->name('api.customers.index');
     Route::get('expedition/allExpeditions', [ExpeditionController::class, 'index'])->name('api.expeditions.index');
