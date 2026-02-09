@@ -3,6 +3,7 @@
 namespace App\Livewire\ExportData;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\PurchaseOrder;
 use App\Models\Purchase;
 use App\Models\Payment;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ExportBookkeepingView extends Component
 {
+    use WithPagination;
     public $search;
     public $startDate;
     public $endDate;
@@ -33,8 +35,8 @@ class ExportBookkeepingView extends Component
         $this->viewMode = 'daily';
         $this->startDate = null;
         $this->endDate = null;
-        // Redirect to the route with the appropriate type
-        return redirect()->route('export-bookkeeping.index', ['type' => 'daily']);
+        // Reset page to 1 when switching view mode
+        $this->resetPage();
     }
 
     public function switchToMonthly()
@@ -47,8 +49,8 @@ class ExportBookkeepingView extends Component
         $this->viewMode = 'monthly';
         $this->startDate = null;
         $this->endDate = null;
-        // Redirect to the route with the appropriate type
-        return redirect()->route('export-bookkeeping.index', ['type' => 'monthly']);
+        // Reset page to 1 when switching view mode
+        $this->resetPage();
     }
 
     public function mount($type = null)
@@ -132,8 +134,8 @@ class ExportBookkeepingView extends Component
         $dailyPurchases = Cache::remember($cacheKey, 300, function () {
             // Start building the query with eager loading to reduce N+1 queries
             $query = Payment::with(['purchase.customer'])
-                    ->select('payments.*')
-                    ->orderBy($this->sortField, $this->sortDirection);
+                ->select('payments.*')
+                ->orderBy($this->sortField, $this->sortDirection);
 
             // For admin users, enforce max 3-day range
             if ($this->isAdmin && $this->startDate && $this->endDate) {
@@ -234,12 +236,12 @@ class ExportBookkeepingView extends Component
         $monthlyPurchases = Cache::remember($cacheKey, 300, function () {
             // Start building the query with eager loading
             $query = Payment::with(['purchase.customer'])
-                    ->select('payments.*')
-                    ->orderBy($this->sortField, $this->sortDirection);
+                ->select('payments.*')
+                ->orderBy($this->sortField, $this->sortDirection);
 
             // Check if start and end dates are set and add them to the query
             if ($this->startDate && $this->endDate) {
-                if($this->viewMode == 'monthly'){
+                if ($this->viewMode == 'monthly') {
                     $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay()->format('Y-m-d H:i:s');
                     $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay()->format('Y-m-d H:i:s');
                 } else {
@@ -312,8 +314,8 @@ class ExportBookkeepingView extends Component
     {
         // Use eager loading to reduce N+1 queries
         $query = Payment::with(['purchase.customer'])
-                ->select('payments.*')
-                ->orderBy('created_at', 'desc');
+            ->select('payments.*')
+            ->orderBy('created_at', 'desc');
 
         // For admin users, enforce max 3-day range
         if ($this->isAdmin && $this->startDate && $this->endDate) {
@@ -332,7 +334,7 @@ class ExportBookkeepingView extends Component
         }
         // For non-admin users, use the selected date range
         else if ($this->startDate && $this->endDate) {
-            if($this->viewMode == 'monthly'){
+            if ($this->viewMode == 'monthly') {
                 $start = Carbon::createFromFormat('Y-m', $this->startDate)->startOfMonth()->startOfDay();
                 $end = Carbon::createFromFormat('Y-m', $this->endDate)->endOfMonth()->endOfDay();
             } else {
