@@ -419,10 +419,10 @@ class ExportBookkeepingView extends Component
 
     public function render()
     {
-        // Only load data when actually needed to improve initial page load time
+        // Always load both datasets to prevent Livewire component issues
         return view('livewire.export-data.export-bookkeeping-view', [
-            'dailyGroupPurchases' => $this->viewMode == 'daily' ? $this->getGroupDailyPurchasesData() : null,
-            'monthlyGroupPurchases' => $this->viewMode == 'monthly' ? $this->getGroupMonthlyPurchasesData() : null,
+            'dailyGroupPurchases' => $this->getGroupDailyPurchasesData(),
+            'monthlyGroupPurchases' => $this->getGroupMonthlyPurchasesData(),
             'viewMode' => $this->viewMode,
             'isAdmin' => $this->isAdmin,
         ]);
