@@ -21,7 +21,7 @@
         })
     </script>
 @endif
-<div wire:poll.5s>
+<div>
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
@@ -59,15 +59,13 @@
                 </div>
             @else
                 <div class="flex space-x-4">
-                    <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai"
-                        class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
-                    <x-input wire:model.live="startDate" type="month" placeholder="Bulan mulai"
-                        class="w-full {{ $viewMode == 'daily' ? 'hidden' : '' }}" />
-
-                    <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir"
-                        class="w-full {{ $viewMode == 'monthly' ? 'hidden' : '' }}" />
-                    <x-input wire:model.live="endDate" type="month" placeholder="Bulan akhir"
-                        class="w-full {{ $viewMode == 'daily' ? 'hidden' : '' }}" />
+                    @if ($viewMode == 'daily')
+                        <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
+                        <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
+                    @else
+                        <x-input wire:model.live="startDate" type="month" placeholder="Bulan mulai" class="w-full" />
+                        <x-input wire:model.live="endDate" type="month" placeholder="Bulan akhir" class="w-full" />
+                    @endif
                 </div>
             @endif
 
@@ -89,12 +87,10 @@
                             @endphp
                             {{ \Carbon\Carbon::parse($group['purchase_date'])->isoFormat('dddd, D MMMM YYYY') }}
                         </div>
-                        {{--  --}}
+                        {{-- --}}
                         <div class="p-5 mb-5 border rounded-md">
-                            <table
-                                class="w-full mb-8 text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
-                                <thead
-                                    class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full mb-8 text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 rounded-s-lg">
                                             No
@@ -127,10 +123,11 @@
                                             $date = \Carbon\Carbon::parse($dailyPurchases['purchase_time'])->format('Y-m-d');
                                             $time = \Carbon\Carbon::parse($dailyPurchases['purchase_time'])->format('H:i');
                                             $shift = (strtotime($time) >= strtotime('09:00') && strtotime($time) <= strtotime('16:59')) ? 'Shift 1' : 'Shift 2';
-                                            if(strtotime($time) >= strtotime('09:00') && strtotime($time) <= strtotime('16:59')){
+                                            if (strtotime($time) >= strtotime('09:00') && strtotime($time) <= strtotime('16:59')) {
                                                 $totalPricePerDayShift1 += $dailyPurchases['amount'];
-                                            }else{
-                                                $totalPricePerDayShift2 += $dailyPurchases['amount'];;
+                                            } else {
+                                                $totalPricePerDayShift2 += $dailyPurchases['amount'];
+                                                ;
                                             }
                                             $totalPricePerDay += $dailyPurchases['amount'];
                                         @endphp
@@ -166,39 +163,34 @@
                                             <td colspan="6" class="py-4 text-center">Data Kosong</td>
                                         </tr>
                                     @endforelse
-                                    <tr wire:key="key-{{ $key }}"" class="text-white bg-green-600">
-                                        <th
-                                            class="px-6 py-2 font-bold text-center text-medium rounded-s-lg whitespace-nowrap">
+                                    <tr wire:key="key-{{ $key }}"" class=" text-white bg-green-600">
+                                        <th class="px-6 py-2 font-bold text-center text-medium rounded-s-lg whitespace-nowrap">
                                             Total
                                         </th>
                                         <th class="px-6 py-2 font-bold text-medium whitespace-nowrap">
                                             {{-- {{ count($dailyGroupPurchases) }} Customer --}}
                                         </th>
-                                        <th colspan="2"
-                                            class="px-6 py-2 font-bold text-medium whitespace-nowrap">
+                                        <th colspan="2" class="px-6 py-2 font-bold text-medium whitespace-nowrap">
                                             {{ rupiah_format($totalPricePerDay) }}
                                         </th>
-                                        <th colspan="2"
-                                            class="px-6 py-2 font-bold text-medium whitespace-nowrap text-center">
+                                        <th colspan="2" class="px-6 py-2 font-bold text-medium whitespace-nowrap text-center">
                                             Shift 1 : {{ rupiah_format($totalPricePerDayShift1) }}
                                         </th>
-                                        <th colspan="2"
-                                            class="px-6 py-2 font-bold text-medium whitespace-nowrap text-center">
+                                        <th colspan="2" class="px-6 py-2 font-bold text-medium whitespace-nowrap text-center">
                                             Shift 2 : {{ rupiah_format($totalPricePerDayShift2) }}
                                         </th>
-                                        <th
-                                            class="px-6 py-2 font-bold text-medium rounded-e-lg whitespace-nowrap">
+                                        <th class="px-6 py-2 font-bold text-medium rounded-e-lg whitespace-nowrap">
                                         </th>
                                     </tr>
                                 </tbody>
                             </table>
                             {{-- Don't Need it, but i will save it here. Just in case ¯\_(ツ)_/¯ --}}
                             {{-- <p class="mb-2 text-xl font-semibold">Total Keseluruhan shift 2</p>
-                                    <p class="text-lg font-semibold">Total Panjang = {{ "1" }}</p>
-                                    <p class="text-lg font-semibold">Total Harga = {{ "1" }} --}}
+                            <p class="text-lg font-semibold">Total Panjang = {{ "1" }}</p>
+                            <p class="text-lg font-semibold">Total Harga = {{ "1" }} --}}
                             </p>
                         </div>
-                        {{--  --}}
+                        {{-- --}}
                     </x-card>
                 </div>
             @empty
@@ -211,8 +203,7 @@
         {{-- Monthly --}}
         <div class="pt-12">
             @forelse ($monthlyGroupPurchases as $group)
-                <div class="mb-10"
-                    wire:key='key-{{ \Carbon\Carbon::parse($group['purchase_month'])->isoFormat('MM-YYYY') }}'>
+                <div class="mb-10" wire:key='key-{{ \Carbon\Carbon::parse($group['purchase_month'])->isoFormat('MM-YYYY') }}'>
                     <x-card>
                         @php
                             $totalPricePerMonth = 0;
@@ -224,10 +215,8 @@
                             {{ \Carbon\Carbon::parse($group['purchase_month'])->isoFormat('MMMM YYYY') }}
                         </div>
                         <div class="p-5 mb-5 border rounded-md">
-                            <table
-                                class="w-full mb-8 text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
-                                <thead
-                                    class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full mb-8 text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 rounded-s-lg">
                                             No
@@ -280,15 +269,13 @@
                                         </tr>
                                     @endforelse
                                     <tr class="text-white bg-green-600">
-                                        <th
-                                            class="px-6 py-2 font-bold text-center text-medium rounded-s-lg whitespace-nowrap">
+                                        <th class="px-6 py-2 font-bold text-center text-medium rounded-s-lg whitespace-nowrap">
                                             Total
                                         </th>
                                         <th class="px-6 py-2 font-bold text-medium whitespace-nowrap">
                                             {{-- {{ count($monthlyPurchase['customer_name']) }} Customer --}}
                                         </th>
-                                        <th colspan="3"
-                                            class="px-6 py-2 font-bold text-medium rounded-e-lg whitespace-nowrap">
+                                        <th colspan="3" class="px-6 py-2 font-bold text-medium rounded-e-lg whitespace-nowrap">
                                             {{ rupiah_format($totalPricePerMonth) }}
                                         </th>
                                     </tr>
