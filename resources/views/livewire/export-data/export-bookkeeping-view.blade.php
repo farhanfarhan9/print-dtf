@@ -58,7 +58,7 @@
                     </div>
                 </div>
             @else
-                <div class="flex space-x-4">
+                <div class="flex space-x-4" wire:key="date-inputs-{{ $viewMode }}">
                     @if ($viewMode == 'daily')
                         <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
                         <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
@@ -74,7 +74,7 @@
     </div>
     @if ($viewMode == 'daily')
         {{-- Daily --}}
-        <div class="pt-12">
+        <div class="pt-12" wire:key="daily-table-container">
             @forelse ($dailyGroupPurchases as $group)
                 <div class="mb-10" wire:key='key-{{ \Carbon\Carbon::parse($group['purchase_date'])->isoFormat('D-MM-YYYY') }}'>
                     <x-card>
@@ -201,7 +201,7 @@
         {{-- Daily --}}
     @elseif($viewMode == 'monthly')
         {{-- Monthly --}}
-        <div class="pt-12">
+        <div class="pt-12" wire:key="monthly-table-container">
             @forelse ($monthlyGroupPurchases as $group)
                 <div class="mb-10" wire:key='key-{{ \Carbon\Carbon::parse($group['purchase_month'])->isoFormat('MM-YYYY') }}'>
                     <x-card>
