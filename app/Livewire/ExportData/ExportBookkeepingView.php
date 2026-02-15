@@ -32,11 +32,7 @@ class ExportBookkeepingView extends Component
 
     public function switchToDaily()
     {
-        $this->viewMode = 'daily';
-        $this->startDate = null;
-        $this->endDate = null;
-        // Reset page to 1 when switching view mode
-        $this->resetPage();
+        return $this->redirect(route('export-bookkeeping.index', ['type' => 'daily']), navigate: true);
     }
 
     public function switchToMonthly()
@@ -46,10 +42,18 @@ class ExportBookkeepingView extends Component
             return;
         }
 
-        $this->viewMode = 'monthly';
+        return $this->redirect(route('export-bookkeeping.index', ['type' => 'monthly']), navigate: true);
+    }
+
+    public function applyFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function resetFilter()
+    {
         $this->startDate = null;
         $this->endDate = null;
-        // Reset page to 1 when switching view mode
         $this->resetPage();
     }
 
@@ -419,10 +423,13 @@ class ExportBookkeepingView extends Component
 
     public function render()
     {
-        // Always load both datasets to prevent Livewire component issues
+        // Only load the dataset for the active viewMode to prevent double table rendering
+        $dailyGroupPurchases = $this->viewMode === 'daily' ? $this->getGroupDailyPurchasesData() : collect();
+        $monthlyGroupPurchases = $this->viewMode === 'monthly' ? $this->getGroupMonthlyPurchasesData() : collect();
+
         return view('livewire.export-data.export-bookkeeping-view', [
-            'dailyGroupPurchases' => $this->getGroupDailyPurchasesData(),
-            'monthlyGroupPurchases' => $this->getGroupMonthlyPurchasesData(),
+            'dailyGroupPurchases' => $dailyGroupPurchases,
+            'monthlyGroupPurchases' => $monthlyGroupPurchases,
             'viewMode' => $this->viewMode,
             'isAdmin' => $this->isAdmin,
         ]);

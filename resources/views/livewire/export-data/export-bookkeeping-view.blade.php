@@ -1,27 +1,27 @@
-@if (session('exportSuccess'))
-    <script>
-        Wireui.hook('notifications:load', () => {
-            window.$wireui.notify({
-                title: '{{ session('exportSuccess')[0] }}',
-                description: '{{ session('exportSuccess')[1] }}',
-                icon: '{{ session('exportSuccess')[2] }}',
-                timeout: 3000
-            })
-        })
-    </script>
-@elseif (session('exportFailed'))
-    <script>
-        Wireui.hook('notifications:load', () => {
-            window.$wireui.notify({
-                title: 'Gagal',
-                description: 'Salah satu Tanggal Belum di isi',
-                icon: 'error',
-                timeout: 3000
-            })
-        })
-    </script>
-@endif
 <div>
+    @if (session('exportSuccess'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: '{{ session('exportSuccess')[0] }}',
+                    description: '{{ session('exportSuccess')[1] }}',
+                    icon: '{{ session('exportSuccess')[2] }}',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @elseif (session('exportFailed'))
+        <script>
+            Wireui.hook('notifications:load', () => {
+                window.$wireui.notify({
+                    title: 'Gagal',
+                    description: 'Salah satu Tanggal Belum di isi',
+                    icon: 'error',
+                    timeout: 3000
+                })
+            })
+        </script>
+    @endif
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-3xl font-semibold leading-tight text-gray-800">
@@ -50,8 +50,8 @@
             @if ($isAdmin)
                 <div class="flex flex-col space-y-2">
                     <div class="flex space-x-4">
-                        <x-input wire:model.live="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
-                        <x-input wire:model.live="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
+                        <x-input wire:model="startDate" type="date" placeholder="Tanggal mulai" class="w-full" />
+                        <x-input wire:model="endDate" type="date" placeholder="Tanggal akhir" class="w-full" />
                     </div>
                     <div class="text-xs text-amber-600 italic text-center">
                         <span class="font-medium">Catatan:</span> Admin hanya dapat melihat data maksimal 3 hari
@@ -59,21 +59,26 @@
                 </div>
             @else
                 <div class="flex space-x-4">
-                    <x-input wire:model.live="startDate" :type="$viewMode == 'monthly' ? 'month' : 'date'"
+                    <x-input wire:model="startDate" :type="$viewMode == 'monthly' ? 'month' : 'date'"
                         placeholder="{{ $viewMode == 'monthly' ? 'Bulan mulai' : 'Tanggal mulai' }}" class="w-full" />
-                    <x-input wire:model.live="endDate" :type="$viewMode == 'monthly' ? 'month' : 'date'"
+                    <x-input wire:model="endDate" :type="$viewMode == 'monthly' ? 'month' : 'date'"
                         placeholder="{{ $viewMode == 'monthly' ? 'Bulan akhir' : 'Tanggal akhir' }}" class="w-full" />
                 </div>
             @endif
 
+            <x-button wire:click="applyFilter" label="Filter" blue icon="search" class="w-full sm:w-auto" />
+            @if ($startDate || $endDate)
+                <x-button wire:click="resetFilter" label="Reset" flat class="w-full sm:w-auto" />
+            @endif
             <x-button wire:click="exportExcel" label="Export" blue icon="download" class="w-full sm:w-auto" />
         </div>
     </div>
     @if ($viewMode == 'daily')
-        {{-- Daily --}}
+        {{-- Daily View --}}
         <div class="pt-12">
             @forelse ($dailyGroupPurchases as $group)
-                <div class="mb-10" wire:key='key-{{ \Carbon\Carbon::parse($group['purchase_date'])->isoFormat('D-MM-YYYY') }}'>
+                <div class="mb-10"
+                    wire:key='daily-{{ \Carbon\Carbon::parse($group['purchase_date'])->isoFormat('D-MM-YYYY') }}'>
                     <x-card>
                         @php
                             $totalPricePerDay = 0;
@@ -84,7 +89,6 @@
                             @endphp
                             {{ \Carbon\Carbon::parse($group['purchase_date'])->isoFormat('dddd, D MMMM YYYY') }}
                         </div>
-                        {{-- --}}
                         <div class="p-5 mb-5 border rounded-md">
                             <table class="w-full mb-8 text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
                                 <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
@@ -116,7 +120,6 @@
                                     @endphp
                                     @forelse ($group['dailyPurchases'] as $key => $dailyPurchases)
                                         @php
-
                                             $date = \Carbon\Carbon::parse($dailyPurchases['purchase_time'])->format('Y-m-d');
                                             $time = \Carbon\Carbon::parse($dailyPurchases['purchase_time'])->format('H:i');
                                             $shift = (strtotime($time) >= strtotime('09:00') && strtotime($time) <= strtotime('16:59')) ? 'Shift 1' : 'Shift 2';
@@ -124,11 +127,10 @@
                                                 $totalPricePerDayShift1 += $dailyPurchases['amount'];
                                             } else {
                                                 $totalPricePerDayShift2 += $dailyPurchases['amount'];
-                                                ;
                                             }
                                             $totalPricePerDay += $dailyPurchases['amount'];
                                         @endphp
-                                        <tr wire:key="key-{{ $key }}"
+                                        <tr wire:key="daily-row-{{ $key }}"
                                             class=" odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -160,12 +162,11 @@
                                             <td colspan="6" class="py-4 text-center">Data Kosong</td>
                                         </tr>
                                     @endforelse
-                                    <tr wire:key="key-{{ $key }}"" class=" text-white bg-green-600">
+                                    <tr wire:key="daily-total" class="text-white bg-green-600">
                                         <th class="px-6 py-2 font-bold text-center text-medium rounded-s-lg whitespace-nowrap">
                                             Total
                                         </th>
                                         <th class="px-6 py-2 font-bold text-medium whitespace-nowrap">
-                                            {{-- {{ count($dailyGroupPurchases) }} Customer --}}
                                         </th>
                                         <th colspan="2" class="px-6 py-2 font-bold text-medium whitespace-nowrap">
                                             {{ rupiah_format($totalPricePerDay) }}
@@ -181,26 +182,20 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            {{-- Don't Need it, but i will save it here. Just in case ¯\_(ツ)_/¯ --}}
-                            {{-- <p class="mb-2 text-xl font-semibold">Total Keseluruhan shift 2</p>
-                            <p class="text-lg font-semibold">Total Panjang = {{ "1" }}</p>
-                            <p class="text-lg font-semibold">Total Harga = {{ "1" }} --}}
-                            </p>
                         </div>
-                        {{-- --}}
                     </x-card>
                 </div>
             @empty
                 No Data
             @endforelse
         </div>
-        {{ $dailyGroupPurchases->links() }} <!-- Pagination links -->
-        {{-- Daily --}}
+        {{ $dailyGroupPurchases->links() }}
     @elseif($viewMode == 'monthly')
-        {{-- Monthly --}}
+        {{-- Monthly View --}}
         <div class="pt-12">
             @forelse ($monthlyGroupPurchases as $group)
-                <div class="mb-10" wire:key='key-{{ \Carbon\Carbon::parse($group['purchase_month'])->isoFormat('MM-YYYY') }}'>
+                <div class="mb-10"
+                    wire:key='monthly-{{ \Carbon\Carbon::parse($group['purchase_month'])->isoFormat('MM-YYYY') }}'>
                     <x-card>
                         @php
                             $totalPricePerMonth = 0;
@@ -237,7 +232,7 @@
                                         @php
                                             $totalPricePerMonth += $monthlyPurchase['amount'];
                                         @endphp
-                                        <tr wire:key="key-{{ $key }}"
+                                        <tr wire:key="monthly-row-{{ $key }}"
                                             class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -262,15 +257,14 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="py-4 text-center">Data Kosong</td>
+                                            <td colspan="5" class="py-4 text-center">Data Kosong</td>
                                         </tr>
                                     @endforelse
-                                    <tr class="text-white bg-green-600">
+                                    <tr wire:key="monthly-total" class="text-white bg-green-600">
                                         <th class="px-6 py-2 font-bold text-center text-medium rounded-s-lg whitespace-nowrap">
                                             Total
                                         </th>
                                         <th class="px-6 py-2 font-bold text-medium whitespace-nowrap">
-                                            {{-- {{ count($monthlyPurchase['customer_name']) }} Customer --}}
                                         </th>
                                         <th colspan="3" class="px-6 py-2 font-bold text-medium rounded-e-lg whitespace-nowrap">
                                             {{ rupiah_format($totalPricePerMonth) }}
@@ -285,12 +279,7 @@
                 <div>No Data</div>
             @endforelse
         </div>
-        {{ $monthlyGroupPurchases->links() }} <!-- Pagination links -->
-        {{-- Monthly --}}
-    @else
-        {{-- Default --}}
-
-        {{-- Default --}}
+        {{ $monthlyGroupPurchases->links() }}
     @endif
     {{-- Put it here --}}
     <div class="mt-4">
